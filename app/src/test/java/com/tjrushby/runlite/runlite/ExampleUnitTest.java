@@ -1,4 +1,4 @@
-package runlite.tjrushby.com.runlite;
+package com.tjrushby.runlite.runlite;
 
 import org.junit.Test;
 

@@ -3,4 +3,7 @@
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
+    <color name="colorGPSAverage">#FFCC00</color>
+    <color name="colorGPSBad">#FF3300</color>
+    <color name="colorGPSGood">#00FF00</color>
 </resources>

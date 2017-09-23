@@ -1,4 +1,4 @@
-package runlite.tjrushby.com.runlite;
+package com.tjrushby.runlite.runlite;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;
