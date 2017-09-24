@@ -1,19 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".views.RunActivity">
+    android:layout_height="match_parent">
 
     <android.support.design.widget.AppBarLayout
         android:id="@+id/appBarLayout"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:theme="@style/AppTheme.AppBarOverlay"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        android:theme="@style/AppTheme.AppBarOverlay">
 
         <include
             android:id="@+id/toolbar"
@@ -21,8 +16,10 @@
 
     </android.support.design.widget.AppBarLayout>
 
+    <!-- Constraint Guidelines -->
+
     <android.support.constraint.Guideline
-        android:id="@+id/guidelineGPS"
+        android:id="@+id/guidelineDetailsHeader"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
@@ -33,14 +30,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.60" />
-
-    <android.support.constraint.Guideline
-        android:id="@+id/guidelineLockUnlock"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.80" />
+        app:layout_constraintGuide_percent=".65" />
 
     <android.support.constraint.Guideline
         android:id="@+id/guidelineButtons"
@@ -70,131 +60,95 @@
         android:orientation="vertical"
         app:layout_constraintGuide_percent="0.95" />
 
-    <!-- timer -->
+    <!-- MapView -->
 
-    <TextView
-        android:id="@+id/tvTime"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/tv_default_time_elapsed"
-        android:textAlignment="center"
-        android:textSize="@dimen/text_size_timer"
-        app:layout_constraintBottom_toTopOf="@id/guidelineGPS"
-        app:layout_constraintLeft_toRightOf="@id/guidelineLeft"
-        app:layout_constraintRight_toLeftOf="@id/guidelineRight"
-        app:layout_constraintTop_toBottomOf="@id/appBarLayout" />
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="0sp"
+        app:layout_constraintBottom_toTopOf="@id/guidelineDetailsHeader"
+        app:layout_constraintLeft_toRightOf="parent"
+        app:layout_constraintRight_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/appBarLayout">
 
-    <!-- gps details -->
+        <fragment
+            android:id="@+id/mapFragment"
+            android:name="com.google.android.gms.maps.MapFragment"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#00000000"
+            android:clickable="true" />
+    </RelativeLayout>
+
+
+    <!-- Run Details -->
 
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintBottom_toTopOf="@id/guidelineDetails"
-        app:layout_constraintLeft_toRightOf="@id/guidelineLeft"
-        app:layout_constraintRight_toLeftOf="@id/guidelineRight"
-        app:layout_constraintTop_toBottomOf="@id/guidelineGPS">
+        app:layout_constraintBottom_toBottomOf="@id/guidelineDetails"
+        app:layout_constraintLeft_toRightOf="parent"
+        app:layout_constraintRight_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/guidelineDetailsHeader">
 
-        <android.support.v7.widget.AppCompatImageView
-            android:id="@+id/ivAccuracy"
-            android:layout_width="36dp"
-            android:layout_height="36dp"
-            android:scaleType="fitCenter"
-            app:srcCompat="@drawable/ic_gps_fixed_black_24dp" />
+        <TextView
+            android:id="@+id/tvTimeElapsed"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="@string/tv_default_time_elapsed"
+            android:textAlignment="center"
+            android:textSize="@dimen/text_size_header" />
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:text="@string/label_gps_status"
-            android:textAlignment="center"
-            android:textStyle="bold" />
+            android:text="@string/label_time_elapsed"
+            android:textAlignment="center" />
     </LinearLayout>
-
-    <!-- distance details -->
 
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        app:layout_constraintBottom_toTopOf="@id/guidelineButtons"
         app:layout_constraintLeft_toRightOf="@id/guidelineLeft"
         app:layout_constraintRight_toLeftOf="@id/guidelineCenter"
         app:layout_constraintTop_toBottomOf="@id/guidelineDetails">
 
         <include layout="@layout/details_distance_travelled" />
-
     </LinearLayout>
-
-    <!-- speed details -->
 
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
+        app:layout_constraintBottom_toTopOf="@id/guidelineButtons"
         app:layout_constraintLeft_toRightOf="@id/guidelineCenter"
         app:layout_constraintRight_toLeftOf="@id/guidelineRight"
         app:layout_constraintTop_toBottomOf="@id/guidelineDetails">
 
         <include layout="@layout/details_avg_pace" />
-
     </LinearLayout>
 
-    <!-- buttons -->
+    <!-- Buttons -->
 
     <Button
-        android:id="@+id/buttonLock"
-        style="@style/Base.Widget.AppCompat.Button.Borderless"
-        android:layout_width="36dp"
-        android:layout_height="36dp"
-        android:background="@drawable/ic_lock_outline_black_24dp"
-        app:layout_constraintBottom_toBottomOf="@id/guidelineButtons"
-        app:layout_constraintLeft_toRightOf="@id/guidelineLeft"
-        app:layout_constraintRight_toLeftOf="@id/guidelineRight"
-        app:layout_constraintTop_toBottomOf="@id/guidelineLockUnlock" />
-
-    <Button
-        android:id="@+id/buttonUnlock"
-        style="@style/Base.Widget.AppCompat.Button.Borderless"
-        android:layout_width="36dp"
-        android:layout_height="36dp"
-        android:background="@drawable/ic_lock_open_black_24dp"
-        android:visibility="invisible"
-        app:layout_constraintBottom_toBottomOf="@id/guidelineButtons"
-        app:layout_constraintLeft_toRightOf="@id/guidelineLeft"
-        app:layout_constraintRight_toLeftOf="@id/guidelineRight"
-        app:layout_constraintTop_toBottomOf="@id/guidelineLockUnlock" />
-
-    <Button
-        android:id="@+id/buttonStart"
+        android:id="@+id/buttonEdit"
         style="@style/Base.Widget.AppCompat.Button.Borderless"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:text="@string/button_start"
+        android:text="@string/button_edit"
         app:layout_constraintLeft_toRightOf="@id/guidelineLeft"
         app:layout_constraintRight_toLeftOf="@id/guidelineCenter"
         app:layout_constraintTop_toBottomOf="@id/guidelineButtons" />
 
     <Button
-        android:id="@+id/buttonPause"
+        android:id="@+id/buttonDelete"
         style="@style/Base.Widget.AppCompat.Button.Borderless"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:text="@string/button_pause"
-        android:visibility="invisible"
-        app:layout_constraintLeft_toRightOf="@id/guidelineLeft"
-        app:layout_constraintRight_toLeftOf="@id/guidelineCenter"
-        app:layout_constraintTop_toBottomOf="@id/guidelineButtons" />
-
-    <Button
-        android:id="@+id/buttonStop"
-        style="@style/Base.Widget.AppCompat.Button.Borderless"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:enabled="false"
-        android:text="@string/button_stop"
+        android:text="@string/button_delete"
         app:layout_constraintLeft_toRightOf="@id/guidelineCenter"
         app:layout_constraintRight_toLeftOf="@id/guidelineRight"
         app:layout_constraintTop_toBottomOf="@id/guidelineButtons" />
-
 </android.support.constraint.ConstraintLayout>

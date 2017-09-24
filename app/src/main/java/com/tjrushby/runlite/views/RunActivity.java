@@ -175,6 +175,7 @@ public class RunActivity extends AppCompatActivity implements RunContract.Activi
     @Override
     public void endRun() {
         this.finish();
+        startActivity(new Intent(this, DetailsActivity.class));
     }
 
     @Override

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/label_average_pace"
+        android:textAlignment="center" />
+
+    <TextView
+        android:id="@+id/tvAveragePace"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:text="@string/tv_default_pace"
+        android:textAlignment="center"
+        android:textSize="@dimen/text_size_details" />
+
+    <TextView
+        android:id="@+id/labelSpeedUnit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/label_pace_min_km"
+        android:textAlignment="center"
+        android:textSize="@dimen/text_size_details" />
+
+</LinearLayout>

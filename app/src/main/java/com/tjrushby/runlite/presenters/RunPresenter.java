@@ -75,6 +75,9 @@ public class RunPresenter implements RunContract.Presenter {
     // tell model to start requesting location updates and the view to start a Runnable
     @Override
     public void startRun() {
+        // enabled the stop button
+        view.enableButtonsStartPauseStop();
+
         // start requesting Location updates from locationClient
         service.startLocationUpdates();
 
