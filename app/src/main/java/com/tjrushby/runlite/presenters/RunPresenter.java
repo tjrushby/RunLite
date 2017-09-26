@@ -1,12 +1,11 @@
 package com.tjrushby.runlite.presenters;
 
-import java.text.DecimalFormat;
-import java.util.Locale;
-
 import javax.inject.Inject;
 
 import com.tjrushby.runlite.App;
 import com.tjrushby.runlite.contracts.RunContract;
+import com.tjrushby.runlite.util.StringFormatter;
+
 import timber.log.Timber;
 
 public class RunPresenter implements RunContract.Presenter {
@@ -14,24 +13,25 @@ public class RunPresenter implements RunContract.Presenter {
     private RunContract.Model model;
     private RunContract.Service service;
 
-    private DecimalFormat dfDistance;
+    private StringFormatter formatter;
 
     private long timeElapsed;
 
     @Inject
     public RunPresenter(RunContract.Activity view,
                         RunContract.Model model,
-                        RunContract.Service service) {
+                        RunContract.Service service,
+                        StringFormatter formatter) {
         this.view = view;
         this.model = model;
         this.service = service;
+        this.formatter = formatter;
 
         Timber.d("view: " + view);
         Timber.d("presenter: " + this);
         Timber.d("model: " + model);
         Timber.d("service: " + service);
 
-        dfDistance = new DecimalFormat("#0.00");
         timeElapsed = 0;
     }
 
@@ -62,12 +62,12 @@ public class RunPresenter implements RunContract.Presenter {
         if(currentPace == 0) {
             view.setTextViewPaceDefaultText();
         } else {
-            view.updateTextViewPace(formatTime((long) currentPace));
+            view.updateTextViewPace(formatter.longToMinutesSeconds((long) currentPace));
         }
 
         determineGPSIcon(model.getCurrentAccuracy());
-        view.updateTextViewTime(formatTime(timeElapsed));
-        view.updateTextViewDistance(dfDistance.format(model.getDistanceTravelled()));
+        view.updateTextViewTime(formatter.longToMinutesSeconds(timeElapsed));
+        view.updateTextViewDistance(formatter.doubleToDistanceString(model.getDistanceTravelled()));
 
         view.nextTick();
     }
@@ -119,6 +119,7 @@ public class RunPresenter implements RunContract.Presenter {
 
     @Override
     public void endRunAlertDialogYes() {
+        model.setTimeElapsed(timeElapsed);
         view.endRun();
     }
 
@@ -136,14 +137,6 @@ public class RunPresenter implements RunContract.Presenter {
         view.hideButtonUnlock();
         view.showButtonLock();
         view.defaultScreenTimeout();
-    }
-
-    // formats a String representing the time elapsed as mm:ss from a long (seconds elapsed)
-    private String formatTime(long timeElapsedSeconds) {
-        long seconds = timeElapsedSeconds % 60;
-        long minutes = (timeElapsedSeconds / 60);
-
-        return String.format(Locale.getDefault(), "%02d:%02d", minutes, seconds);
     }
 
     // determines what color to tint the GPS icon based on the value of currentAccuracy

@@ -1,6 +1,8 @@
 package com.tjrushby.runlite.contracts;
 
-import com.tjrushby.runlite.injection.components.RunningActivityComponent;
+import com.google.android.gms.maps.model.LatLng;
+
+import java.util.List;
 
 public interface RunContract {
     interface Activity {
@@ -30,7 +32,6 @@ public interface RunContract {
         void updateTextViewDistance(String distanceTravelled);
         void updateTextViewPace(String currentPace);
         void setTextViewPaceDefaultText();
-        RunningActivityComponent getComponent();
     }
 
     interface Presenter {
@@ -53,6 +54,10 @@ public interface RunContract {
         void setCurrentSpeed(double currentSpeed);
         double getDistanceTravelled();
         void setDistanceTravelled(double distanceTravelled);
+        List<LatLng> getRunCoordinates();
+        void setRunCoordinates(List<LatLng> runCoordinates);
+        long getTimeElapsed();
+        void setTimeElapsed(long timeElapsed);
     }
 
     interface Service {

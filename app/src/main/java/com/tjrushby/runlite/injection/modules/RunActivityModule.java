@@ -3,17 +3,18 @@ package com.tjrushby.runlite.injection.modules;
 import android.content.Context;
 import android.content.Intent;
 
-import dagger.Module;
-import dagger.Provides;
-import com.tjrushby.runlite.injection.scopes.RunningActivityScope;
 import com.tjrushby.runlite.contracts.RunContract;
+import com.tjrushby.runlite.injection.scopes.RunningActivityScope;
 import com.tjrushby.runlite.services.RunService;
 
+import dagger.Module;
+import dagger.Provides;
+
 @Module
-public class ActivityModule {
+public class RunActivityModule {
     private RunContract.Activity activity;
 
-    public ActivityModule(RunContract.Activity activity) {
+    public RunActivityModule(RunContract.Activity activity) {
         this.activity = activity;
     }
 

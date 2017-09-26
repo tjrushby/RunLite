@@ -18,8 +18,13 @@ import com.google.android.gms.location.SettingsClient;
 
 import javax.inject.Inject;
 
+import com.google.android.gms.maps.model.LatLng;
 import com.tjrushby.runlite.App;
 import com.tjrushby.runlite.contracts.RunContract;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import timber.log.Timber;
 
 // todo separate gps accuracy from distance tracking
@@ -34,6 +39,7 @@ public class RunService extends Service implements RunContract.Service {
 
     private Context context;
     private RunContract.Model model;
+    private List<LatLng> runCoordinates;
 
     private FusedLocationProviderClient locationClient;
     private Location lastLocation;
@@ -78,6 +84,8 @@ public class RunService extends Service implements RunContract.Service {
                 onLocationChanged(locationResult.getLastLocation());
             }
         };
+
+        runCoordinates = new ArrayList<>();
     }
 
     @Nullable
@@ -111,6 +119,9 @@ public class RunService extends Service implements RunContract.Service {
             locationClient.removeLocationUpdates(locationCallback);
             lastLocation = null;
         }
+
+        // set the run coordinates in model
+        model.setRunCoordinates(runCoordinates);
     }
 
     // callback method for FusedLocationClientProvider.requestLocationUpdates()
@@ -153,6 +164,8 @@ public class RunService extends Service implements RunContract.Service {
             model.setCurrentSpeed(currentSpeed);
             model.setDistanceTravelled(distanceTravelled);
         }
+
+        runCoordinates.add(new LatLng(location.getLatitude(), location.getLongitude()));
 
         // update lastLocation to location now that all calculations have been performed
         lastLocation = location;

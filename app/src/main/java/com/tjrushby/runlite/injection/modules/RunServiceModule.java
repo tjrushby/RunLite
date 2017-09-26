@@ -6,15 +6,15 @@ import android.content.Context;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationSettingsRequest;
-
-import dagger.Module;
-import dagger.Provides;
 import com.tjrushby.runlite.contracts.RunContract;
 import com.tjrushby.runlite.injection.scopes.RunningActivityScope;
 import com.tjrushby.runlite.services.RunService;
 
+import dagger.Module;
+import dagger.Provides;
+
 @Module
-public class ServiceModule {
+public class RunServiceModule {
     @Provides
     @RunningActivityScope
     RunContract.Service provideFusedLocationService(Context context,

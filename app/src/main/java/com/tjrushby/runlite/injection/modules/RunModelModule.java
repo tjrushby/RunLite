@@ -1,15 +1,17 @@
 package com.tjrushby.runlite.injection.modules;
 
-import dagger.Module;
-import dagger.Provides;
-import com.tjrushby.runlite.injection.scopes.RunningActivityScope;
 import com.tjrushby.runlite.contracts.RunContract;
 import com.tjrushby.runlite.models.RunModel;
 
+import javax.inject.Singleton;
+
+import dagger.Module;
+import dagger.Provides;
+
 @Module
-public class ModelModule {
+public class RunModelModule {
     @Provides
-    @RunningActivityScope
+    @Singleton
     RunContract.Model provideModel() {
         return new RunModel();
     }

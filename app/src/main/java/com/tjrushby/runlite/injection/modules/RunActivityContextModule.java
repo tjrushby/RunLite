@@ -3,15 +3,16 @@ package com.tjrushby.runlite.injection.modules;
 
 import android.content.Context;
 
-import dagger.Module;
-import dagger.Provides;
 import com.tjrushby.runlite.injection.scopes.RunningActivityScope;
 
+import dagger.Module;
+import dagger.Provides;
+
 @Module
-public class ContextModule {
+public class RunActivityContextModule {
     private final Context context;
 
-    public ContextModule(Context context) {
+    public RunActivityContextModule(Context context) {
         this.context = context;
     }
 

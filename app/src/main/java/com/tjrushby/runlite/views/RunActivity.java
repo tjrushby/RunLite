@@ -19,17 +19,17 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.tjrushby.runlite.App;
+import com.tjrushby.runlite.R;
+import com.tjrushby.runlite.contracts.RunContract;
+import com.tjrushby.runlite.injection.modules.RunActivityContextModule;
+import com.tjrushby.runlite.injection.modules.RunActivityModule;
+
 import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import com.tjrushby.runlite.contracts.RunContract;
-import com.tjrushby.runlite.injection.modules.ActivityModule;
-import com.tjrushby.runlite.injection.components.DaggerRunningActivityComponent;
-import com.tjrushby.runlite.injection.modules.ContextModule;
-import com.tjrushby.runlite.injection.components.RunningActivityComponent;
-import com.tjrushby.runlite.R;
 import timber.log.Timber;
 
 public class RunActivity extends AppCompatActivity implements RunContract.Activity {
@@ -40,8 +40,6 @@ public class RunActivity extends AppCompatActivity implements RunContract.Activi
             Manifest.permission.ACCESS_NETWORK_STATE,
             Manifest.permission.INTERNET
     };
-
-    private RunningActivityComponent component;
 
     @Inject
     public Intent intentRunService;
@@ -78,12 +76,9 @@ public class RunActivity extends AppCompatActivity implements RunContract.Activi
         setContentView(R.layout.activity_running);
         ButterKnife.bind(this);
 
-        component = DaggerRunningActivityComponent.builder()
-                .contextModule(new ContextModule(this))
-                .activityModule(new ActivityModule(this))
-                .build();
-
-        component.inject(this);
+        App.getAppComponent()
+                .plus(new RunActivityModule(this), new RunActivityContextModule(this))
+                .inject(this);
 
         Timber.d("view: " + this);
         Timber.d("presenter: " + presenter);
@@ -91,7 +86,7 @@ public class RunActivity extends AppCompatActivity implements RunContract.Activi
         setSupportActionBar(toolbar);
 
         handler = new Handler();
-        tick = () ->  presenter.onTick();
+        tick = () -> presenter.onTick();
 
         // check the Activity has the correct permissions, request them if not
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
@@ -278,21 +273,21 @@ public class RunActivity extends AppCompatActivity implements RunContract.Activi
     public void updateGPSIconAverage() {
         ImageViewCompat.setImageTintList(ivAccuracy,
                 ColorStateList.valueOf(ContextCompat.getColor(this, R.color.colorGPSAverage)
-        ));
+                ));
     }
 
     @Override
     public void updateGPSIconBad() {
         ImageViewCompat.setImageTintList(ivAccuracy,
                 ColorStateList.valueOf(ContextCompat.getColor(this, R.color.colorGPSBad)
-        ));
+                ));
     }
 
     @Override
     public void updateGPSIconGood() {
         ImageViewCompat.setImageTintList(ivAccuracy,
                 ColorStateList.valueOf(ContextCompat.getColor(this, R.color.colorGPSGood)
-        ));
+                ));
     }
 
     /* methods for updating the TextView elements */
@@ -315,12 +310,5 @@ public class RunActivity extends AppCompatActivity implements RunContract.Activi
     @Override
     public void setTextViewPaceDefaultText() {
         tvAveragePace.setText(R.string.tv_default_pace);
-    }
-
-    /* getters and setters */
-
-    @Override
-    public RunningActivityComponent getComponent() {
-        return component;
     }
 }
