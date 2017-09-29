@@ -2,6 +2,7 @@
     <string name="app_name">RunLite</string>
     <string name="button_increase_countdown">+10 Seconds</string>
     <string name="button_delete">Delete</string>
+    <string name="button_done">Done</string>
     <string name="button_edit">Edit</string>
     <string name="button_pause">Pause</string>
     <string name="button_resume">Resume</string>

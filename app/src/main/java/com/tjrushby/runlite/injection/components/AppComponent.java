@@ -1,6 +1,7 @@
 package com.tjrushby.runlite.injection.components;
 
 
+import com.tjrushby.runlite.injection.modules.DetailsActivityModule;
 import com.tjrushby.runlite.injection.modules.RunActivityModule;
 import com.tjrushby.runlite.injection.modules.RunActivityContextModule;
 import com.tjrushby.runlite.injection.modules.RunModelModule;
@@ -13,6 +14,6 @@ import dagger.Component;
 @Singleton
 @Component(modules = {RunModelModule.class, StringFormatterModule.class})
 public interface AppComponent {
-    DetailsActivityComponent plus();
+    DetailsActivityComponent plus(DetailsActivityModule detailsActivityModule);
     RunActivityComponent plus(RunActivityModule activityModule, RunActivityContextModule contextModule);
 }

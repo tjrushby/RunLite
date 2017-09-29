@@ -131,23 +131,23 @@
     <!-- Buttons -->
 
     <Button
-        android:id="@+id/buttonEdit"
-        style="@style/Base.Widget.AppCompat.Button.Borderless"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:text="@string/button_edit"
-        app:layout_constraintLeft_toRightOf="@id/guidelineLeft"
-        app:layout_constraintRight_toLeftOf="@id/guidelineCenter"
-        app:layout_constraintTop_toBottomOf="@id/guidelineButtons" />
-
-    <Button
         android:id="@+id/buttonDelete"
         style="@style/Base.Widget.AppCompat.Button.Borderless"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:text="@string/button_delete"
+        app:layout_constraintLeft_toRightOf="@id/guidelineLeft"
+        app:layout_constraintRight_toLeftOf="@id/guidelineCenter"
+        app:layout_constraintTop_toBottomOf="@id/guidelineButtons" />
+
+    <Button
+        android:id="@+id/buttonDone"
+        style="@style/Base.Widget.AppCompat.Button.Borderless"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="@string/button_done"
         app:layout_constraintLeft_toRightOf="@id/guidelineCenter"
         app:layout_constraintRight_toLeftOf="@id/guidelineRight"
         app:layout_constraintTop_toBottomOf="@id/guidelineButtons" />

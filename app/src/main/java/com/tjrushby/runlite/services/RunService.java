@@ -51,7 +51,6 @@ public class RunService extends Service implements RunContract.Service {
     }
 
     // todo move this to onCreate() instead and then use ActivityComponent.inject(this)?
-
     @Inject
     public RunService(Context context,
                       RunContract.Model model,
