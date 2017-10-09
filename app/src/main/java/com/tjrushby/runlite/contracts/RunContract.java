@@ -2,6 +2,7 @@ package com.tjrushby.runlite.contracts;
 
 import com.google.android.gms.maps.model.LatLng;
 
+import java.util.Date;
 import java.util.List;
 
 public interface RunContract {
@@ -48,6 +49,8 @@ public interface RunContract {
     }
 
     interface Model {
+        Date getDateTime();
+        void setDateTime(Date dateTime);
         double getCurrentAccuracy();
         void setCurrentAccuracy(double currentAccuracy);
         double getCurrentSpeed();

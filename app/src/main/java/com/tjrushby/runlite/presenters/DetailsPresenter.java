@@ -34,7 +34,8 @@ public class DetailsPresenter implements DetailsContract.Presenter {
 
     @Override
     public void onButtonDoneClicked() {
-        // todo save changes (if any) to database before view.endActivity()
+        // todo persistence here
+
         view.endActivity();
     }
 
@@ -45,15 +46,16 @@ public class DetailsPresenter implements DetailsContract.Presenter {
 
     @Override
     public void onMapFragmentReady() {
-        view.calculateMapBounds(model.getRunCoordinates());
-        view.calculateMapPolyline(model.getRunCoordinates());
+        if (!model.getRunCoordinates().isEmpty()) {
+            view.calculateMapBounds(model.getRunCoordinates());
+            view.calculateMapPolyline(model.getRunCoordinates());
+        }
     }
 
     @Override
     public void onMapLoaded() {
-        view.addMapMarkers(model.getRunCoordinates());
-
-        if(!model.getRunCoordinates().isEmpty()) {
+        if (!model.getRunCoordinates().isEmpty()) {
+            view.addMapMarkers(model.getRunCoordinates());
             view.moveMapCamera();
         }
     }

@@ -3,15 +3,26 @@ package com.tjrushby.runlite.models;
 import com.google.android.gms.maps.model.LatLng;
 import com.tjrushby.runlite.contracts.RunContract;
 
+import java.util.Date;
 import java.util.List;
 
 public class RunModel implements RunContract.Model {
+    private Date dateTime;
     private double currentAccuracy;
     private double currentSpeed;
     private double distanceTravelled;
     private long timeElapsed;
 
     private List<LatLng> runCoordinates;
+
+    @Override
+    public Date getDateTime() {
+        return dateTime;
+    }
+
+    public void setDateTime(Date dateTime) {
+        this.dateTime = dateTime;
+    }
 
     @Override
     public double getCurrentAccuracy() {
