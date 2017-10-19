@@ -1,6 +1,6 @@
 package com.tjrushby.runlite.contracts;
 
-import com.google.android.gms.maps.model.LatLng;
+import com.tjrushby.runlite.models.RunLatLng;
 
 import java.util.Date;
 import java.util.List;
@@ -49,6 +49,8 @@ public interface RunContract {
     }
 
     interface Model {
+        long getId();
+        void setId(long id);
         Date getDateTime();
         void setDateTime(Date dateTime);
         double getCurrentAccuracy();
@@ -57,8 +59,6 @@ public interface RunContract {
         void setCurrentSpeed(double currentSpeed);
         double getDistanceTravelled();
         void setDistanceTravelled(double distanceTravelled);
-        List<LatLng> getRunCoordinates();
-        void setRunCoordinates(List<LatLng> runCoordinates);
         long getTimeElapsed();
         void setTimeElapsed(long timeElapsed);
     }

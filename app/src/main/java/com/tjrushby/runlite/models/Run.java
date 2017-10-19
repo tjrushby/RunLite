@@ -1,19 +1,33 @@
 package com.tjrushby.runlite.models;
 
-import com.google.android.gms.maps.model.LatLng;
+import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.PrimaryKey;
+import android.arch.persistence.room.Relation;
+
 import com.tjrushby.runlite.contracts.RunContract;
 
 import java.util.Date;
 import java.util.List;
 
-public class RunModel implements RunContract.Model {
+@Entity(tableName = "runs")
+public class Run implements RunContract.Model {
+    @PrimaryKey(autoGenerate = true)
+    private long id;
     private Date dateTime;
     private double currentAccuracy;
     private double currentSpeed;
     private double distanceTravelled;
     private long timeElapsed;
 
-    private List<LatLng> runCoordinates;
+    @Override
+    public long getId() {
+        return id;
+    }
+
+    @Override
+    public void setId(long id) {
+        this.id = id;
+    }
 
     @Override
     public Date getDateTime() {
@@ -52,16 +66,6 @@ public class RunModel implements RunContract.Model {
     @Override
     public void setDistanceTravelled(double distanceTravelled) {
         this.distanceTravelled = distanceTravelled;
-    }
-
-    @Override
-    public List<LatLng> getRunCoordinates() {
-        return runCoordinates;
-    }
-
-    @Override
-    public void setRunCoordinates(List<LatLng> runCoordinates) {
-        this.runCoordinates = runCoordinates;
     }
 
     @Override

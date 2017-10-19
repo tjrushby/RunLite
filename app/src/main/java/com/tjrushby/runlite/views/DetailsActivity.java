@@ -17,6 +17,7 @@ import com.tjrushby.runlite.App;
 import com.tjrushby.runlite.R;
 import com.tjrushby.runlite.contracts.DetailsContract;
 import com.tjrushby.runlite.injection.modules.DetailsActivityModule;
+import com.tjrushby.runlite.models.RunLatLng;
 
 import java.util.List;
 
@@ -95,24 +96,28 @@ public class DetailsActivity extends AppCompatActivity
     }
 
     @Override
-    public void calculateMapBounds(List<LatLng> runCoordinates) {
-        for (LatLng coordinates : runCoordinates) {
-            mapBounds.include(coordinates);
+    public void calculateMapBounds(List<RunLatLng> runCoordinates) {
+        for (RunLatLng coordinates : runCoordinates) {
+            mapBounds.include(coordinates.toLatLng());
         }
 
         map.setLatLngBoundsForCameraTarget(mapBounds.build());
     }
 
     @Override
-    public void calculateMapPolyline(List<LatLng> runCoordinates) {
-        polylineOptions.addAll(runCoordinates);
+    public void calculateMapPolyline(List<RunLatLng> runCoordinates) {
+        for (RunLatLng coordinates : runCoordinates) {
+            polylineOptions.add(coordinates.toLatLng());
+        }
+
         map.addPolyline(polylineOptions);
     }
 
     @Override
-    public void addMapMarkers(List<LatLng> runCoordinates) {
-        map.addMarker(markerOptions.position(runCoordinates.get(0)));
-        map.addMarker(markerOptions.position(runCoordinates.get(runCoordinates.size() - 1)));
+    public void addMapMarkers(List<RunLatLng> runCoordinates) {
+        map.addMarker(markerOptions.position(runCoordinates.get(0).toLatLng()));
+        map.addMarker(markerOptions.position(runCoordinates.get(runCoordinates.size() - 1)
+                .toLatLng()));
     }
 
     @Override
