@@ -10,9 +10,12 @@
     <string name="button_stop">Stop</string>
     <string name="label_average_pace">Average Pace</string>
     <string name="label_distance_travelled">Distance Travelled</string>
+    <string name="label_distance_unit_km">KM</string>
+    <string name="label_distance_unit_miles">Mi</string>
     <string name="label_gps_status">GPS</string>
     <string name="label_time_elapsed">Time Elapsed</string>
     <string name="title_activity_main">MainActivity</string>
+    <string name="tv_default_date_time">01/01/2017, 12:00</string>
     <string name="tv_default_distance_travelled">0.00</string>
     <string name="tv_default_pace">--:--</string>
     <string name="tv_default_time_elapsed">00:00</string>

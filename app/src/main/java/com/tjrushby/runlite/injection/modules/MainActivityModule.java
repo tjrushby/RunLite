@@ -7,9 +7,8 @@ import android.support.v7.widget.LinearLayoutManager;
 import com.tjrushby.runlite.adapters.RunModelAdapter;
 import com.tjrushby.runlite.adapters.viewholders.RunModelViewHolderFactory;
 import com.tjrushby.runlite.contracts.MainContract;
-import com.tjrushby.runlite.contracts.RunContract;
 import com.tjrushby.runlite.injection.scopes.MainActivityScope;
-import com.tjrushby.runlite.presenters.ListPresenter;
+import com.tjrushby.runlite.models.RunWithLatLng;
 import com.tjrushby.runlite.util.StringFormatter;
 import com.tjrushby.runlite.views.MainActivity;
 
@@ -39,31 +38,24 @@ public class MainActivityModule {
     }
 
     @Provides
-    @MainActivityScope
-    MainContract.ListPresenter providesListPresenter(List<RunContract.Model> runsList,
-                                                     StringFormatter formatter) {
-        return new ListPresenter(runsList, formatter);
-    }
-
-    @Provides
     LinearLayoutManager providesLinearLayoutManager(MainContract.Activity activity) {
         return new LinearLayoutManager(activity.getContext());
     }
 
     @Provides
-    RunModelAdapter providesRunModelAdapter(MainContract.ListPresenter listPresenter,
-                                            RunModelViewHolderFactory factory) {
-        return new RunModelAdapter(listPresenter, factory);
-    }
-
-    @Provides
-    @MainActivityScope
-    List<RunContract.Model> providesRunList() {
-        return new ArrayList<>();
+    RunModelAdapter providesRunModelAdapter(List<RunWithLatLng> runsList,
+                                            RunModelViewHolderFactory factory,
+                                            StringFormatter formatter) {
+        return new RunModelAdapter(runsList, factory, formatter);
     }
 
     @Provides
     RunModelViewHolderFactory providesRunModelViewHolderFactory() {
         return new RunModelViewHolderFactory();
+    }
+
+    @Provides
+    List<RunWithLatLng> providesRunWithLatLngList() {
+        return new ArrayList<>();
     }
 }

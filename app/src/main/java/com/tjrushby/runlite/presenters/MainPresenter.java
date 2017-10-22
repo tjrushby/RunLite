@@ -11,6 +11,11 @@ public class MainPresenter implements MainContract.Presenter {
     }
 
     @Override
+    public void onActivityResumed() {
+        activity.refreshRecyclerView();
+    }
+
+    @Override
     public void onFabStartRunPressed() {
         activity.startRunActivity();
     }

@@ -52,9 +52,20 @@ public class MainActivity extends AppCompatActivity implements MainContract.Acti
         recyclerView.setAdapter(adapter);
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        presenter.onActivityResumed();
+    }
+
     @OnClick(R.id.fabStartRun)
     public void fabClicked() {
         presenter.onFabStartRunPressed();
+    }
+
+    @Override
+    public void refreshRecyclerView() {
+        adapter.getRunsFromDatabase();
     }
 
     @Override
