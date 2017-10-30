@@ -2,14 +2,15 @@ package com.tjrushby.runlite.views;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
@@ -26,7 +27,6 @@ import javax.inject.Inject;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import timber.log.Timber;
 
 public class DetailsActivity extends AppCompatActivity
         implements DetailsContract.Activity, OnMapReadyCallback {
@@ -58,11 +58,7 @@ public class DetailsActivity extends AppCompatActivity
         // inject dependencies
         App.getAppComponent().plus(new DetailsActivityModule(this)).inject(this);
 
-        // get GoogleMap from MapFragment
-        ((MapFragment) getFragmentManager().findFragmentById(R.id.mapFragment))
-                .getMapAsync(this);
-
-        presenter.onViewCreated();
+        presenter.onViewCreated(getIntent().getStringExtra("runId"));
     }
 
     @Override
@@ -91,8 +87,31 @@ public class DetailsActivity extends AppCompatActivity
     }
 
     @Override
+    public void displayDeleteRunAlertDialog() {
+        new AlertDialog.Builder(this)
+                .setTitle("Delete Run?")
+                .setMessage("Are you sure? This cannot be undone.")
+                .setPositiveButton("Yes", (dialog, which) -> presenter.onDeleteRunAlertDialogYes())
+                .setNegativeButton("No", (dialog, which) -> dialog.dismiss())
+                .show();
+    }
+
+    @Override
+    public void displayNotFoundErrorToast() {
+        Toast.makeText(this, "Error. Could not load run.", Toast.LENGTH_SHORT).show();
+        endActivity();
+    }
+
+    @Override
     public void endActivity() {
         this.finish();
+    }
+
+    @Override
+    public void getMapFragment() {
+        // get GoogleMap from MapFragment
+        ((MapFragment) getFragmentManager().findFragmentById(R.id.mapFragment))
+                .getMapAsync(this);
     }
 
     @Override

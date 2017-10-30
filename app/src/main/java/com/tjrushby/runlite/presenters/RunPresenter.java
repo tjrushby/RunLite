@@ -1,17 +1,23 @@
 package com.tjrushby.runlite.presenters;
 
-import javax.inject.Inject;
-
 import com.tjrushby.runlite.App;
 import com.tjrushby.runlite.contracts.RunContract;
+import com.tjrushby.runlite.data.RunDataSource;
+import com.tjrushby.runlite.data.RunRepository;
+import com.tjrushby.runlite.models.Run;
+import com.tjrushby.runlite.models.RunLatLng;
 import com.tjrushby.runlite.util.StringFormatter;
 
-import timber.log.Timber;
+import java.util.List;
+
+import javax.inject.Inject;
 
 public class RunPresenter implements RunContract.Presenter {
     private RunContract.Activity view;
     private RunContract.Model model;
     private RunContract.Service service;
+    private RunRepository runRepository;
+    private List<RunLatLng> runLatLngList;
 
     private StringFormatter formatter;
 
@@ -21,16 +27,15 @@ public class RunPresenter implements RunContract.Presenter {
     public RunPresenter(RunContract.Activity view,
                         RunContract.Model model,
                         RunContract.Service service,
+                        RunRepository runRepository,
+                        List<RunLatLng> runLatLngList,
                         StringFormatter formatter) {
         this.view = view;
         this.model = model;
         this.service = service;
+        this.runRepository = runRepository;
+        this.runLatLngList = runLatLngList;
         this.formatter = formatter;
-
-        Timber.d("view: " + view);
-        Timber.d("presenter: " + this);
-        Timber.d("model: " + model);
-        Timber.d("service: " + service);
 
         timeElapsed = 0;
     }
@@ -42,7 +47,11 @@ public class RunPresenter implements RunContract.Presenter {
 
     @Override
     public void confirmExit() {
-        view.displayExitAlertDialog();
+        if(timeElapsed > 0) {
+            view.displayExitAlertDialog();
+        } else {
+            view.endActivity();
+        }
     }
 
     // update the view with the latest data
@@ -120,7 +129,7 @@ public class RunPresenter implements RunContract.Presenter {
     @Override
     public void endRunAlertDialogYes() {
         model.setTimeElapsed(timeElapsed);
-        view.endRun();
+        runRepository.saveRun((Run) model, runLatLngList, runId -> view.endRun(Long.toString(runId)));
     }
 
     @Override
@@ -145,7 +154,7 @@ public class RunPresenter implements RunContract.Presenter {
             // bad GPS accuracy
             view.updateGPSIconBad();
         } else if(currentAccuracy > App.GPS_ACCURACY_GOOD_THRESHOLD &&
-                  currentAccuracy <= App.GPS_ACCURACY_BAD_THRESHOLD) {
+                currentAccuracy <= App.GPS_ACCURACY_BAD_THRESHOLD) {
             // average GPS accuracy
             view.updateGPSIconAverage();
         } else if(currentAccuracy <= App.GPS_ACCURACY_GOOD_THRESHOLD) {

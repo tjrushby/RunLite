@@ -11,7 +11,10 @@ import com.tjrushby.runlite.injection.scopes.RunningActivityScope;
 import com.tjrushby.runlite.models.RunLatLng;
 import com.tjrushby.runlite.services.RunService;
 
+import java.util.ArrayList;
 import java.util.List;
+
+import javax.inject.Named;
 
 import dagger.Module;
 import dagger.Provides;
@@ -20,7 +23,7 @@ import dagger.Provides;
 public class RunServiceModule {
     @Provides
     @RunningActivityScope
-    RunContract.Service provideFusedLocationService(Context context,
+    RunContract.Service provideFusedLocationService(@Named("activity_context") Context context,
                                                     RunContract.Model model,
                                                     List<RunLatLng> runLatLngs,
                                                     FusedLocationProviderClient locationClient,
@@ -31,7 +34,13 @@ public class RunServiceModule {
     }
 
     @Provides
-    FusedLocationProviderClient providesFusedLocationProviderClient(Context context) {
+    @RunningActivityScope
+    List<RunLatLng> providesRunLatLngList() {
+        return new ArrayList<>();
+    }
+
+    @Provides
+    FusedLocationProviderClient providesFusedLocationProviderClient(@Named("activity_context") Context context) {
         return new FusedLocationProviderClient(context);
     }
 
