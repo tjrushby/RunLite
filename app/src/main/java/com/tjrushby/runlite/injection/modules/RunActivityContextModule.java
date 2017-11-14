@@ -5,6 +5,8 @@ import android.content.Context;
 
 import com.tjrushby.runlite.injection.scopes.RunningActivityScope;
 
+import javax.inject.Named;
+
 import dagger.Module;
 import dagger.Provides;
 
@@ -17,6 +19,7 @@ public class RunActivityContextModule {
     }
 
     @Provides
+    @Named("activity_context")
     @RunningActivityScope
     Context providesContext() {
         return context;

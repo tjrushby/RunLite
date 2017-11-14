@@ -1,11 +1,17 @@
 package com.tjrushby.runlite.injection.modules;
 
+import android.content.Context;
+import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.tjrushby.runlite.contracts.DetailsContract;
+import com.tjrushby.runlite.dialogs.TimePickerDialog;
 import com.tjrushby.runlite.injection.scopes.DetailsActivityScope;
+
+import javax.inject.Named;
 
 import dagger.Module;
 import dagger.Provides;
@@ -13,15 +19,33 @@ import dagger.Provides;
 @Module
 public class DetailsActivityModule {
     private DetailsContract.Activity activity;
+    private Context context;
 
-    public DetailsActivityModule(DetailsContract.Activity activity) {
+    public DetailsActivityModule(DetailsContract.Activity activity, Context context) {
         this.activity = activity;
+        this.context = context;
     }
 
     @Provides
     @DetailsActivityScope
     DetailsContract.Activity providesDetailsActivity() {
         return activity;
+    }
+
+    @Provides
+    AlertDialog.Builder providesAlertDialogBuilder(@Named("details_context") Context context) {
+        return new AlertDialog.Builder(context);
+    }
+
+    @Provides
+    Bundle providesBundle() {
+        return new Bundle();
+    }
+
+    @Provides
+    @Named("details_context")
+    Context providesContext() {
+        return context;
     }
 
     @Provides
@@ -37,5 +61,10 @@ public class DetailsActivityModule {
     @Provides
     MarkerOptions providesMarkerOptions() {
         return new MarkerOptions();
+    }
+
+    @Provides
+    TimePickerDialog providesTimePickerDialog() {
+        return new TimePickerDialog();
     }
 }

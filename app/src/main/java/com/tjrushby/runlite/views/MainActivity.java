@@ -19,6 +19,7 @@ import javax.inject.Inject;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import timber.log.Timber;
 
 public class MainActivity extends AppCompatActivity implements MainContract.Activity {
     @Inject
@@ -65,7 +66,7 @@ public class MainActivity extends AppCompatActivity implements MainContract.Acti
 
     @Override
     public void refreshRecyclerView() {
-        adapter.getRunsFromDatabase();
+        adapter.loadRuns();
     }
 
     @Override

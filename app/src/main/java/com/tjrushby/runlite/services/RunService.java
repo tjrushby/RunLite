@@ -15,15 +15,13 @@ import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.LocationSettingsRequest;
 import com.google.android.gms.location.SettingsClient;
-
-import javax.inject.Inject;
-
 import com.tjrushby.runlite.App;
 import com.tjrushby.runlite.contracts.RunContract;
 import com.tjrushby.runlite.models.RunLatLng;
 
-import java.util.ArrayList;
 import java.util.List;
+
+import javax.inject.Inject;
 
 import timber.log.Timber;
 
@@ -48,7 +46,6 @@ public class RunService extends Service implements RunContract.Service {
 
     public RunService() {}
 
-    // todo move this to onCreate() instead and then use ActivityComponent.inject(this)?
     @Inject
     public RunService(Context context,
                       RunContract.Model model,

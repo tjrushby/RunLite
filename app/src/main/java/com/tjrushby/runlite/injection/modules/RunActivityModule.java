@@ -7,6 +7,8 @@ import com.tjrushby.runlite.contracts.RunContract;
 import com.tjrushby.runlite.injection.scopes.RunningActivityScope;
 import com.tjrushby.runlite.services.RunService;
 
+import javax.inject.Named;
+
 import dagger.Module;
 import dagger.Provides;
 
@@ -25,7 +27,7 @@ public class RunActivityModule {
     }
 
     @Provides
-    Intent provideIntent(Context context) {
+    Intent provideIntent(@Named("activity_context") Context context) {
         return new Intent(context, RunService.class);
     }
 }

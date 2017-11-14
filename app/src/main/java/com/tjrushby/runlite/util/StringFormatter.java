@@ -1,6 +1,5 @@
 package com.tjrushby.runlite.util;
 
-
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -19,8 +18,17 @@ public class StringFormatter {
         return dateFormat.format(date);
     }
 
+
     public String doubleToDistanceString(double distanceDouble) {
         return dfDistance.format(distanceDouble);
+    }
+
+    public long minutesSecondsToLong(String minutesSeconds) {
+        String[] split = minutesSeconds.split(":");
+        long minutes = Long.parseLong(split[0]);
+        long seconds = Long.parseLong(split[1]);
+
+        return minutes * 60 + seconds;
     }
 
     public String longToMinutesSeconds(long timeInSeconds) {

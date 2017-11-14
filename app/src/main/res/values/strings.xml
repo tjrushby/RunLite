@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">RunLite</string>
     <string name="button_increase_countdown">+10 Seconds</string>
+    <string name="button_cancel">Cancel</string>
     <string name="button_delete">Delete</string>
     <string name="button_done">Done</string>
     <string name="button_edit">Edit</string>
@@ -8,6 +9,12 @@
     <string name="button_resume">Resume</string>
     <string name="button_start">Start</string>
     <string name="button_stop">Stop</string>
+    <string name="button_update">Update</string>
+    <string name="dialog_number_picker_message">Minutes : Seconds</string>
+    <string name="dialog_number_picker_title">Edit Time Elapsed</string>
+    <string name="error_edit_text_distance_empty">Field cannot be empty</string>
+    <string name="error_edit_text_distance_no_numbers">Field must contain numbers</string>
+    <string name="error_edit_text_distance_zero">Distance must be greater then zero</string>
     <string name="label_average_pace">Average Pace</string>
     <string name="label_distance_travelled">Distance Travelled</string>
     <string name="label_distance_unit_km">KM</string>

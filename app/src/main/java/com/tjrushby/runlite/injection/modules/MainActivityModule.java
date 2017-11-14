@@ -7,6 +7,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import com.tjrushby.runlite.adapters.RunModelAdapter;
 import com.tjrushby.runlite.adapters.viewholders.RunModelViewHolderFactory;
 import com.tjrushby.runlite.contracts.MainContract;
+import com.tjrushby.runlite.data.RunRepository;
 import com.tjrushby.runlite.injection.scopes.MainActivityScope;
 import com.tjrushby.runlite.models.RunWithLatLng;
 import com.tjrushby.runlite.util.StringFormatter;
@@ -45,8 +46,9 @@ public class MainActivityModule {
     @Provides
     RunModelAdapter providesRunModelAdapter(List<RunWithLatLng> runsList,
                                             RunModelViewHolderFactory factory,
+                                            RunRepository runRepository,
                                             StringFormatter formatter) {
-        return new RunModelAdapter(runsList, factory, formatter);
+        return new RunModelAdapter(runsList, factory, runRepository, formatter);
     }
 
     @Provides

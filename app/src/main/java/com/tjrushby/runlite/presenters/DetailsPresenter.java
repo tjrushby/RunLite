@@ -1,86 +1,205 @@
 package com.tjrushby.runlite.presenters;
 
-import com.tjrushby.runlite.App;
 import com.tjrushby.runlite.contracts.DetailsContract;
-import com.tjrushby.runlite.contracts.RunContract;
-import com.tjrushby.runlite.models.Run;
-import com.tjrushby.runlite.models.RunLatLng;
+import com.tjrushby.runlite.data.RunDataSource;
+import com.tjrushby.runlite.data.RunRepository;
+import com.tjrushby.runlite.models.RunWithLatLng;
 import com.tjrushby.runlite.util.StringFormatter;
 
-import java.util.List;
-
-import javax.inject.Inject;
-
-import timber.log.Timber;
+import java.math.BigDecimal;
 
 public class DetailsPresenter implements DetailsContract.Presenter {
+    private boolean changed;
+
     private DetailsContract.Activity view;
-    private RunContract.Model run;
-    private List<RunLatLng> runLatLngList;
+    private RunRepository runRepository;
+    private RunWithLatLng runWithLatLng;
     private StringFormatter formatter;
 
-    @Inject
     public DetailsPresenter(DetailsContract.Activity view,
-                            RunContract.Model run,
-                            List<RunLatLng> runLatLngList,
+                            RunRepository runRepository,
+                            RunWithLatLng runWithLatLng,
                             StringFormatter formatter) {
         this.view = view;
-        this.run = run;
-        this.runLatLngList = runLatLngList;
+        this.runRepository = runRepository;
+        this.runWithLatLng = runWithLatLng;
         this.formatter = formatter;
     }
 
     @Override
-    public void onViewCreated() {
-        double averagePace = run.getTimeElapsed() / run.getDistanceTravelled();
+    public void onViewCreated(String runId) {
+        runRepository.getRunById(Long.parseLong(runId), new RunDataSource.GetRunCallback() {
+            @Override
+            public void onRunLoaded(RunWithLatLng run) {
+                runWithLatLng = run;
 
-        view.updateTextViews(
-                formatter.longToMinutesSeconds(run.getTimeElapsed()),
-                formatter.doubleToDistanceString(run.getDistanceTravelled()),
-                formatter.longToMinutesSeconds((long) averagePace)
-        );
+                double averagePace = run.run.getTimeElapsed() / run.run.getDistanceTravelled();
+
+                view.setTextViews(
+                        formatter.longToMinutesSeconds(run.run.getTimeElapsed()),
+                        formatter.doubleToDistanceString(run.run.getDistanceTravelled()),
+                        formatter.longToMinutesSeconds((long) averagePace)
+                );
+
+                view.getMapFragment();
+            }
+
+            @Override
+            public void onDataNotAvailable() {
+                view.displayNotFoundErrorToast();
+            }
+        });
     }
 
     @Override
-    public void onButtonDoneClicked() {
-        // save run to database
-        new Thread(() -> {
-            long runId = App.getDatabase().runDAO().insert((Run) run);
-            Timber.d("id: " + runId);
-
-            for (RunLatLng runLatLng : runLatLngList) {
-                runLatLng.setRunId(runId);
-            }
-
-            App.getDatabase().runLatLngDAO().insertAll(runLatLngList);
-        }).start();
-
-        view.endActivity();
+    public void onBackPressed() {
+        if(changed) {
+            view.displayExitAlertDialog();
+        } else {
+            view.endActivity();
+        }
     }
 
     @Override
     public void onButtonDeleteClicked() {
-        // delete run from database
-        new Thread(() -> App.getDatabase().runDAO().delete((Run) run)).start();
+        // display an AlertDialog to confirm user action
+        view.displayDeleteRunAlertDialog();
+    }
 
+    @Override
+    public void onButtonUpdateClicked() {
+        updateRun();
         view.endActivity();
+    }
+
+    @Override
+    public void onDeleteRunAlertDialogYes() {
+        // delete run from database
+        runRepository.deleteRun(runWithLatLng.run);
+        view.endActivity();
+    }
+
+    @Override
+    public void onExitAlertDialogYes() {
+        view.endActivity();
+    }
+
+    @Override
+    public void onEditTextDistanceChanged() {
+        view.validateEditTextDistance();
+    }
+
+    @Override
+    public void onEditTextDistanceEmpty() {
+        view.setButtonSaveEnabled(false);
+        view.displayEditTextDistanceEmptyError();
+    }
+
+    @Override
+    public void onEditTextDistanceNoNumbers() {
+        view.setButtonSaveEnabled(false);
+        view.displayEditTextDistanceNoNumbersError();
+    }
+
+    @Override
+    public void onEditTextDistanceZero() {
+        view.setButtonSaveEnabled(false);
+        view.displayEditTextDistanceZeroError();
+    }
+
+    @Override
+    public void onEditTextDistanceValid() {
+        double distance = Double.parseDouble(view.getEditTextDistance());
+
+        BigDecimal roundedDistance = new BigDecimal(distance)
+                .setScale(2, BigDecimal.ROUND_HALF_UP);
+
+        // calculate new average pace value from the values in the TextViews, using rounded distance
+        long averagePace = calculateAveragePace(
+                formatter.minutesSecondsToLong(view.getEditTextTimeElapsed()),
+                roundedDistance.doubleValue()
+        );
+
+        // if the user input isn't rounded to two decimal places then do so
+        if(distance != roundedDistance.doubleValue()) {
+            view.setEditTextDistance(roundedDistance.toString());
+        }
+
+        // update TextView for average pace, clear error messages (if any) and enable button for
+        // saving changes
+        view.setTextViewAveragePace(formatter.longToMinutesSeconds(averagePace));
+        view.clearEditTextDistanceError();
+
+        // check if the TextViews contain different values to the model
+        determineDataChanged();
+    }
+
+    @Override
+    public void onEditTextTimeElapsedClicked() {
+        view.displayTimePickerDialog();
+    }
+
+    @Override
+    public void onEditTextTimeElapsedUpdated(long timeElapsed) {
+        // calculate average pace using new timeElapsed value and the current value in the EditText
+        // for distance
+        long averagePace = calculateAveragePace(
+                timeElapsed,
+                Double.parseDouble(view.getEditTextDistance().toString())
+        );
+
+        // update the TextViews for time and average pace
+        view.setTextViewAveragePace(formatter.longToMinutesSeconds((long) averagePace));
+        view.setEditTextTimeElapsed(formatter.longToMinutesSeconds(timeElapsed));
+
+        // check if the TextViews contain different values to the model
+        determineDataChanged();
     }
 
     @Override
     public void onMapFragmentReady() {
         // calculate the bounds for the map and plot a line representing the run route
-        if (!runLatLngList.isEmpty()) {
-            view.calculateMapBounds(runLatLngList);
-            view.calculateMapPolyline(runLatLngList);
+        if(!runWithLatLng.runLatLngs.isEmpty()) {
+            view.calculateMapBounds(runWithLatLng.runLatLngs);
+            view.calculateMapPolyline(runWithLatLng.runLatLngs);
         }
     }
 
     @Override
     public void onMapLoaded() {
         // add start and end markers for the run, move the map to show what has been drawn
-        if (!runLatLngList.isEmpty()) {
-            view.addMapMarkers(runLatLngList);
+        if(!runWithLatLng.runLatLngs.isEmpty()) {
+            view.addMapMarkers(runWithLatLng.runLatLngs);
             view.moveMapCamera();
         }
+    }
+
+    private long calculateAveragePace(double timeElapsed, double distance) {
+        return (long) (timeElapsed / distance);
+    }
+
+    private void determineDataChanged() {
+        long timeElapsed = formatter.minutesSecondsToLong(view.getEditTextTimeElapsed());
+        double distanceTravelled = Double.parseDouble(view.getEditTextDistance());
+        double cachedDistanceTravelled = Double.parseDouble(
+                formatter.doubleToDistanceString(runWithLatLng.run.getDistanceTravelled())
+        );
+
+        if(timeElapsed != runWithLatLng.run.getTimeElapsed()
+                || distanceTravelled != cachedDistanceTravelled) {
+            changed = true;
+            view.setButtonSaveEnabled(true);
+        } else {
+            changed = false;
+            view.setButtonSaveEnabled(false);
+        }
+    }
+
+    private void updateRun() {
+        runWithLatLng.run.setDistanceTravelled(Double.parseDouble(view.getEditTextDistance()));
+        runWithLatLng.run.setTimeElapsed(formatter.minutesSecondsToLong(view.getEditTextTimeElapsed()));
+
+        // save run to database if it has been changed
+        runRepository.updateRun(runWithLatLng);
     }
 }

@@ -24,6 +24,9 @@ public interface RunLatLngDAO {
     @Update
     void update(RunLatLng runLatLng);
 
+    @Update
+    void updateAll(List<RunLatLng> runLatLngList);
+
     @Delete
     void delete(RunLatLng runLatLng);
 }
