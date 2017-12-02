@@ -17,7 +17,7 @@ public interface RunDAO {
     @Query("SELECT * FROM runs WHERE id LIKE :id")
     RunWithLatLng findById(String id);
 
-    @Query("SELECT * FROM runs")
+    @Query("SELECT * FROM runs ORDER BY dateTime DESC")
     List<RunWithLatLng> loadRunWithLatLng();
 
     @Insert
