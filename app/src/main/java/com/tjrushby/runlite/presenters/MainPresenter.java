@@ -11,8 +11,14 @@ public class MainPresenter implements MainContract.Presenter {
     }
 
     @Override
+    public void onActivityCreated() {
+        activity.displayProgressBar(true);
+    }
+
+    @Override
     public void onActivityResumed() {
         activity.refreshRecyclerView();
+        activity.displayProgressBar(false);
     }
 
     @Override

@@ -12,8 +12,11 @@ import com.tjrushby.runlite.data.RunRepository;
 import com.tjrushby.runlite.models.RunWithLatLng;
 import com.tjrushby.runlite.util.StringFormatter;
 import com.tjrushby.runlite.views.DetailsActivity;
+import com.tjrushby.runlite.views.MainActivity;
 
 import java.util.List;
+
+import timber.log.Timber;
 
 public class RunModelAdapter extends RecyclerView.Adapter<RunModelViewHolder> {
     private List<RunWithLatLng> runsList;
@@ -49,6 +52,10 @@ public class RunModelAdapter extends RecyclerView.Adapter<RunModelViewHolder> {
         holder.setAveragePace(formatter.longToMinutesSeconds((long) averagePace));
 
         holder.itemView.setOnClickListener((View view) -> {
+            if(view.getContext() instanceof MainActivity) {
+                ((MainActivity) view.getContext()).displayProgressBar(true);
+            }
+
             Intent intent = new Intent();
             intent.setClass(view.getContext(), DetailsActivity.class);
             intent.putExtra("runId", Long.toString(run.run.getId()));

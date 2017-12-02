@@ -7,8 +7,10 @@ import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -56,6 +58,9 @@ public class DetailsActivity extends AppCompatActivity
 
     @BindView(R.id.buttonUpdate)
     protected Button buttonUpdate;
+
+    @BindView(R.id.progressBar)
+    protected ProgressBar progressBar;
 
     @BindView(R.id.etTimeElapsed)
     protected EditText etTimeElapsed;
@@ -133,6 +138,15 @@ public class DetailsActivity extends AppCompatActivity
     @Override
     public void moveMapCamera() {
         map.moveCamera(CameraUpdateFactory.newLatLngBounds(mapBounds.build(), 100));
+    }
+
+    @Override
+    public void displayProgressBar(boolean display) {
+        if(display) {
+            progressBar.setVisibility(View.VISIBLE);
+        } else {
+            progressBar.setVisibility(View.GONE);
+        }
     }
 
     @Override

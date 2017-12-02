@@ -7,6 +7,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.view.View;
+import android.widget.ProgressBar;
 
 import com.tjrushby.runlite.App;
 import com.tjrushby.runlite.R;
@@ -31,6 +33,8 @@ public class MainActivity extends AppCompatActivity implements MainContract.Acti
     @Inject
     public RunModelAdapter adapter;
 
+    @BindView(R.id.progressBar)
+    public ProgressBar progressBar;
     @BindView(R.id.recyclerView)
     public RecyclerView recyclerView;
     @BindView(R.id.toolbar)
@@ -45,6 +49,8 @@ public class MainActivity extends AppCompatActivity implements MainContract.Acti
         App.getAppComponent()
                 .plus(new MainActivityModule(this))
                 .inject(this);
+
+        presenter.onActivityCreated();
 
         setSupportActionBar(toolbar);
 
@@ -62,6 +68,16 @@ public class MainActivity extends AppCompatActivity implements MainContract.Acti
     @OnClick(R.id.fabStartRun)
     public void fabClicked() {
         presenter.onFabStartRunPressed();
+    }
+
+    @Override
+    public void displayProgressBar(boolean display) {
+        if(display) {
+            progressBar.setVisibility(View.VISIBLE);
+            progressBar.bringToFront();
+        } else {
+            progressBar.setVisibility(View.GONE);
+        }
     }
 
     @Override

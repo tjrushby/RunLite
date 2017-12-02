@@ -31,6 +31,8 @@ public class AppModule {
     @Provides
     @Singleton
     AppDatabase providesAppDatabase(@Named("app_context") Context context) {
-        return Room.databaseBuilder(context, AppDatabase.class, "RunLite").build();
+        return Room.databaseBuilder(context, AppDatabase.class, "RunLite")
+                .allowMainThreadQueries()
+                .build();
     }
 }

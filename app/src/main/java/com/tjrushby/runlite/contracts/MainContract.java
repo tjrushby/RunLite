@@ -10,6 +10,8 @@ import java.util.List;
 
 public interface MainContract {
     interface Activity {
+        void displayProgressBar(boolean display);
+
         void refreshRecyclerView();
 
         void startRunActivity();
@@ -18,8 +20,10 @@ public interface MainContract {
     }
 
     interface Presenter {
-        void onFabStartRunPressed();
+        void onActivityCreated();
 
         void onActivityResumed();
+
+        void onFabStartRunPressed();
     }
 }

@@ -8,6 +8,7 @@ import com.tjrushby.runlite.data.dao.RunDAO;
 import com.tjrushby.runlite.data.dao.RunDAO_Impl;
 import com.tjrushby.runlite.data.dao.RunLatLngDAO;
 import com.tjrushby.runlite.data.dao.RunLatLngDAO_Impl;
+import com.tjrushby.runlite.util.MainThreadExecutor;
 
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
@@ -33,7 +34,7 @@ public class RunRepositoryModule {
 
     @Provides
     Executor providesExecutor() {
-        return Executors.newSingleThreadExecutor();
+        return new MainThreadExecutor();
     }
 
     @Provides

@@ -18,6 +18,8 @@ public interface DetailsContract {
 
         void calculateMapPolyline(List<RunLatLng> runCoordinates);
 
+        void displayProgressBar(boolean display);
+
         void displayDeleteRunAlertDialog();
 
         void displayExitAlertDialog();

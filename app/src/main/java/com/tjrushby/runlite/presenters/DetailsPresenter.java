@@ -8,6 +8,8 @@ import com.tjrushby.runlite.util.StringFormatter;
 
 import java.math.BigDecimal;
 
+import timber.log.Timber;
+
 public class DetailsPresenter implements DetailsContract.Presenter {
     private boolean changed;
 
@@ -28,6 +30,8 @@ public class DetailsPresenter implements DetailsContract.Presenter {
 
     @Override
     public void onViewCreated(String runId) {
+        view.displayProgressBar(true);
+
         runRepository.getRunById(Long.parseLong(runId), new RunDataSource.GetRunCallback() {
             @Override
             public void onRunLoaded(RunWithLatLng run) {
@@ -170,6 +174,7 @@ public class DetailsPresenter implements DetailsContract.Presenter {
         // add start and end markers for the run, move the map to show what has been drawn
         if(!runWithLatLng.runLatLngs.isEmpty()) {
             view.addMapMarkers(runWithLatLng.runLatLngs);
+            view.displayProgressBar(false);
             view.moveMapCamera();
         }
     }

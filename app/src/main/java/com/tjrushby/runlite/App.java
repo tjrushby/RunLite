@@ -2,6 +2,7 @@ package com.tjrushby.runlite;
 
 import android.app.Application;
 
+import com.google.android.gms.maps.MapsInitializer;
 import com.tjrushby.runlite.injection.components.AppComponent;
 import com.tjrushby.runlite.injection.components.DaggerAppComponent;
 import com.tjrushby.runlite.injection.modules.AppModule;
@@ -21,6 +22,10 @@ public class App extends Application {
         if (BuildConfig.DEBUG) {
             Timber.plant(new Timber.DebugTree());
         }
+
+        // initialize Google Maps API classes here to reduce load time when selecting
+        // first DetailsActivity
+        MapsInitializer.initialize(this);
 
         appComponent = DaggerAppComponent.builder()
                 .appModule(new AppModule(this))
