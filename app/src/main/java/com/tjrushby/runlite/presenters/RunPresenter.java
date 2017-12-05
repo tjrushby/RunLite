@@ -41,6 +41,11 @@ public class RunPresenter implements RunContract.Presenter {
     }
 
     @Override
+    public void onViewCreated() {
+        view.disableSeekBar();
+    }
+
+    @Override
     public void havePermissions() {
         view.startService();
     }
@@ -84,6 +89,12 @@ public class RunPresenter implements RunContract.Presenter {
     // tell model to start requesting location updates and the view to start a Runnable
     @Override
     public void startRun() {
+        // tint the unlock icon
+        view.tintIconUnlock();
+
+        // enable the SeekBar
+        view.enableSeekBar();
+
         // enabled the stop button
         view.enableButtonsStartPauseStop();
 
@@ -133,19 +144,30 @@ public class RunPresenter implements RunContract.Presenter {
     }
 
     @Override
-    public void lockButtons() {
-        view.disableButtonsStartPauseStop();
-        view.hideButtonLock();
-        view.showButtonUnlock();
-        view.noScreenTimeout();
-    }
+    public void onSeekBarChanged() {
+        if(view.getSeekBarProgress() > 65) {
+            // set the progress to 100
+            view.setSeekBarProgress(100);
 
-    @Override
-    public void unlockButtons() {
-        view.enableButtonsStartPauseStop();
-        view.hideButtonUnlock();
-        view.showButtonLock();
-        view.defaultScreenTimeout();
+            // update icons to reflect SeekBar state
+            view.tintIconLock();
+            view.fadeIconUnlock();
+
+            // lock the controls, keep screen turned on
+            view.disableButtonsStartPauseStop();
+            view.noScreenTimeout();
+        } else {
+            // set the progress to 0
+            view.setSeekBarProgress(0);
+
+            // update icons to reflect SeekBar state
+            view.fadeIconLock();
+            view.tintIconUnlock();
+
+            // unlock the controls, reset screen timeout to default
+            view.enableButtonsStartPauseStop();
+            view.defaultScreenTimeout();
+        }
     }
 
     // determines what color to tint the GPS icon based on the value of currentAccuracy

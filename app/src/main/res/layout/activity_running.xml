@@ -57,11 +57,25 @@
         app:layout_constraintGuide_percent="0.05" />
 
     <android.support.constraint.Guideline
+        android:id="@+id/guidelineSeekBarLeft"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.10" />
+
+    <android.support.constraint.Guideline
         android:id="@+id/guidelineCenter"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         app:layout_constraintGuide_percent="0.50" />
+
+    <android.support.constraint.Guideline
+        android:id="@+id/guidelineSeekBarRight"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.90" />
 
     <android.support.constraint.Guideline
         android:id="@+id/guidelineRight"
@@ -137,30 +151,41 @@
 
     </LinearLayout>
 
+    <!-- SeekBar -->
+
+    <android.support.v7.widget.AppCompatImageView
+        android:id="@+id/ivUnlock"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:tint="@color/common_google_signin_btn_text_light_disabled"
+        app:layout_constraintLeft_toRightOf="@id/guidelineSeekBarLeft"
+        app:layout_constraintTop_toBottomOf="@id/guidelineLockUnlock"
+        app:srcCompat="@drawable/ic_lock_open_black_24dp" />
+
+    <android.support.v7.widget.AppCompatImageView
+        android:id="@+id/ivLock"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:tint="@color/common_google_signin_btn_text_light_disabled"
+        app:layout_constraintRight_toLeftOf="@id/guidelineSeekBarRight"
+        app:layout_constraintTop_toBottomOf="@id/guidelineLockUnlock"
+        app:srcCompat="@drawable/ic_lock_outline_black_24dp" />
+
+    <android.support.v7.widget.AppCompatSeekBar
+        android:id="@+id/sbLock"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/text_size_details"
+        android:layout_marginRight="@dimen/text_size_details"
+        android:layout_marginTop="@dimen/text_size_details"
+        android:max="100"
+        android:thumb="@drawable/thumb"
+        app:layout_constraintBottom_toTopOf="@id/guidelineButtons"
+        app:layout_constraintLeft_toRightOf="@id/guidelineSeekBarLeft"
+        app:layout_constraintRight_toLeftOf="@id/guidelineSeekBarRight"
+        app:layout_constraintTop_toBottomOf="@id/guidelineLockUnlock" />
+
     <!-- buttons -->
-
-    <Button
-        android:id="@+id/buttonLock"
-        style="@style/Base.Widget.AppCompat.Button.Borderless"
-        android:layout_width="36dp"
-        android:layout_height="36dp"
-        android:background="@drawable/ic_lock_outline_black_24dp"
-        app:layout_constraintBottom_toBottomOf="@id/guidelineButtons"
-        app:layout_constraintLeft_toRightOf="@id/guidelineLeft"
-        app:layout_constraintRight_toLeftOf="@id/guidelineRight"
-        app:layout_constraintTop_toBottomOf="@id/guidelineLockUnlock" />
-
-    <Button
-        android:id="@+id/buttonUnlock"
-        style="@style/Base.Widget.AppCompat.Button.Borderless"
-        android:layout_width="36dp"
-        android:layout_height="36dp"
-        android:background="@drawable/ic_lock_open_black_24dp"
-        android:visibility="invisible"
-        app:layout_constraintBottom_toBottomOf="@id/guidelineButtons"
-        app:layout_constraintLeft_toRightOf="@id/guidelineLeft"
-        app:layout_constraintRight_toLeftOf="@id/guidelineRight"
-        app:layout_constraintTop_toBottomOf="@id/guidelineLockUnlock" />
 
     <Button
         android:id="@+id/buttonStart"

@@ -13,10 +13,12 @@ import android.support.v4.widget.ImageViewCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatImageView;
+import android.support.v7.widget.AppCompatSeekBar;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.tjrushby.runlite.App;
@@ -24,6 +26,7 @@ import com.tjrushby.runlite.R;
 import com.tjrushby.runlite.contracts.RunContract;
 import com.tjrushby.runlite.injection.modules.RunActivityContextModule;
 import com.tjrushby.runlite.injection.modules.RunActivityModule;
+import com.tjrushby.runlite.util.SeekBarAnimation;
 
 import javax.inject.Inject;
 
@@ -51,22 +54,28 @@ public class RunActivity extends AppCompatActivity implements RunContract.Activi
 
     @BindView(R.id.ivAccuracy)
     protected AppCompatImageView ivAccuracy;
-    @BindView(R.id.buttonLock)
-    protected Button buttonLock;
+    @BindView(R.id.ivLock)
+    protected AppCompatImageView ivLock;
+    @BindView(R.id.ivUnlock)
+    protected AppCompatImageView ivUnlock;
+
+    @BindView(R.id.sbLock)
+    protected AppCompatSeekBar sbLock;
+
     @BindView(R.id.buttonPause)
     protected Button buttonPause;
     @BindView(R.id.buttonStart)
     protected Button buttonStart;
     @BindView(R.id.buttonStop)
     protected Button buttonStop;
-    @BindView(R.id.buttonUnlock)
-    protected Button buttonUnlock;
+
     @BindView(R.id.tvDistance)
     protected TextView tvDistance;
     @BindView(R.id.tvAveragePace)
     protected TextView tvAveragePace;
     @BindView(R.id.tvTime)
     protected TextView tvTime;
+
     @BindView(R.id.toolbar)
     protected Toolbar toolbar;
 
@@ -85,17 +94,36 @@ public class RunActivity extends AppCompatActivity implements RunContract.Activi
 
         setSupportActionBar(toolbar);
 
-        handler = new Handler();
-        tick = () -> presenter.onTick();
+        presenter.onViewCreated();
 
         // check the Activity has the correct permissions, request them if not
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+        if(ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED) {
             // Activity doesn't have the required permissions, request them
             ActivityCompat.requestPermissions(this, permissions, REQUEST_PERMISSIONS);
         } else {
             presenter.havePermissions();
         }
+
+        sbLock.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
+
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+                presenter.onSeekBarChanged();
+            }
+        });
+
+        handler = new Handler();
+        tick = () -> presenter.onTick();
     }
 
     @Override
@@ -114,7 +142,7 @@ public class RunActivity extends AppCompatActivity implements RunContract.Activi
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         switch (requestCode) {
             case REQUEST_PERMISSIONS:
-                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                if(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     presenter.havePermissions();
                 } else {
                     // permissions were not granted, end the Activity
@@ -124,16 +152,6 @@ public class RunActivity extends AppCompatActivity implements RunContract.Activi
     }
 
     /* OnClick methods for Button objects */
-
-    @OnClick(R.id.buttonLock)
-    public void buttonLockClicked() {
-        presenter.lockButtons();
-    }
-
-    @OnClick(R.id.buttonUnlock)
-    public void buttonUnlockClicked() {
-        presenter.unlockButtons();
-    }
 
     @OnClick(R.id.buttonStart)
     public void buttonStartClicked() {
@@ -211,27 +229,71 @@ public class RunActivity extends AppCompatActivity implements RunContract.Activi
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
     }
 
+    @Override
+    public void disableSeekBar() {
+        sbLock.setEnabled(false);
+    }
+
+    @Override
+    public void enableSeekBar() {
+        sbLock.setEnabled(true);
+    }
+
+    @Override
+    public int getSeekBarProgress() {
+        return sbLock.getProgress();
+    }
+
+    @Override
+    public void setSeekBarProgress(int newProgress) {
+        // todo need to increase the size of the thumb, it's hard to grab on screen,
+        // todo would be a nightmare whilst running
+        SeekBarAnimation animation = new SeekBarAnimation(sbLock, sbLock.getProgress(), newProgress);
+        animation.setDuration(75);
+        sbLock.startAnimation(animation);
+    }
+
+    @Override
+    public void fadeIconLock() {
+        ImageViewCompat.setImageTintList(ivLock,
+                ColorStateList.valueOf(ContextCompat.getColor(
+                        this,
+                        R.color.common_google_signin_btn_text_light_disabled)
+                )
+        );
+    }
+
+    @Override
+    public void tintIconLock() {
+        ImageViewCompat.setImageTintList(ivLock,
+                ColorStateList.valueOf(ContextCompat.getColor(
+                        this,
+                        R.color.colorAccent)
+                )
+        );
+    }
+
+    @Override
+    public void fadeIconUnlock() {
+        ImageViewCompat.setImageTintList(ivUnlock,
+                ColorStateList.valueOf(ContextCompat.getColor(
+                        this,
+                        R.color.common_google_signin_btn_text_light_disabled)
+                )
+        );
+    }
+
+    @Override
+    public void tintIconUnlock() {
+        ImageViewCompat.setImageTintList(ivUnlock,
+                ColorStateList.valueOf(ContextCompat.getColor(
+                        this,
+                        R.color.colorAccent)
+                )
+        );
+    }
+
     /* methods for changing the state and properties of Button elements */
-
-    @Override
-    public void hideButtonLock() {
-        buttonLock.setVisibility(View.INVISIBLE);
-    }
-
-    @Override
-    public void showButtonLock() {
-        buttonLock.setVisibility(View.VISIBLE);
-    }
-
-    @Override
-    public void hideButtonUnlock() {
-        buttonUnlock.setVisibility(View.INVISIBLE);
-    }
-
-    @Override
-    public void showButtonUnlock() {
-        buttonUnlock.setVisibility(View.VISIBLE);
-    }
 
     @Override
     public void hideButtonPause() {

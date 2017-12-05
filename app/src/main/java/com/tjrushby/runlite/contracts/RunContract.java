@@ -22,13 +22,21 @@ public interface RunContract {
 
         void noScreenTimeout();
 
-        void hideButtonLock();
+        void disableSeekBar();
 
-        void showButtonLock();
+        void enableSeekBar();
 
-        void hideButtonUnlock();
+        int getSeekBarProgress();
 
-        void showButtonUnlock();
+        void setSeekBarProgress(int progress);
+
+        void fadeIconLock();
+
+        void tintIconLock();
+
+        void fadeIconUnlock();
+
+        void tintIconUnlock();
 
         void hideButtonPause();
 
@@ -60,6 +68,8 @@ public interface RunContract {
     }
 
     interface Presenter {
+        void onViewCreated();
+
         void havePermissions();
 
         void confirmExit();
@@ -76,9 +86,7 @@ public interface RunContract {
 
         void endRunAlertDialogYes();
 
-        void lockButtons();
-
-        void unlockButtons();
+        void onSeekBarChanged();
     }
 
     interface Model {
