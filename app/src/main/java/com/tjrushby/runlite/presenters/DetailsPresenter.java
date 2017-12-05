@@ -71,6 +71,11 @@ public class DetailsPresenter implements DetailsContract.Presenter {
     }
 
     @Override
+    public void onButtonDoneClicked() {
+        view.endActivity();
+    }
+
+    @Override
     public void onButtonUpdateClicked() {
         updateRun();
         view.endActivity();
@@ -95,19 +100,16 @@ public class DetailsPresenter implements DetailsContract.Presenter {
 
     @Override
     public void onEditTextDistanceEmpty() {
-        view.setButtonSaveEnabled(false);
         view.displayEditTextDistanceEmptyError();
     }
 
     @Override
     public void onEditTextDistanceNoNumbers() {
-        view.setButtonSaveEnabled(false);
         view.displayEditTextDistanceNoNumbersError();
     }
 
     @Override
     public void onEditTextDistanceZero() {
-        view.setButtonSaveEnabled(false);
         view.displayEditTextDistanceZeroError();
     }
 
@@ -193,10 +195,12 @@ public class DetailsPresenter implements DetailsContract.Presenter {
         if(timeElapsed != runWithLatLng.run.getTimeElapsed()
                 || distanceTravelled != cachedDistanceTravelled) {
             changed = true;
-            view.setButtonSaveEnabled(true);
+            view.hideButtonDone();
+            view.showButtonUpdate();
         } else {
             changed = false;
-            view.setButtonSaveEnabled(false);
+            view.hideButtonUpdate();
+            view.showButtonDone();
         }
     }
 

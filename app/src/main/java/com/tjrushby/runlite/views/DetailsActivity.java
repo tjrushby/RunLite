@@ -56,6 +56,8 @@ public class DetailsActivity extends AppCompatActivity
     @Inject
     public TimePickerDialog timePickerDialog;
 
+    @BindView(R.id.buttonDone)
+    protected Button buttonDone;
     @BindView(R.id.buttonUpdate)
     protected Button buttonUpdate;
 
@@ -103,6 +105,11 @@ public class DetailsActivity extends AppCompatActivity
     @OnClick(R.id.buttonDelete)
     public void buttonDeleteClicked() {
         presenter.onButtonDeleteClicked();
+    }
+
+    @OnClick(R.id.buttonDone)
+    public void buttonDoneClicked() {
+        presenter.onButtonDoneClicked();
     }
 
     @OnClick(R.id.etTimeElapsed)
@@ -267,8 +274,23 @@ public class DetailsActivity extends AppCompatActivity
     }
 
     @Override
-    public void setButtonSaveEnabled(boolean enabled) {
-        buttonUpdate.setEnabled(enabled);
+    public void hideButtonDone() {
+        buttonDone.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void showButtonDone() {
+        buttonDone.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void hideButtonUpdate() {
+        buttonUpdate.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void showButtonUpdate() {
+        buttonUpdate.setVisibility(View.VISIBLE);
     }
 
     @Override

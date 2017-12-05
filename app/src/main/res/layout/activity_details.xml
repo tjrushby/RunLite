@@ -189,8 +189,20 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:enabled="false"
         android:text="@string/button_update"
+        android:visibility="gone"
+        app:layout_constraintLeft_toRightOf="@id/guidelineCenter"
+        app:layout_constraintRight_toLeftOf="@id/guidelineRight"
+        app:layout_constraintTop_toBottomOf="@id/guidelineButtons" />
+
+    <Button
+        android:id="@+id/buttonDone"
+        style="@style/Base.Widget.AppCompat.Button.Borderless"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:enabled="true"
+        android:text="@string/button_done"
         app:layout_constraintLeft_toRightOf="@id/guidelineCenter"
         app:layout_constraintRight_toLeftOf="@id/guidelineRight"
         app:layout_constraintTop_toBottomOf="@id/guidelineButtons" />

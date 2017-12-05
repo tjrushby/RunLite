@@ -50,7 +50,13 @@ public interface DetailsContract {
 
         void setTextViews(String time, String distance, String averagePace);
 
-        void setButtonSaveEnabled(boolean enabled);
+        void hideButtonDone();
+
+        void showButtonDone();
+
+        void hideButtonUpdate();
+
+        void showButtonUpdate();
 
         void validateEditTextDistance();
     }
@@ -61,6 +67,8 @@ public interface DetailsContract {
         void onBackPressed();
 
         void onButtonDeleteClicked();
+
+        void onButtonDoneClicked();
 
         void onButtonUpdateClicked();
 
