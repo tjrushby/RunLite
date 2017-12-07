@@ -1,12 +1,6 @@
 package com.tjrushby.runlite.contracts;
 
-
 import android.content.Context;
-
-import com.tjrushby.runlite.adapters.viewholders.ModelViewHolder;
-import com.tjrushby.runlite.models.RunWithLatLng;
-
-import java.util.List;
 
 public interface MainContract {
     interface Activity {
@@ -15,6 +9,8 @@ public interface MainContract {
         void refreshRecyclerView();
 
         void startRunActivity();
+
+        void setRunTotals(String totalRuns, String totalDistance, String totalTime);
 
         Context getContext();
     }

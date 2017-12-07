@@ -1,5 +1,6 @@
 package com.tjrushby.runlite.adapters;
 
+import android.content.Context;
 import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -68,7 +69,7 @@ public class RunModelAdapter extends RecyclerView.Adapter<RunModelViewHolder> {
         return runsList.size();
     }
 
-    public void loadRuns() {
+    public void loadRuns(Context context) {
         runRepository.getRuns(new RunDataSource.LoadRunsCallback() {
             @Override
             public void onRunsLoaded(List<RunWithLatLng> runs) {
@@ -76,12 +77,31 @@ public class RunModelAdapter extends RecyclerView.Adapter<RunModelViewHolder> {
                 // from the database
                 runsList.clear();
                 runsList.addAll(runs);
+
+                double totalDistance = 0;
+                long totalTime = 0;
+
+                // calculate totals from data set
+                for(RunWithLatLng run :  runsList) {
+                    totalDistance += run.run.getDistanceTravelled();
+                    totalTime += run.run.getTimeElapsed();
+                }
+
+                if(context instanceof MainActivity) {
+                    ((MainActivity) context).setRunTotals(
+                            Integer.toString(runsList.size()),
+                            formatter.doubleToDistanceString(totalDistance),
+                            formatter.longToMinutesSeconds(totalTime)
+                    );
+                }
+
                 notifyDataSetChanged();
             }
 
             @Override
             public void onDataNotAvailable() {
                 // todo display that there are no runs in the database
+                Timber.d("no runs in database");
             }
         });
     }

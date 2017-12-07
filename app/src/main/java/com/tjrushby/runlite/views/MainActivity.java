@@ -9,6 +9,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.tjrushby.runlite.App;
 import com.tjrushby.runlite.R;
@@ -37,6 +38,12 @@ public class MainActivity extends AppCompatActivity implements MainContract.Acti
     public ProgressBar progressBar;
     @BindView(R.id.recyclerView)
     public RecyclerView recyclerView;
+    @BindView(R.id.tvTotalDistance)
+    protected TextView tvTotalDistance;
+    @BindView(R.id.tvTotalRuns)
+    protected TextView tvTotalRuns;
+    @BindView(R.id.tvTotalTime)
+    protected TextView tvTotalTime;
     @BindView(R.id.toolbar)
     public Toolbar toolbar;
 
@@ -82,13 +89,20 @@ public class MainActivity extends AppCompatActivity implements MainContract.Acti
 
     @Override
     public void refreshRecyclerView() {
-        adapter.loadRuns();
+        adapter.loadRuns(this);
     }
 
     @Override
     public void startRunActivity() {
         intentRunActivity.setClass(this, RunActivity.class);
         startActivity(intentRunActivity);
+    }
+
+    @Override
+    public void setRunTotals(String totalRuns, String totalDistance, String totalTime) {
+        tvTotalDistance.setText(totalDistance);
+        tvTotalRuns.setText(totalRuns);
+        tvTotalTime.setText(totalTime);
     }
 
     @Override
