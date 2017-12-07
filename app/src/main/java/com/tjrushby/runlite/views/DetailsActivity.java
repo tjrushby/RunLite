@@ -144,7 +144,11 @@ public class DetailsActivity extends AppCompatActivity
 
     @Override
     public void moveMapCamera() {
-        map.moveCamera(CameraUpdateFactory.newLatLngBounds(mapBounds.build(), 100));
+        map.animateCamera(
+                CameraUpdateFactory.newLatLngBounds(mapBounds.build(), 100),
+                1000,
+                null
+        );
     }
 
     @Override
