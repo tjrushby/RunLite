@@ -2,15 +2,20 @@ package com.tjrushby.runlite.views;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.TextInputEditText;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.AppCompatImageView;
+import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -37,6 +42,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.OnTextChanged;
+import timber.log.Timber;
 
 public class DetailsActivity extends AppCompatActivity
         implements DetailsContract.Activity, TimePickerDialogListener, OnMapReadyCallback {
@@ -56,6 +62,11 @@ public class DetailsActivity extends AppCompatActivity
     @Inject
     public TimePickerDialog timePickerDialog;
 
+    @BindView(R.id.ivFullscreen)
+    protected AppCompatImageView ivFullscreen;
+    @BindView(R.id.ivMinimize)
+    protected AppCompatImageView ivMinimize;
+
     @BindView(R.id.buttonDone)
     protected Button buttonDone;
     @BindView(R.id.buttonUpdate)
@@ -72,6 +83,12 @@ public class DetailsActivity extends AppCompatActivity
     protected TextInputLayout tilDistance;
     @BindView(R.id.tvAveragePace)
     protected TextView tvAveragePace;
+
+    @BindView(R.id.toolbar)
+    protected Toolbar toolbar;
+
+    @BindView(R.id.rlMap)
+    RelativeLayout rlMap;
 
     private GoogleMap map;
 
@@ -115,6 +132,16 @@ public class DetailsActivity extends AppCompatActivity
     @OnClick(R.id.etTimeElapsed)
     public void editTextTimeElapsedClicked() {
         presenter.onEditTextTimeElapsedClicked();
+    }
+
+    @OnClick(R.id.ivFullscreen)
+    public void imageViewFullscreenClicked() {
+        presenter.onImageViewFullscreenClicked();
+    }
+
+    @OnClick(R.id.ivMinimize)
+    public void imageViewMinimizeClicked() {
+        presenter.onImageViewMinimizeClicked();
     }
 
     @OnTextChanged(R.id.etDistance)
@@ -163,19 +190,19 @@ public class DetailsActivity extends AppCompatActivity
     @Override
     public void displayDeleteRunAlertDialog() {
         builder.setTitle("Delete Run?")
-               .setMessage("Are you sure? This cannot be undone.")
-               .setPositiveButton("Yes", (dialog, which) -> presenter.onDeleteRunAlertDialogYes())
-               .setNegativeButton("No", (dialog, which) -> dialog.dismiss())
-               .show();
+                .setMessage("Are you sure? This cannot be undone.")
+                .setPositiveButton("Yes", (dialog, which) -> presenter.onDeleteRunAlertDialogYes())
+                .setNegativeButton("No", (dialog, which) -> dialog.dismiss())
+                .show();
     }
 
     @Override
     public void displayExitAlertDialog() {
         builder.setTitle("Go Back?")
-               .setMessage("Are you sure? Changes will be discarded.")
-               .setPositiveButton("Yes", (dialog, which) -> presenter.onExitAlertDialogYes())
-               .setNegativeButton("No", (dialog, which) -> dialog.dismiss())
-               .show();
+                .setMessage("Are you sure? Changes will be discarded.")
+                .setPositiveButton("Yes", (dialog, which) -> presenter.onExitAlertDialogYes())
+                .setNegativeButton("No", (dialog, which) -> dialog.dismiss())
+                .show();
     }
 
     @Override
@@ -212,6 +239,39 @@ public class DetailsActivity extends AppCompatActivity
     public void clearEditTextDistanceError() {
         tilDistance.setError(null);
         tilDistance.setErrorEnabled(false);
+    }
+
+    @Override
+    public void displayFullscreenIcon() {
+        ivMinimize.setVisibility(View.GONE);
+        ivFullscreen.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void displayMinimizeIcon() {
+        ivFullscreen.setVisibility(View.GONE);
+        ivMinimize.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void displayFullscreenMap() {
+        rlMap.setLayoutParams(new ConstraintLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.MATCH_PARENT
+            )
+        );
+
+        rlMap.bringToFront();
+    }
+
+    @Override
+    public void displaySmallMap() {
+        ConstraintLayout.LayoutParams lp = new ConstraintLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 0);
+        lp.topToBottom = R.id.appBarLayout;
+        lp.bottomToTop = R.id.guidelineDetailsHeader;
+        lp.validate();
+
+        rlMap.setLayoutParams(lp);
     }
 
     @Override
@@ -275,6 +335,11 @@ public class DetailsActivity extends AppCompatActivity
         etTimeElapsed.setText(time);
         etDistance.setText(distance);
         tvAveragePace.setText(averagePace);
+    }
+
+    @Override
+    public void setToolbarTitle(String title) {
+        toolbar.setTitle(title);
     }
 
     @Override

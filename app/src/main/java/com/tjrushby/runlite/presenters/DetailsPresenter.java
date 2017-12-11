@@ -12,6 +12,7 @@ import timber.log.Timber;
 
 public class DetailsPresenter implements DetailsContract.Presenter {
     private boolean changed;
+    private boolean mapFullscreen;
 
     private DetailsContract.Activity view;
     private RunRepository runRepository;
@@ -32,6 +33,8 @@ public class DetailsPresenter implements DetailsContract.Presenter {
     public void onViewCreated(String runId) {
         view.displayProgressBar(true);
 
+        mapFullscreen = false;
+
         runRepository.getRunById(Long.parseLong(runId), new RunDataSource.GetRunCallback() {
             @Override
             public void onRunLoaded(RunWithLatLng run) {
@@ -45,6 +48,8 @@ public class DetailsPresenter implements DetailsContract.Presenter {
                         formatter.longToMinutesSeconds((long) averagePace)
                 );
 
+                view.setToolbarTitle("Run on " + formatter.dateToString(run.run.getDateTime()));
+
                 view.getMapFragment();
             }
 
@@ -57,7 +62,10 @@ public class DetailsPresenter implements DetailsContract.Presenter {
 
     @Override
     public void onBackPressed() {
-        if(changed) {
+        if(mapFullscreen) {
+            view.displaySmallMap();
+            mapFullscreen = false;
+        } else if(changed) {
             view.displayExitAlertDialog();
         } else {
             view.endActivity();
@@ -160,6 +168,20 @@ public class DetailsPresenter implements DetailsContract.Presenter {
 
         // check if the TextViews contain different values to the model
         determineDataChanged();
+    }
+
+    @Override
+    public void onImageViewFullscreenClicked() {
+        view.displayFullscreenMap();
+        view.displayMinimizeIcon();
+        mapFullscreen = true;
+    }
+
+    @Override
+    public void onImageViewMinimizeClicked() {
+        view.displaySmallMap();
+        view.displayFullscreenIcon();
+        mapFullscreen = false;
     }
 
     @Override

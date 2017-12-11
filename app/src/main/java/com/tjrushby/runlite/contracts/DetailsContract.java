@@ -36,6 +36,14 @@ public interface DetailsContract {
 
         void clearEditTextDistanceError();
 
+        void displayFullscreenIcon();
+
+        void displayMinimizeIcon();
+
+        void displayFullscreenMap();
+
+        void displaySmallMap();
+
         String getEditTextDistance();
 
         String getTextViewAveragePace();
@@ -49,6 +57,8 @@ public interface DetailsContract {
         void setEditTextTimeElapsed(String timeElapsed);
 
         void setTextViews(String time, String distance, String averagePace);
+
+        void setToolbarTitle(String title);
 
         void hideButtonDone();
 
@@ -89,6 +99,10 @@ public interface DetailsContract {
         void onEditTextTimeElapsedClicked();
 
         void onEditTextTimeElapsedUpdated(long timeElapsed);
+
+        void onImageViewFullscreenClicked();
+
+        void onImageViewMinimizeClicked();
 
         void onMapFragmentReady();
 
