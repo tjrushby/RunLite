@@ -3,27 +3,31 @@ package com.tjrushby.runlite.presenters;
 import com.tjrushby.runlite.contracts.DetailsContract;
 import com.tjrushby.runlite.data.RunDataSource;
 import com.tjrushby.runlite.data.RunRepository;
+import com.tjrushby.runlite.models.RunLatLng;
 import com.tjrushby.runlite.models.RunWithLatLng;
 import com.tjrushby.runlite.util.StringFormatter;
 
 import java.math.BigDecimal;
-
-import timber.log.Timber;
+import java.util.ArrayList;
+import java.util.List;
 
 public class DetailsPresenter implements DetailsContract.Presenter {
     private boolean changed;
     private boolean mapFullscreen;
 
     private DetailsContract.Activity view;
+    List<RunLatLng> mapMarkerCoordinates;
     private RunRepository runRepository;
     private RunWithLatLng runWithLatLng;
     private StringFormatter formatter;
 
     public DetailsPresenter(DetailsContract.Activity view,
+                            List<RunLatLng> mapMarkerCoordinates,
                             RunRepository runRepository,
                             RunWithLatLng runWithLatLng,
                             StringFormatter formatter) {
         this.view = view;
+        this.mapMarkerCoordinates = mapMarkerCoordinates;
         this.runRepository = runRepository;
         this.runWithLatLng = runWithLatLng;
         this.formatter = formatter;
@@ -197,7 +201,26 @@ public class DetailsPresenter implements DetailsContract.Presenter {
     public void onMapLoaded() {
         // add start and end markers for the run, move the map to show what has been drawn
         if(!runWithLatLng.runLatLngs.isEmpty()) {
-            view.addMapMarkers(runWithLatLng.runLatLngs);
+            double prevMod = 0;
+
+            for(RunLatLng runLatLng : runWithLatLng.runLatLngs) {
+                double currentMod = runLatLng.getDistanceInRun() % 0.5;
+
+                // if the currentMod is less than the prevMod then it is approximately an interval
+                // of 0.5km so add it to the list
+                if(currentMod == 0 || currentMod < prevMod) {
+                    mapMarkerCoordinates.add(runLatLng);
+                }
+
+                prevMod = currentMod;
+            }
+
+            // add the last coordinate as a map marker
+            mapMarkerCoordinates.add(
+                    runWithLatLng.runLatLngs.get(runWithLatLng.runLatLngs.size() - 1)
+            );
+
+            view.addMapMarkers(mapMarkerCoordinates);
             view.displayProgressBar(false);
             view.moveMapCamera();
         }

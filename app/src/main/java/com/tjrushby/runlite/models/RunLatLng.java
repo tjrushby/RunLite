@@ -23,17 +23,20 @@ public class RunLatLng {
     private long runId;
     private double latitude;
     private double longitude;
+    private double distanceInRun;
 
     @Ignore
-    public RunLatLng(double latitude, double longitude) {
+    public RunLatLng(double latitude, double longitude, double distanceInRun) {
         this.latitude = latitude;
         this.longitude = longitude;
+        this.distanceInRun = distanceInRun;
     }
 
-    public RunLatLng(long runId, double latitude, double longitude) {
+    public RunLatLng(long runId, double latitude, double longitude, double distanceInRun) {
         this.runId = runId;
         this.latitude = latitude;
         this.longitude = longitude;
+        this.distanceInRun = distanceInRun;
     }
 
     public long getId() {
@@ -70,5 +73,13 @@ public class RunLatLng {
 
     public LatLng toLatLng() {
         return new LatLng(latitude, longitude);
+    }
+
+    public double getDistanceInRun() {
+        return distanceInRun;
+    }
+
+    public void setDistanceInRun(double distanceInRun) {
+        this.distanceInRun = distanceInRun;
     }
 }

@@ -23,9 +23,11 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
+import com.google.maps.android.ui.IconGenerator;
 import com.tjrushby.runlite.App;
 import com.tjrushby.runlite.R;
 import com.tjrushby.runlite.contracts.DetailsContract;
@@ -42,7 +44,6 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.OnTextChanged;
-import timber.log.Timber;
 
 public class DetailsActivity extends AppCompatActivity
         implements DetailsContract.Activity, TimePickerDialogListener, OnMapReadyCallback {
@@ -53,6 +54,8 @@ public class DetailsActivity extends AppCompatActivity
     public Bundle bundle;
     @Inject
     public DetailsContract.Presenter presenter;
+    @Inject
+    public IconGenerator iconGenerator;
     @Inject
     public PolylineOptions polylineOptions;
     @Inject
@@ -163,10 +166,20 @@ public class DetailsActivity extends AppCompatActivity
     }
 
     @Override
-    public void addMapMarkers(List<RunLatLng> runCoordinates) {
-        map.addMarker(markerOptions.position(runCoordinates.get(0).toLatLng()));
-        map.addMarker(markerOptions.position(runCoordinates.get(runCoordinates.size() - 1)
-                .toLatLng()));
+    public void addMapMarkers(List<RunLatLng> mapMarkers) {
+        for (RunLatLng runLatLng : mapMarkers) {
+            map.addMarker(markerOptions
+                    .position(runLatLng.toLatLng())
+                    .title(Double.toString(runLatLng.getDistanceInRun()))
+                    .flat(true)
+            ).setIcon(
+                    BitmapDescriptorFactory.fromBitmap(
+                            iconGenerator.makeIcon(
+                                    Double.toString(runLatLng.getDistanceInRun())
+                            )
+                    )
+            );
+        }
     }
 
     @Override
@@ -256,9 +269,9 @@ public class DetailsActivity extends AppCompatActivity
     @Override
     public void displayFullscreenMap() {
         rlMap.setLayoutParams(new ConstraintLayout.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.MATCH_PARENT
-            )
+                        ViewGroup.LayoutParams.MATCH_PARENT,
+                        ViewGroup.LayoutParams.MATCH_PARENT
+                )
         );
 
         rlMap.bringToFront();
@@ -266,7 +279,8 @@ public class DetailsActivity extends AppCompatActivity
 
     @Override
     public void displaySmallMap() {
-        ConstraintLayout.LayoutParams lp = new ConstraintLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 0);
+        ConstraintLayout.LayoutParams lp = new ConstraintLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT, 0);
         lp.topToBottom = R.id.appBarLayout;
         lp.bottomToTop = R.id.guidelineDetailsHeader;
         lp.validate();

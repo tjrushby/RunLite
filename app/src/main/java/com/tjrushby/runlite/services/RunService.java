@@ -19,6 +19,7 @@ import com.tjrushby.runlite.App;
 import com.tjrushby.runlite.contracts.RunContract;
 import com.tjrushby.runlite.models.RunLatLng;
 
+import java.text.DecimalFormat;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -36,6 +37,7 @@ public class RunService extends Service implements RunContract.Service {
     private long locationTimeElapsed;
 
     private Context context;
+    private DecimalFormat df;
     private RunContract.Model model;
     private List<RunLatLng> runLatLngs;
 
@@ -48,6 +50,7 @@ public class RunService extends Service implements RunContract.Service {
 
     @Inject
     public RunService(Context context,
+                      DecimalFormat df,
                       RunContract.Model model,
                       List<RunLatLng> runLatLngs,
                       FusedLocationProviderClient locationClient,
@@ -55,6 +58,7 @@ public class RunService extends Service implements RunContract.Service {
                       LocationSettingsRequest.Builder builder) {
 
         this.context = context;
+        this.df = df;
         this.model = model;
         this.runLatLngs = runLatLngs;
         this.locationClient = locationClient;
@@ -156,9 +160,12 @@ public class RunService extends Service implements RunContract.Service {
             model.setDistanceTravelled(distanceTravelled);
         }
 
+        // add the current latitude and longitude
         runLatLngs.add(new RunLatLng(
                 location.getLatitude(),
-                location.getLongitude())
+                location.getLongitude(),
+                Double.parseDouble(df.format(distanceTravelled))
+            )
         );
 
         // update lastLocation to location now that all calculations have been performed

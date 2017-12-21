@@ -7,6 +7,7 @@ import android.support.v7.app.AlertDialog;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
+import com.google.maps.android.ui.IconGenerator;
 import com.tjrushby.runlite.contracts.DetailsContract;
 import com.tjrushby.runlite.dialogs.TimePickerDialog;
 import com.tjrushby.runlite.injection.scopes.DetailsActivityScope;
@@ -46,6 +47,11 @@ public class DetailsActivityModule {
     @Named("details_context")
     Context providesContext() {
         return context;
+    }
+
+    @Provides
+    IconGenerator providesIconGenerator() {
+        return new IconGenerator(context);
     }
 
     @Provides

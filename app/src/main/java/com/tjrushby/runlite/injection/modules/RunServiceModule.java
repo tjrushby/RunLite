@@ -11,6 +11,7 @@ import com.tjrushby.runlite.injection.scopes.RunningActivityScope;
 import com.tjrushby.runlite.models.RunLatLng;
 import com.tjrushby.runlite.services.RunService;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,13 +25,14 @@ public class RunServiceModule {
     @Provides
     @RunningActivityScope
     RunContract.Service provideFusedLocationService(@Named("activity_context") Context context,
+                                                    DecimalFormat df,
                                                     RunContract.Model model,
                                                     List<RunLatLng> runLatLngs,
                                                     FusedLocationProviderClient locationClient,
                                                     LocationRequest locationRequest,
                                                     LocationSettingsRequest.Builder builder) {
 
-        return new RunService(context, model, runLatLngs, locationClient, locationRequest, builder);
+        return new RunService(context, df, model, runLatLngs, locationClient, locationRequest, builder);
     }
 
     @Provides
@@ -52,5 +54,10 @@ public class RunServiceModule {
     @Provides
     LocationSettingsRequest.Builder providesBuilder() {
         return new LocationSettingsRequest.Builder();
+    }
+
+    @Provides
+    DecimalFormat providesDecimalFormat() {
+        return new DecimalFormat("#0.00");
     }
 }
