@@ -128,8 +128,8 @@ public class RunActivity extends AppCompatActivity implements RunContract.Activi
 
     @Override
     protected void onDestroy() {
-        super.onDestroy();
         stopService(intentRunService);
+        super.onDestroy();
     }
 
     @Override
@@ -172,6 +172,7 @@ public class RunActivity extends AppCompatActivity implements RunContract.Activi
 
     @Override
     public void startService() {
+        Timber.d("Calling startService()");
         startService(intentRunService);
     }
 
@@ -214,7 +215,7 @@ public class RunActivity extends AppCompatActivity implements RunContract.Activi
         new AlertDialog.Builder(this)
                 .setTitle("Are you sure?")
                 .setMessage("If you go back now you will lose all progress.")
-                .setPositiveButton("Yes", (dialog, which) -> super.onBackPressed())
+                .setPositiveButton("Yes", (dialog, which) -> presenter.endRunAlertDialogYes())
                 .setNegativeButton("No", (dialog, which) -> dialog.dismiss())
                 .show();
     }

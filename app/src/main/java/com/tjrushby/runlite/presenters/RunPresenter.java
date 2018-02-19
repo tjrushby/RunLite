@@ -141,6 +141,7 @@ public class RunPresenter implements RunContract.Presenter {
     public void endRunAlertDialogYes() {
         model.setTimeElapsed(timeElapsed);
         runRepository.saveRun((Run) model, runLatLngList, runId -> view.endRun(Long.toString(runId)));
+        service.stopLocationUpdates();
     }
 
     @Override

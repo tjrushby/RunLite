@@ -64,10 +64,6 @@ public class RunService extends Service implements RunContract.Service {
         this.locationClient = locationClient;
         this.locationRequest = locationRequest;
 
-        Timber.d("context: " + context);
-        Timber.d("service: " + this);
-        Timber.d("model: " + model);
-
         // settings for locationRequest
         locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
         locationRequest.setInterval(UPDATE_INTERVAL);
@@ -94,14 +90,11 @@ public class RunService extends Service implements RunContract.Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        Timber.d("STARTING");
         return START_STICKY;
     }
 
     @Override
-    public void onDestroy() {
-        Timber.d("STOPPING");
-    }
+    public void onDestroy() {}
 
     // start requesting location updates from the FusedLocationProviderClient
     @SuppressWarnings({"MissingPermission"})
@@ -114,6 +107,7 @@ public class RunService extends Service implements RunContract.Service {
     @Override
     public void stopLocationUpdates() {
         if (locationCallback != null) {
+            Timber.d("stopping location updates...");
             locationClient.removeLocationUpdates(locationCallback);
             lastLocation = null;
         }
