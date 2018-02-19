@@ -12,6 +12,8 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import timber.log.Timber;
+
 public class RunPresenter implements RunContract.Presenter {
     private RunContract.Activity view;
     private RunContract.Model model;
@@ -140,7 +142,13 @@ public class RunPresenter implements RunContract.Presenter {
     @Override
     public void endRunAlertDialogYes() {
         model.setTimeElapsed(timeElapsed);
-        runRepository.saveRun((Run) model, runLatLngList, runId -> view.endRun(Long.toString(runId)));
+        if(model.getDistanceTravelled() > 0) {
+            Timber.d("if");
+            runRepository.saveRun((Run) model, runLatLngList, runId -> view.endRun(Long.toString(runId)));
+        } else {
+            Timber.d("else");
+            view.endActivity();
+        }
         service.stopLocationUpdates();
     }
 
