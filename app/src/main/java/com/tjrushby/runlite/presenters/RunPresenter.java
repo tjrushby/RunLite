@@ -2,7 +2,6 @@ package com.tjrushby.runlite.presenters;
 
 import com.tjrushby.runlite.App;
 import com.tjrushby.runlite.contracts.RunContract;
-import com.tjrushby.runlite.data.RunDataSource;
 import com.tjrushby.runlite.data.RunRepository;
 import com.tjrushby.runlite.models.Run;
 import com.tjrushby.runlite.models.RunLatLng;
@@ -53,7 +52,7 @@ public class RunPresenter implements RunContract.Presenter {
     }
 
     @Override
-    public void confirmExit() {
+    public void onBackPressed() {
         if(timeElapsed > 0) {
             view.displayExitAlertDialog();
         } else {
@@ -90,7 +89,7 @@ public class RunPresenter implements RunContract.Presenter {
 
     // tell model to start requesting location updates and the view to start a Runnable
     @Override
-    public void startRun() {
+    public void onButtonStartPressed() {
         // tint the unlock icon
         view.tintIconUnlock();
 
@@ -113,7 +112,7 @@ public class RunPresenter implements RunContract.Presenter {
 
     // tell model to displayEndRunAlertDialog requesting location updates and the view to not post another Runnable
     @Override
-    public void pauseRun() {
+    public void onButtonPausePressed() {
         // displayEndRunAlertDialog requesting Location updates from locationClient whilst paused
         service.stopLocationUpdates();
 
@@ -129,14 +128,20 @@ public class RunPresenter implements RunContract.Presenter {
 
     // end the view Activity
     @Override
-    public void stopRun() {
-        pauseRun();
+    public void onButtonStopPressed() {
+        onButtonPausePressed();
         view.displayEndRunAlertDialog();
     }
 
     @Override
+    public void enableHighAccuracyDialogNo() {
+        view.displayGPSModeToast();
+        view.endActivity();
+    }
+
+    @Override
     public void endRunAlertDialogNo() {
-        startRun();
+        onButtonStartPressed();
     }
 
     @Override
@@ -149,6 +154,7 @@ public class RunPresenter implements RunContract.Presenter {
             Timber.d("else");
             view.endActivity();
         }
+
         service.stopLocationUpdates();
     }
 

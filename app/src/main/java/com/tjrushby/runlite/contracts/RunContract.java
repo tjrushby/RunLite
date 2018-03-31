@@ -14,6 +14,8 @@ public interface RunContract {
 
         void endRun(String runId);
 
+        void displayGPSModeToast();
+
         void displayEndRunAlertDialog();
 
         void displayExitAlertDialog();
@@ -72,15 +74,17 @@ public interface RunContract {
 
         void havePermissions();
 
-        void confirmExit();
+        void onBackPressed();
 
         void onTick();
 
-        void startRun();
+        void onButtonStartPressed();
 
-        void pauseRun();
+        void onButtonPausePressed();
 
-        void stopRun();
+        void onButtonStopPressed();
+
+        void enableHighAccuracyDialogNo();
 
         void endRunAlertDialogNo();
 

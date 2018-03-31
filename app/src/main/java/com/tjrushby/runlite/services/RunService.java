@@ -1,23 +1,29 @@
 package com.tjrushby.runlite.services;
 
+import android.app.Activity;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentSender;
 import android.location.Location;
 import android.os.IBinder;
 import android.os.Looper;
 import android.support.annotation.Nullable;
 
+import com.google.android.gms.common.api.ResolvableApiException;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.LocationSettingsRequest;
+import com.google.android.gms.location.LocationSettingsResponse;
 import com.google.android.gms.location.SettingsClient;
+import com.google.android.gms.tasks.Task;
 import com.tjrushby.runlite.App;
 import com.tjrushby.runlite.contracts.RunContract;
 import com.tjrushby.runlite.models.RunLatLng;
+import com.tjrushby.runlite.views.RunActivity;
 
 import java.text.DecimalFormat;
 import java.util.List;
@@ -38,6 +44,7 @@ public class RunService extends Service implements RunContract.Service {
 
     private Context context;
     private DecimalFormat df;
+    private RunContract.Activity view;
     private RunContract.Model model;
     private List<RunLatLng> runLatLngs;
 
@@ -51,6 +58,7 @@ public class RunService extends Service implements RunContract.Service {
     @Inject
     public RunService(Context context,
                       DecimalFormat df,
+                      RunContract.Activity view,
                       RunContract.Model model,
                       List<RunLatLng> runLatLngs,
                       FusedLocationProviderClient locationClient,
@@ -59,6 +67,7 @@ public class RunService extends Service implements RunContract.Service {
 
         this.context = context;
         this.df = df;
+        this.view = view;
         this.model = model;
         this.runLatLngs = runLatLngs;
         this.locationClient = locationClient;
@@ -72,7 +81,25 @@ public class RunService extends Service implements RunContract.Service {
         builder.addLocationRequest(locationRequest);
 
         SettingsClient settingsClient = LocationServices.getSettingsClient(context);
-        settingsClient.checkLocationSettings(builder.build());
+        Task<LocationSettingsResponse> task = settingsClient.checkLocationSettings(builder.build());
+
+        task.addOnFailureListener(apiException -> {
+            if(apiException instanceof ResolvableApiException) {
+                // location settings are not satisfied
+                try {
+                    // show a dialog to the user prompting them to enable high accuracy location
+                    ResolvableApiException resolvable = (ResolvableApiException) apiException;
+                    if(view instanceof Activity) {
+                        resolvable.startResolutionForResult(
+                                (RunActivity) view,
+                                ((RunActivity) view).REQUEST_HIGH_ACCURACY_GPS
+                        );
+                    }
+                } catch (IntentSender.SendIntentException sendEx) {
+                    // Ignore the error
+                }
+            }
+        });
 
         locationCallback = new LocationCallback() {
             @Override
@@ -106,7 +133,7 @@ public class RunService extends Service implements RunContract.Service {
     // stop requesting location updates from the FusedLocationProviderClient
     @Override
     public void stopLocationUpdates() {
-        if (locationCallback != null) {
+        if(locationCallback != null) {
             Timber.d("stopping location updates...");
             locationClient.removeLocationUpdates(locationCallback);
             lastLocation = null;
@@ -118,7 +145,7 @@ public class RunService extends Service implements RunContract.Service {
     // updates and gets the current accuracy
     public void onLocationChanged(Location location) {
         // update gps accuracy
-        if (location.hasAccuracy()) {
+        if(location.hasAccuracy()) {
             currentAccuracy = location.getAccuracy();
         } else {
             // location has no accuracy value, assume bad gps accuracy
@@ -155,7 +182,8 @@ public class RunService extends Service implements RunContract.Service {
         }
 
         // add the current latitude and longitude
-        runLatLngs.add(new RunLatLng(
+        runLatLngs.add(
+            new RunLatLng(
                 location.getLatitude(),
                 location.getLongitude(),
                 Double.parseDouble(df.format(distanceTravelled))

@@ -1,6 +1,7 @@
 package com.tjrushby.runlite.views;
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.ColorStateList;
@@ -20,6 +21,7 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.SeekBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.tjrushby.runlite.App;
 import com.tjrushby.runlite.R;
@@ -36,6 +38,8 @@ import butterknife.OnClick;
 import timber.log.Timber;
 
 public class RunActivity extends AppCompatActivity implements RunContract.Activity {
+    public static final int REQUEST_HIGH_ACCURACY_GPS = 254;
+
     private static final int REQUEST_PERMISSIONS = 255;
 
     private final String[] permissions = {
@@ -132,11 +136,6 @@ public class RunActivity extends AppCompatActivity implements RunContract.Activi
         super.onDestroy();
     }
 
-    @Override
-    public void onBackPressed() {
-        presenter.confirmExit();
-    }
-
     // callback method for ActivityCompat.requestPermissions()
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
@@ -151,21 +150,36 @@ public class RunActivity extends AppCompatActivity implements RunContract.Activi
         }
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if(requestCode == REQUEST_HIGH_ACCURACY_GPS) {
+            switch(resultCode) {
+                case Activity.RESULT_CANCELED :
+                    presenter.enableHighAccuracyDialogNo();
+            }
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        presenter.onBackPressed();
+    }
+
     /* OnClick methods for Button objects */
 
     @OnClick(R.id.buttonStart)
     public void buttonStartClicked() {
-        presenter.startRun();
+        presenter.onButtonStartPressed();
     }
 
     @OnClick(R.id.buttonPause)
     public void buttonPauseClicked() {
-        presenter.pauseRun();
+        presenter.onButtonPausePressed();
     }
 
     @OnClick(R.id.buttonStop)
     public void buttonStopClicked() {
-        presenter.stopRun();
+        presenter.onButtonStopPressed();
     }
 
     /* end OnClick methods */
@@ -195,6 +209,11 @@ public class RunActivity extends AppCompatActivity implements RunContract.Activi
     public void endRun(String runId) {
         startActivity(new Intent(this, DetailsActivity.class).putExtra("runId", runId));
         this.finish();
+    }
+
+    @Override
+    public void displayGPSModeToast() {
+        Toast.makeText(this, R.string.toast_gps_mode, Toast.LENGTH_LONG).show();
     }
 
     @Override
