@@ -45,10 +45,11 @@ public class MainActivityModule {
 
     @Provides
     RunModelAdapter providesRunModelAdapter(List<RunWithLatLng> runsList,
+                                            MainContract.Presenter presenter,
                                             RunModelViewHolderFactory factory,
                                             RunRepository runRepository,
                                             StringFormatter formatter) {
-        return new RunModelAdapter(runsList, factory, runRepository, formatter);
+        return new RunModelAdapter(runsList, presenter, factory, runRepository, formatter);
     }
 
     @Provides

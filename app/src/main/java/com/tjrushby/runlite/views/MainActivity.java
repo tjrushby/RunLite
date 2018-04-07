@@ -38,6 +38,8 @@ public class MainActivity extends AppCompatActivity implements MainContract.Acti
     public ProgressBar progressBar;
     @BindView(R.id.recyclerView)
     public RecyclerView recyclerView;
+    @BindView(R.id.tvNoRuns)
+    protected TextView tvNoRuns;
     @BindView(R.id.tvTotalDistance)
     protected TextView tvTotalDistance;
     @BindView(R.id.tvTotalRuns)
@@ -84,6 +86,15 @@ public class MainActivity extends AppCompatActivity implements MainContract.Acti
             progressBar.bringToFront();
         } else {
             progressBar.setVisibility(View.GONE);
+        }
+    }
+
+    @Override
+    public void displayNoRuns(boolean display) {
+        if(display) {
+            tvNoRuns.setVisibility(View.VISIBLE);
+        } else {
+            tvNoRuns.setVisibility(View.GONE);
         }
     }
 

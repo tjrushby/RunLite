@@ -9,8 +9,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import timber.log.Timber;
-
 public class RunRepository implements RunDataSource {
     private final RunDataSource runLocalDataSource;
 
@@ -23,8 +21,14 @@ public class RunRepository implements RunDataSource {
     @Override
     public void getRuns(LoadRunsCallback callback) {
         if(cachedRuns != null) {
-            // we already have the runs cached
-            callback.onRunsLoaded(new ArrayList<>(cachedRuns.values()));
+            // we've already checked the database for runs
+            if(cachedRuns.size() > 0) {
+                // cache contains at least one run, callback runs loaded
+                callback.onRunsLoaded(new ArrayList<>(cachedRuns.values()));
+            } else {
+                // cache contains no runs, callback no runs available
+                callback.onDataNotAvailable();
+            }
         } else {
             // need to retrieve runs from database
             runLocalDataSource.getRuns(new LoadRunsCallback() {
@@ -36,7 +40,9 @@ public class RunRepository implements RunDataSource {
 
                 @Override
                 public void onDataNotAvailable() {
-                    // no runs in database, do nothing
+                    // no runs in database
+                    updateCache(new ArrayList<RunWithLatLng>());
+                    callback.onDataNotAvailable();
                 }
             });
         }
@@ -77,15 +83,15 @@ public class RunRepository implements RunDataSource {
     public void saveRun(Run run, List<RunLatLng> runLatLngList, SaveRunCallback callback) {
         // save to database
         runLocalDataSource.saveRun(run, runLatLngList, (runId) -> {
-                // add to cache
-                RunWithLatLng runWithLatLng = new RunWithLatLng();
-                runWithLatLng.run = run;
-                runWithLatLng.run.setId(runId);
-                runWithLatLng.runLatLngs = runLatLngList;
-                cachedRuns.put(runId, runWithLatLng);
+                    // add to cache
+                    RunWithLatLng runWithLatLng = new RunWithLatLng();
+                    runWithLatLng.run = run;
+                    runWithLatLng.run.setId(runId);
+                    runWithLatLng.runLatLngs = runLatLngList;
+                    cachedRuns.put(runId, runWithLatLng);
 
-                callback.onRunSaved(runId);
-            }
+                    callback.onRunSaved(runId);
+                }
         );
     }
 
@@ -122,7 +128,7 @@ public class RunRepository implements RunDataSource {
         cachedRuns.clear();
 
         // add the new data to the cache
-        for(RunWithLatLng run :  runs) {
+        for (RunWithLatLng run : runs) {
             cachedRuns.put(run.run.getId(), run);
         }
     }

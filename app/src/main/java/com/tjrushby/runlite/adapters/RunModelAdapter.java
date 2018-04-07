@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 
 import com.tjrushby.runlite.adapters.viewholders.RunModelViewHolder;
 import com.tjrushby.runlite.adapters.viewholders.RunModelViewHolderFactory;
+import com.tjrushby.runlite.contracts.MainContract;
 import com.tjrushby.runlite.data.RunDataSource;
 import com.tjrushby.runlite.data.RunRepository;
 import com.tjrushby.runlite.models.RunWithLatLng;
@@ -21,15 +22,18 @@ import timber.log.Timber;
 
 public class RunModelAdapter extends RecyclerView.Adapter<RunModelViewHolder> {
     private List<RunWithLatLng> runsList;
+    private MainContract.Presenter presenter;
     private RunModelViewHolderFactory factory;
     private RunRepository runRepository;
     private StringFormatter formatter;
 
     public RunModelAdapter(List<RunWithLatLng> runsList,
+                           MainContract.Presenter presenter,
                            RunModelViewHolderFactory factory,
                            RunRepository runRepository,
                            StringFormatter formatter) {
         this.runsList = runsList;
+        this.presenter = presenter;
         this.factory = factory;
         this.runRepository = runRepository;
         this.formatter = formatter;
@@ -95,13 +99,15 @@ public class RunModelAdapter extends RecyclerView.Adapter<RunModelViewHolder> {
                     );
                 }
 
+                presenter.onDataAvailable();
                 notifyDataSetChanged();
             }
 
             @Override
             public void onDataNotAvailable() {
-                // todo display that there are no runs in the database
-                Timber.d("no runs in database");
+                runsList.clear();
+                presenter.onDataNotAvailable();
+                notifyDataSetChanged();
             }
         });
     }

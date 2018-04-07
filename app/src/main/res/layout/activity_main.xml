@@ -138,6 +138,17 @@
         android:layout_height="wrap_content"
         app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
+    <TextView
+        android:id="@+id/tvNoRuns"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginLeft="@dimen/header_margin"
+        android:layout_marginRight="@dimen/header_margin"
+        android:gravity="center"
+        android:text="@string/tv_no_runs"
+        android:textSize="@dimen/text_size_details"
+        android:visibility="gone" />
+
     <ProgressBar
         android:id="@+id/progressBar"
         android:layout_width="wrap_content"

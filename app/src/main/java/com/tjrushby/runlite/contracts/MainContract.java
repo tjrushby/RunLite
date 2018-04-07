@@ -6,6 +6,8 @@ public interface MainContract {
     interface Activity {
         void displayProgressBar(boolean display);
 
+        void displayNoRuns(boolean display);
+
         void refreshRecyclerView();
 
         void startRunActivity();
@@ -21,5 +23,9 @@ public interface MainContract {
         void onActivityResumed();
 
         void onFabStartRunPressed();
+
+        void onDataAvailable();
+
+        void onDataNotAvailable();
     }
 }

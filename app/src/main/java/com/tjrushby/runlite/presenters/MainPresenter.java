@@ -25,4 +25,14 @@ public class MainPresenter implements MainContract.Presenter {
     public void onFabStartRunPressed() {
         activity.startRunActivity();
     }
+
+    @Override
+    public void onDataAvailable() {
+        activity.displayNoRuns(false);
+    }
+
+    @Override
+    public void onDataNotAvailable() {
+        activity.displayNoRuns(true);
+    }
 }
