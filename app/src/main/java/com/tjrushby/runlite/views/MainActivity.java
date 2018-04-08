@@ -59,9 +59,9 @@ public class MainActivity extends AppCompatActivity implements MainContract.Acti
                 .plus(new MainActivityModule(this))
                 .inject(this);
 
-        presenter.onActivityCreated();
-
         setSupportActionBar(toolbar);
+
+        presenter.onActivityCreated();
 
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(layoutManager);

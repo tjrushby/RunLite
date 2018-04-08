@@ -18,7 +18,6 @@ public class MainPresenter implements MainContract.Presenter {
     @Override
     public void onActivityResumed() {
         activity.refreshRecyclerView();
-        activity.displayProgressBar(false);
     }
 
     @Override
@@ -29,10 +28,12 @@ public class MainPresenter implements MainContract.Presenter {
     @Override
     public void onDataAvailable() {
         activity.displayNoRuns(false);
+        activity.displayProgressBar(false);
     }
 
     @Override
     public void onDataNotAvailable() {
         activity.displayNoRuns(true);
+        activity.displayProgressBar(false);
     }
 }

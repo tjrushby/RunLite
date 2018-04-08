@@ -23,12 +23,16 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyCuscRndp8kBqfopCzj723nrKQDmiI95co" />
 
-        <activity android:name=".views.MainActivity">
+        <activity
+            android:name=".views.SplashActivity"
+            android:theme="@style/SplashTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity android:name=".views.MainActivity"></activity>
         <activity android:name=".views.RunActivity"></activity>
         <activity android:name=".views.DetailsActivity"></activity>
 
