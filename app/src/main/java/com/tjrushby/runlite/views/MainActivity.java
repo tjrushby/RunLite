@@ -67,6 +67,7 @@ public class MainActivity extends AppCompatActivity implements MainContract.Acti
         layoutManager.setReverseLayout(true);
         //layoutManager.setStackFromEnd(true);
         recyclerView.setLayoutManager(layoutManager);
+        Timber.d("layoutManager.stackFromEnd: " + layoutManager.getStackFromEnd());
         recyclerView.setAdapter(adapter);
     }
 
