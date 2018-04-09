@@ -3,10 +3,13 @@ package com.tjrushby.runlite.views;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -34,6 +37,8 @@ public class MainActivity extends AppCompatActivity implements MainContract.Acti
     @Inject
     public RunModelAdapter adapter;
 
+    @BindView(R.id.drawerLayout)
+    protected DrawerLayout drawerLayout;
     @BindView(R.id.progressBar)
     public ProgressBar progressBar;
     @BindView(R.id.recyclerView)
@@ -60,14 +65,14 @@ public class MainActivity extends AppCompatActivity implements MainContract.Acti
                 .inject(this);
 
         setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_menu_24dp);
 
         presenter.onActivityCreated();
 
         recyclerView.setHasFixedSize(true);
         layoutManager.setReverseLayout(true);
-        //layoutManager.setStackFromEnd(true);
         recyclerView.setLayoutManager(layoutManager);
-        Timber.d("layoutManager.stackFromEnd: " + layoutManager.getStackFromEnd());
         recyclerView.setAdapter(adapter);
     }
 
@@ -77,9 +82,24 @@ public class MainActivity extends AppCompatActivity implements MainContract.Acti
         presenter.onActivityResumed();
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch(item.getItemId()) {
+            case android.R.id.home :
+                presenter.onHomeOptionsItemSelected();
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
     @OnClick(R.id.fabStartRun)
     public void fabClicked() {
         presenter.onFabStartRunPressed();
+    }
+
+    @Override
+    public void openDrawerMenu() {
+        drawerLayout.openDrawer(GravityCompat.START);
     }
 
     @Override

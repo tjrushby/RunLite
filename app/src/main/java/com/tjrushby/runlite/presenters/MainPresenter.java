@@ -21,6 +21,11 @@ public class MainPresenter implements MainContract.Presenter {
     }
 
     @Override
+    public void onHomeOptionsItemSelected() {
+        activity.openDrawerMenu();
+    }
+
+    @Override
     public void onFabStartRunPressed() {
         activity.startRunActivity();
     }

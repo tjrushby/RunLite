@@ -4,6 +4,8 @@ import android.content.Context;
 
 public interface MainContract {
     interface Activity {
+        void openDrawerMenu();
+
         void displayProgressBar(boolean display);
 
         void displayNoRuns(boolean display);
@@ -21,6 +23,8 @@ public interface MainContract {
         void onActivityCreated();
 
         void onActivityResumed();
+
+        void onHomeOptionsItemSelected();
 
         void onFabStartRunPressed();
 
