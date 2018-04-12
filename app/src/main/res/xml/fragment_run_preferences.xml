@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceCategory android:title="@string/pref_label_general">
+
+        <ListPreference
+            android:summary="@string/pref_summary_distance_units"
+            android:title="@string/pref_title_distance_units" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="@string/pref_label_audio_cues">
+
+        <SwitchPreference
+            android:defaultValue="true"
+            android:summary="@string/pref_summary_audio_cue_enabled"
+            android:title="@string/pref_title_audio_cue_enabled" />
+
+        <ListPreference
+            android:defaultValue="true"
+            android:summary="@string/pref_summary_audio_cue_distance"
+            android:title="@string/pref_title_audio_cue_distance" />
+
+        <MultiSelectListPreference
+            android:summary="@string/pref_summary_audio_cue_information"
+            android:title="@string/pref_title_audio_cue_information" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="@string/pref_label_interface">
+
+        <SwitchPreference
+            android:defaultValue="false"
+            android:summary="@string/pref_summary_dark_mode"
+            android:title="@string/pref_title_dark_mode" />
+
+    </PreferenceCategory>
+
+</PreferenceScreen>

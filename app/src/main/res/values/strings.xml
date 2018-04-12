@@ -1,5 +1,6 @@
 <resources>
     <string name="app_name">RunLite</string>
+    <string name="activity_run_preferences_label">Preferences</string>
     <string name="button_increase_countdown">+10 Seconds</string>
     <string name="button_cancel">Cancel</string>
     <string name="button_delete">Delete</string>
@@ -26,6 +27,19 @@
     <string name="label_runs">Runs</string>
     <string name="label_time_elapsed">Time Elapsed</string>
     <string name="nav_main_header_title">RunLite</string>
+    <string name="pref_label_general">General</string>
+    <string name="pref_title_distance_units">Distance Units</string>
+    <string name="pref_summary_distance_units">Kilometres or miles</string>
+    <string name="pref_label_audio_cues">Audio Cues</string>
+    <string name="pref_title_audio_cue_enabled">Enabled</string>
+    <string name="pref_summary_audio_cue_enabled">Audio information when you\'re running</string>
+    <string name="pref_title_audio_cue_distance">Distance</string>
+    <string name="pref_summary_audio_cue_distance">How often to give an audio cue</string>
+    <string name="pref_title_audio_cue_information">Information</string>
+    <string name="pref_summary_audio_cue_information">What information you\'d like to hear</string>
+    <string name="pref_label_interface">Interface</string>
+    <string name="pref_title_dark_mode">Dark Mode</string>
+    <string name="pref_summary_dark_mode">Use the dark color theme</string>
     <string name="title_activity_main">MainActivity</string>
     <string name="toast_gps_mode">
         High Accuracy GPS needs to be enabled in order to use this feature

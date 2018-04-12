@@ -3,6 +3,7 @@ package com.tjrushby.runlite.views;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -25,11 +26,10 @@ import javax.inject.Inject;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import timber.log.Timber;
 
 public class MainActivity extends AppCompatActivity implements MainContract.Activity {
     @Inject
-    public Intent intentRunActivity;
+    public Intent intent;
     @Inject
     public LinearLayoutManager layoutManager;
     @Inject
@@ -39,6 +39,8 @@ public class MainActivity extends AppCompatActivity implements MainContract.Acti
 
     @BindView(R.id.drawerLayout)
     protected DrawerLayout drawerLayout;
+    @BindView(R.id.navView)
+    protected NavigationView navView;
     @BindView(R.id.progressBar)
     public ProgressBar progressBar;
     @BindView(R.id.recyclerView)
@@ -74,6 +76,16 @@ public class MainActivity extends AppCompatActivity implements MainContract.Acti
         layoutManager.setReverseLayout(true);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(adapter);
+
+        navView.setNavigationItemSelectedListener((item) -> {
+            switch(item.getItemId()) {
+                case R.id.nav_settings :
+                    drawerLayout.closeDrawers();
+                    presenter.onNavItemSettingsSelected();
+            }
+
+            return true;
+        });
     }
 
     @Override
@@ -127,9 +139,15 @@ public class MainActivity extends AppCompatActivity implements MainContract.Acti
     }
 
     @Override
+    public void startRunPreferencesActivity() {
+        intent.setClass(this, RunPreferencesActivity.class);
+        startActivity(intent);
+    }
+
+    @Override
     public void startRunActivity() {
-        intentRunActivity.setClass(this, RunActivity.class);
-        startActivity(intentRunActivity);
+        intent.setClass(this, RunActivity.class);
+        startActivity(intent);
     }
 
     @Override

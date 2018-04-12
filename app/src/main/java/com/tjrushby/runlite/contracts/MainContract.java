@@ -14,6 +14,8 @@ public interface MainContract {
 
         void startRunActivity();
 
+        void startRunPreferencesActivity();
+
         void setRunTotals(String totalRuns, String totalDistance, String totalTime);
 
         Context getContext();
@@ -25,6 +27,8 @@ public interface MainContract {
         void onActivityResumed();
 
         void onHomeOptionsItemSelected();
+
+        void onNavItemSettingsSelected();
 
         void onFabStartRunPressed();
 

@@ -26,6 +26,11 @@ public class MainPresenter implements MainContract.Presenter {
     }
 
     @Override
+    public void onNavItemSettingsSelected() {
+        activity.startRunPreferencesActivity();
+    }
+
+    @Override
     public void onFabStartRunPressed() {
         activity.startRunActivity();
     }
