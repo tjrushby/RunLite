@@ -159,6 +159,12 @@ public class RunPresenter implements RunContract.Presenter {
     }
 
     @Override
+    public void exitRunAlertDialogYes() {
+        view.endActivity();
+        service.stopLocationUpdates();
+    }
+
+    @Override
     public void onSeekBarChanged() {
         if(view.getSeekBarProgress() > 65) {
             // set the progress to 100

@@ -90,6 +90,8 @@ public interface RunContract {
 
         void endRunAlertDialogYes();
 
+        void exitRunAlertDialogYes();
+
         void onSeekBarChanged();
     }
 

@@ -234,7 +234,7 @@ public class RunActivity extends AppCompatActivity implements RunContract.Activi
         new AlertDialog.Builder(this)
                 .setTitle("Are you sure?")
                 .setMessage("If you go back now you will lose all progress.")
-                .setPositiveButton("Yes", (dialog, which) -> presenter.endRunAlertDialogYes())
+                .setPositiveButton("Yes", (dialog, which) -> presenter.exitRunAlertDialogYes())
                 .setNegativeButton("No", (dialog, which) -> dialog.dismiss())
                 .show();
     }
