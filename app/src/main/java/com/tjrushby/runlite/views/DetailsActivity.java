@@ -36,6 +36,7 @@ import com.tjrushby.runlite.dialogs.TimePickerDialogListener;
 import com.tjrushby.runlite.injection.modules.DetailsActivityModule;
 import com.tjrushby.runlite.models.RunLatLng;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -49,21 +50,21 @@ public class DetailsActivity extends AppCompatActivity
         implements DetailsContract.Activity, TimePickerDialogListener, OnMapReadyCallback {
 
     @Inject
-    public AlertDialog.Builder builder;
+    protected AlertDialog.Builder builder;
     @Inject
-    public Bundle bundle;
+    protected Bundle bundle;
     @Inject
-    public DetailsContract.Presenter presenter;
+    protected DetailsContract.Presenter presenter;
     @Inject
-    public IconGenerator iconGenerator;
+    protected IconGenerator iconGenerator;
     @Inject
-    public PolylineOptions polylineOptions;
+    protected PolylineOptions polylineOptions;
     @Inject
-    public LatLngBounds.Builder mapBounds;
+    protected LatLngBounds.Builder mapBounds;
     @Inject
-    public MarkerOptions markerOptions;
+    protected MarkerOptions markerOptions;
     @Inject
-    public TimePickerDialog timePickerDialog;
+    protected TimePickerDialog timePickerDialog;
 
     @BindView(R.id.ivFullscreen)
     protected AppCompatImageView ivFullscreen;
@@ -86,12 +87,18 @@ public class DetailsActivity extends AppCompatActivity
     protected TextInputLayout tilDistance;
     @BindView(R.id.tvAveragePace)
     protected TextView tvAveragePace;
+    @BindView(R.id.tvDistanceUnit)
+    protected TextView tvDistanceUnit;
+    @BindView(R.id.tvPaceUnit)
+    protected TextView tvPaceUnit;
 
     @BindView(R.id.toolbar)
     protected Toolbar toolbar;
 
     @BindView(R.id.rlMap)
-    RelativeLayout rlMap;
+    protected RelativeLayout rlMap;
+
+    private double distanceUnits;
 
     private GoogleMap map;
 
@@ -170,13 +177,15 @@ public class DetailsActivity extends AppCompatActivity
         for (RunLatLng runLatLng : mapMarkers) {
             map.addMarker(markerOptions
                     .position(runLatLng.toLatLng())
-                    .title(Double.toString(runLatLng.getDistanceInRun()))
                     .flat(true)
             ).setIcon(
                     BitmapDescriptorFactory.fromBitmap(
                             iconGenerator.makeIcon(
-                                    Double.toString(runLatLng.getDistanceInRun())
+                                    new BigDecimal(runLatLng.getDistanceInRun() / distanceUnits)
+                                            .setScale(2, BigDecimal.ROUND_HALF_UP)
+                                            .toString()
                             )
+
                     )
             );
         }
@@ -330,6 +339,11 @@ public class DetailsActivity extends AppCompatActivity
     }
 
     @Override
+    public void setDistanceUnits(double distanceUnits) {
+        this.distanceUnits = distanceUnits;
+    }
+
+    @Override
     public void setEditTextTimeElapsed(String timeElapsed) {
         etTimeElapsed.setText(timeElapsed);
     }
@@ -349,6 +363,12 @@ public class DetailsActivity extends AppCompatActivity
         etTimeElapsed.setText(time);
         etDistance.setText(distance);
         tvAveragePace.setText(averagePace);
+    }
+
+    @Override
+    public void setTextViewsDistanceUnit(String distanceUnitString) {
+        tvDistanceUnit.setText(distanceUnitString);
+        tvPaceUnit.setText("Mins/" + distanceUnitString);
     }
 
     @Override

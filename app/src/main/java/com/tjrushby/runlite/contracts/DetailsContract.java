@@ -50,6 +50,8 @@ public interface DetailsContract {
 
         String getEditTextTimeElapsed();
 
+        void setDistanceUnits(double distanceUnits);
+
         void setEditTextDistance(String distance);
 
         void setTextViewAveragePace(String averagePace);
@@ -57,6 +59,8 @@ public interface DetailsContract {
         void setEditTextTimeElapsed(String timeElapsed);
 
         void setTextViews(String time, String distance, String averagePace);
+
+        void setTextViewsDistanceUnit(String distanceUnitString);
 
         void setToolbarTitle(String title);
 

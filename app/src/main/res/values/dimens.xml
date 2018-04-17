@@ -5,4 +5,5 @@
     <dimen name="text_size_details">28sp</dimen>
     <dimen name="text_size_header">56sp</dimen>
     <dimen name="text_size_timer">112sp</dimen>
+    <dimen name="text_size_sub_details">22sp</dimen>
 </resources>

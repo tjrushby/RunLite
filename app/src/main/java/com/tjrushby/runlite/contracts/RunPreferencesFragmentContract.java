@@ -1,5 +1,11 @@
 package com.tjrushby.runlite.contracts;
 
+public interface RunPreferencesFragmentContract {
+    interface Fragment {
+        void updateStringFormatterDistanceUnits();
+    }
 
-public class RunPreferencesFragmentContract {
+    interface Presenter {
+        void onDistanceUnitsChanged();
+    }
 }

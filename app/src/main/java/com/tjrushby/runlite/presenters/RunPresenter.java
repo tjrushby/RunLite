@@ -44,6 +44,7 @@ public class RunPresenter implements RunContract.Presenter {
     @Override
     public void onViewCreated() {
         view.disableSeekBar();
+        view.setTextViewsDistanceUnit(formatter.getDistanceUnitsString());
     }
 
     @Override
@@ -67,17 +68,17 @@ public class RunPresenter implements RunContract.Presenter {
         timeElapsed += 1;
 
         // calculate the average pace
-        double currentPace = 0;
+        double averagePace = 0;
 
         if(model.getDistanceTravelled() > 0) {
-            currentPace = timeElapsed / model.getDistanceTravelled();
+            averagePace = timeElapsed / (model.getDistanceTravelled() / formatter.getDistanceUnits());
         }
 
         // update the TextView elements
-        if(currentPace == 0) {
+        if(averagePace == 0) {
             view.setTextViewPaceDefaultText();
         } else {
-            view.updateTextViewPace(formatter.longToMinutesSeconds((long) currentPace));
+            view.updateTextViewPace(formatter.longToMinutesSeconds((long) averagePace));
         }
 
         determineGPSIcon(model.getCurrentAccuracy());

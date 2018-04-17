@@ -19,7 +19,7 @@
         android:textSize="@dimen/text_size_details" />
 
     <TextView
-        android:id="@+id/labelDistanceUnit"
+        android:id="@+id/tvDistanceUnit"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:text="@string/label_distance_travelled_unit_km"

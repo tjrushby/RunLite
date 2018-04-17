@@ -19,7 +19,7 @@
         android:textSize="@dimen/text_size_details" />
 
     <TextView
-        android:id="@+id/labelSpeedUnit"
+        android:id="@+id/tvPaceUnit"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/label_pace_min_km"

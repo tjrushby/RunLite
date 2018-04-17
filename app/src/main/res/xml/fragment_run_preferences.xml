@@ -3,7 +3,11 @@
     <PreferenceCategory android:title="@string/pref_label_general">
 
         <ListPreference
-            android:summary="@string/pref_summary_distance_units"
+            android:key="@string/pref_key_distance_units"
+            android:entries="@array/distance_units_options"
+            android:entryValues="@array/distance_units_values"
+            android:defaultValue="1"
+            android:summary="%s"
             android:title="@string/pref_title_distance_units" />
 
     </PreferenceCategory>

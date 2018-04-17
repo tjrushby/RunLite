@@ -54,13 +54,6 @@
             android:layout_height="wrap_content"
             android:text="@string/tv_default_distance_travelled" />
 
-        <TextView
-            android:id="@+id/tvDistanceUnit"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/text_space"
-            android:text="@string/label_distance_unit_km" />
-
     </LinearLayout>
 
     <LinearLayout

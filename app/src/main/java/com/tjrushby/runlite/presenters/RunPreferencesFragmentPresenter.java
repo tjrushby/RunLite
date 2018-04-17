@@ -1,14 +1,11 @@
 package com.tjrushby.runlite.presenters;
 
+import com.tjrushby.runlite.contracts.RunPreferencesFragmentContract;
 
-import com.tjrushby.runlite.contracts.RunPreferencesContract;
+public class RunPreferencesFragmentPresenter implements RunPreferencesFragmentContract.Presenter {
+    private RunPreferencesFragmentContract.Fragment fragment;
 
-public class RunPreferencesPresenter implements RunPreferencesContract.Presenter {
-    private RunPreferencesContract.Activity activity;
-    private RunPreferencesContract.Fragment fragment;
-
-    public RunPreferencesPresenter(RunPreferencesContract.Activity activity, RunPreferencesContract.Fragment fragment) {
-        this.activity = activity;
+    public RunPreferencesFragmentPresenter(RunPreferencesFragmentContract.Fragment fragment) {
         this.fragment = fragment;
     }
 

@@ -8,7 +8,6 @@ import com.tjrushby.runlite.models.RunWithLatLng;
 import com.tjrushby.runlite.util.StringFormatter;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.List;
 
 public class DetailsPresenter implements DetailsContract.Presenter {
@@ -16,7 +15,7 @@ public class DetailsPresenter implements DetailsContract.Presenter {
     private boolean mapFullscreen;
 
     private DetailsContract.Activity view;
-    List<RunLatLng> mapMarkerCoordinates;
+    private List<RunLatLng> mapMarkerCoordinates;
     private RunRepository runRepository;
     private RunWithLatLng runWithLatLng;
     private StringFormatter formatter;
@@ -36,6 +35,8 @@ public class DetailsPresenter implements DetailsContract.Presenter {
     @Override
     public void onViewCreated(String runId) {
         view.displayProgressBar(true);
+        view.setDistanceUnits(formatter.getDistanceUnits());
+        view.setTextViewsDistanceUnit(formatter.getDistanceUnitsString());
 
         mapFullscreen = false;
 
@@ -44,7 +45,10 @@ public class DetailsPresenter implements DetailsContract.Presenter {
             public void onRunLoaded(RunWithLatLng run) {
                 runWithLatLng = run;
 
-                double averagePace = run.run.getTimeElapsed() / run.run.getDistanceTravelled();
+                double averagePace = calculateAveragePace(
+                        run.run.getTimeElapsed(),
+                        run.run.getDistanceTravelled()
+                );
 
                 view.setTextViews(
                         formatter.longToMinutesSeconds(run.run.getTimeElapsed()),
@@ -203,7 +207,7 @@ public class DetailsPresenter implements DetailsContract.Presenter {
         if(!runWithLatLng.runLatLngs.isEmpty()) {
             double prevMod = 0;
 
-            for(RunLatLng runLatLng : runWithLatLng.runLatLngs) {
+            for (RunLatLng runLatLng : runWithLatLng.runLatLngs) {
                 double currentMod = runLatLng.getDistanceInRun() % 0.5;
 
                 // if the currentMod is less than the prevMod then it is approximately an interval
@@ -227,7 +231,7 @@ public class DetailsPresenter implements DetailsContract.Presenter {
     }
 
     private long calculateAveragePace(double timeElapsed, double distance) {
-        return (long) (timeElapsed / distance);
+        return (long) (timeElapsed / (distance / formatter.getDistanceUnits()));
     }
 
     private void determineDataChanged() {

@@ -67,6 +67,8 @@ public interface RunContract {
         void updateTextViewPace(String currentPace);
 
         void setTextViewPaceDefaultText();
+
+        void setTextViewsDistanceUnit(String distanceUnitsString);
     }
 
     interface Presenter {

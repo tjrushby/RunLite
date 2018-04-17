@@ -8,6 +8,8 @@ import com.tjrushby.runlite.injection.modules.HandlerModule;
 import com.tjrushby.runlite.injection.modules.MainActivityModule;
 import com.tjrushby.runlite.injection.modules.RunActivityModule;
 import com.tjrushby.runlite.injection.modules.RunActivityContextModule;
+import com.tjrushby.runlite.injection.modules.RunPreferencesActivityModule;
+import com.tjrushby.runlite.injection.modules.RunPreferencesFragmentModule;
 import com.tjrushby.runlite.injection.modules.RunRepositoryModule;
 import com.tjrushby.runlite.injection.modules.StringFormatterModule;
 
@@ -22,4 +24,6 @@ public interface AppComponent {
     DetailsActivityComponent plus(DetailsActivityModule detailsActivityModule);
     MainActivityComponent plus(MainActivityModule mainActivityModule);
     RunActivityComponent plus(RunActivityModule activityModule, RunActivityContextModule contextModule);
+    RunPreferencesActivityComponent plus(RunPreferencesActivityModule runPreferencesActivityModule);
+    RunPreferencesFragmentComponent plus(RunPreferencesFragmentModule runPreferencesFragmentModule);
 }

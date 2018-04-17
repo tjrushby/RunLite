@@ -1,5 +1,8 @@
 package com.tjrushby.runlite.contracts;
 
 
-public class RunPreferencesContract {
+public interface RunPreferencesContract {
+    interface Activity {
+
+    }
 }

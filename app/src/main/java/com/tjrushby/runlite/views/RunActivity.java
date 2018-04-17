@@ -79,6 +79,10 @@ public class RunActivity extends AppCompatActivity implements RunContract.Activi
     protected TextView tvAveragePace;
     @BindView(R.id.tvTime)
     protected TextView tvTime;
+    @BindView(R.id.tvDistanceUnit)
+    protected TextView tvDistanceUnit;
+    @BindView(R.id.tvPaceUnit)
+    protected TextView tvPaceUnit;
 
     @BindView(R.id.toolbar)
     protected Toolbar toolbar;
@@ -154,7 +158,7 @@ public class RunActivity extends AppCompatActivity implements RunContract.Activi
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if(requestCode == REQUEST_HIGH_ACCURACY_GPS) {
             switch(resultCode) {
-                case Activity.RESULT_CANCELED :
+                case Activity.RESULT_CANCELED:
                     presenter.enableHighAccuracyDialogNo();
             }
         }
@@ -397,5 +401,11 @@ public class RunActivity extends AppCompatActivity implements RunContract.Activi
     @Override
     public void setTextViewPaceDefaultText() {
         tvAveragePace.setText(R.string.tv_default_pace);
+    }
+
+    @Override
+    public void setTextViewsDistanceUnit(String distanceUnitsString) {
+        tvDistanceUnit.setText(distanceUnitsString);
+        tvPaceUnit.setText("Mins/" + distanceUnitsString);
     }
 }

@@ -18,8 +18,6 @@ import com.tjrushby.runlite.views.MainActivity;
 
 import java.util.List;
 
-import timber.log.Timber;
-
 public class RunModelAdapter extends RecyclerView.Adapter<RunModelViewHolder> {
     private List<RunWithLatLng> runsList;
     private MainContract.Presenter presenter;
@@ -48,13 +46,14 @@ public class RunModelAdapter extends RecyclerView.Adapter<RunModelViewHolder> {
     public void onBindViewHolder(RunModelViewHolder holder, int position) {
         RunWithLatLng run = runsList.get(position);
 
-        double averagePace = run.run.getTimeElapsed() / run.run.getDistanceTravelled();
+        double averagePace = run.run.getTimeElapsed() /
+                (run.run.getDistanceTravelled() / formatter.getDistanceUnits());
 
         // todo need average pace stored in model class?
         holder.setDateTime(formatter.dateToString(run.run.getDateTime()));
         holder.setTimeElapsed(formatter.longToMinutesSeconds(run.run.getTimeElapsed()));
-        holder.setDistance(formatter.doubleToDistanceString(run.run.getDistanceTravelled()));
-        holder.setAveragePace(formatter.longToMinutesSeconds((long) averagePace));
+        holder.setDistance(formatter.doubleToDistanceStringWithUnits(run.run.getDistanceTravelled()));
+        holder.setAveragePace(formatter.longToAveragePaceString((long) averagePace));
 
         holder.itemView.setOnClickListener((View view) -> {
             if(view.getContext() instanceof MainActivity) {
@@ -86,7 +85,7 @@ public class RunModelAdapter extends RecyclerView.Adapter<RunModelViewHolder> {
                 long totalTime = 0;
 
                 // calculate totals from data set
-                for(RunWithLatLng run :  runsList) {
+                for (RunWithLatLng run : runsList) {
                     totalDistance += run.run.getDistanceTravelled();
                     totalTime += run.run.getTimeElapsed();
                 }
@@ -94,7 +93,7 @@ public class RunModelAdapter extends RecyclerView.Adapter<RunModelViewHolder> {
                 if(context instanceof MainActivity) {
                     ((MainActivity) context).setRunTotals(
                             Integer.toString(runsList.size()),
-                            formatter.doubleToDistanceString(totalDistance),
+                            formatter.doubleToDistanceStringWithUnits(totalDistance),
                             formatter.longToMinutesSeconds(totalTime)
                     );
                 }

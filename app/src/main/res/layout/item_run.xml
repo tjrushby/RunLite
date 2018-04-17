@@ -9,93 +9,58 @@
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="5dp">
+        android:layout_margin="@dimen/text_space"
+        android:paddingEnd="@dimen/text_space"
+        android:paddingStart="@dimen/text_space">
 
-        <android.support.constraint.Guideline
-            android:id="@+id/guidelineLeft"
+        <TextView
+            android:id="@+id/tvDistance"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            app:layout_constraintGuide_percent="0" />
+            android:text="@string/tv_default_distance_travelled"
+            android:textSize="@dimen/text_size_details"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toTopOf="@id/tvTimeElapsed"
+            app:layout_constraintTop_toTopOf="parent" />
 
-        <android.support.constraint.Guideline
-            android:id="@+id/guidelineRight"
+
+        <TextView
+            android:id="@+id/tvTimeElapsedPrefix"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            app:layout_constraintGuide_percent="1" />
+            android:text="@string/tv_time_elapsed_prefix"
+            android:layout_marginEnd="@dimen/text_space"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/tvTimeElapsed"
+            app:layout_constraintTop_toBottomOf="@id/tvDistance" />
 
-        <LinearLayout
+        <TextView
+            android:id="@+id/tvTimeElapsed"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:gravity="center"
-            android:orientation="vertical"
-            app:layout_constraintLeft_toRightOf="@id/guidelineLeft">
+            android:layout_height="wrap_content"
+            android:text="@string/tv_default_time_elapsed"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@id/tvDistance"
+            app:layout_constraintStart_toEndOf="@id/tvTimeElapsedPrefix"
+            app:layout_constraintTop_toBottomOf="@id/tvDistance" />
 
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
-
-                <TextView
-                    android:id="@+id/tvDistance"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginRight="@dimen/text_space"
-                    android:text="@string/tv_default_distance_travelled"
-                    android:textSize="@dimen/text_size_details"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/label_distance_unit_km"
-
-                    android:textStyle="bold" />
-            </LinearLayout>
-
-            <TextView
-                android:id="@+id/tvTimeElapsed"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/tv_default_time_elapsed" />
-        </LinearLayout>
-
-
-        <LinearLayout
+        <TextView
+            android:id="@+id/tvDateTime"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:gravity="right"
-            android:orientation="vertical"
-            app:layout_constraintRight_toLeftOf="@id/guidelineRight">
+            android:layout_height="wrap_content"
+            android:text="@string/tv_default_date_time"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/tvDistance" />
 
-            <TextView
-                android:id="@+id/tvDateTime"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/tv_default_date_time" />
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/label_pace_min_km"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:id="@+id/tvAveragePace"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/text_space"
-                    android:text="@string/tv_default_pace"
-                    android:textSize="@dimen/text_size_details"
-                    android:textStyle="bold"/>
-            </LinearLayout>
-
-        </LinearLayout>
+        <TextView
+            android:id="@+id/tvAveragePace"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/tv_default_pace"
+            android:textSize="@dimen/text_size_sub_details"
+            app:layout_constraintBottom_toBottomOf="@id/tvTimeElapsed"
+            app:layout_constraintEnd_toEndOf="parent" />
 
     </android.support.constraint.ConstraintLayout>
 
