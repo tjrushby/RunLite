@@ -292,7 +292,7 @@ public class RunActivity extends AppCompatActivity implements RunContract.Activi
         ImageViewCompat.setImageTintList(ivLock,
                 ColorStateList.valueOf(ContextCompat.getColor(
                         this,
-                        R.color.colorAccent)
+                        R.color.secondaryColor)
                 )
         );
     }
@@ -312,7 +312,7 @@ public class RunActivity extends AppCompatActivity implements RunContract.Activi
         ImageViewCompat.setImageTintList(ivUnlock,
                 ColorStateList.valueOf(ContextCompat.getColor(
                         this,
-                        R.color.colorAccent)
+                        R.color.secondaryColor)
                 )
         );
     }

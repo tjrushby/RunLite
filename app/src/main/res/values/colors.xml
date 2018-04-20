@@ -1,9 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#3F51B5</color>
-    <color name="colorPrimaryDark">#303F9F</color>
-    <color name="colorAccent">#FF4081</color>
-    <color name="colorGPSAverage">#FFCC00</color>
-    <color name="colorGPSBad">#FF3300</color>
-    <color name="colorGPSGood">#00FF00</color>
+    <color name="primaryColor">#2196f3</color>
+    <color name="primaryLightColor">#6ec6ff</color>
+    <color name="primaryDarkColor">#0069c0</color>
+    <color name="secondaryColor">#ffab40</color>
+    <color name="secondaryLightColor">#ffdd71</color>
+    <color name="secondaryDarkColor">#c77c02</color>
+    <color name="primaryTextColor">#000000</color>
+    <color name="secondaryTextColor">#000000</color>
+    <color name="colorGPSAverage">#FBC02D</color>
+    <color name="colorGPSBad">#D32F2F</color>
+    <color name="colorGPSGood">#388E3C</color>
 </resources>
