@@ -10,6 +10,16 @@ public class RunPreferencesFragmentPresenter implements RunPreferencesFragmentCo
     }
 
     @Override
+    public void onFragmentResumed() {
+        fragment.registerSharedPreferencesListener();
+    }
+
+    @Override
+    public void onFragmentPaused() {
+        fragment.unregisterSharedPreferencesListener();
+    }
+
+    @Override
     public void onDistanceUnitsChanged() {
         fragment.updateStringFormatterDistanceUnits();
     }

@@ -42,9 +42,14 @@ public class RunPresenter implements RunContract.Presenter {
     }
 
     @Override
-    public void onViewCreated() {
+    public void onActivityCreated() {
         view.disableSeekBar();
         view.setTextViewsDistanceUnit(formatter.getDistanceUnitsString());
+    }
+
+    @Override
+    public void onActivityResumed() {
+        view.updateColorAccentTypedValue();
     }
 
     @Override

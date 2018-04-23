@@ -33,6 +33,7 @@
     <PreferenceCategory android:title="@string/pref_label_interface">
 
         <SwitchPreference
+            android:key="@string/pref_key_dark_mode"
             android:defaultValue="false"
             android:summary="@string/pref_summary_dark_mode"
             android:title="@string/pref_title_dark_mode" />

@@ -6,6 +6,8 @@ public interface MainContract {
     interface Activity {
         void openDrawerMenu();
 
+        void closeDrawerMenu();
+
         void displayProgressBar(boolean display);
 
         void displayNoRuns(boolean display);
@@ -16,9 +18,9 @@ public interface MainContract {
 
         void startRunPreferencesActivity();
 
-        void setRunTotals(String totalRuns, String totalDistance, String totalTime);
-
         Context getContext();
+
+        void setRunTotals(String totalRuns, String totalDistance, String totalTime);
     }
 
     interface Presenter {

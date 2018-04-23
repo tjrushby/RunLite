@@ -35,12 +35,12 @@ public class RunPreferencesFragment extends PreferenceFragment
     @Override
     public void onResume() {
         super.onResume();
-        sharedPrefs.registerOnSharedPreferenceChangeListener(this);
+        presenter.onFragmentResumed();
     }
 
     @Override
     public void onPause() {
-        sharedPrefs.unregisterOnSharedPreferenceChangeListener(this);
+        presenter.onFragmentPaused();
         super.onPause();
     }
 
@@ -58,6 +58,16 @@ public class RunPreferencesFragment extends PreferenceFragment
         if(key.equals(getString(R.string.pref_key_distance_units))) {
             presenter.onDistanceUnitsChanged();
         }
+    }
+
+    @Override
+    public void registerSharedPreferencesListener() {
+        sharedPrefs.registerOnSharedPreferenceChangeListener(this);
+    }
+
+    @Override
+    public void unregisterSharedPreferencesListener() {
+        sharedPrefs.unregisterOnSharedPreferenceChangeListener(this);
     }
 
     @Override

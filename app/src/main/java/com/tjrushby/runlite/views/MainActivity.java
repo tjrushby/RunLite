@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -27,7 +26,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class MainActivity extends AppCompatActivity implements MainContract.Activity {
+public class MainActivity extends BaseActivity implements MainContract.Activity {
     @Inject
     public Intent intent;
     @Inject
@@ -54,23 +53,24 @@ public class MainActivity extends AppCompatActivity implements MainContract.Acti
     @BindView(R.id.tvTotalTime)
     protected TextView tvTotalTime;
     @BindView(R.id.toolbar)
-    public Toolbar toolbar;
+    protected Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        ButterKnife.bind(this);
 
         App.getAppComponent()
                 .plus(new MainActivityModule(this))
                 .inject(this);
 
+        setContentView(R.layout.activity_main);
+        ButterKnife.bind(this);
+
+        presenter.onActivityCreated();
+
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_menu_24dp);
-
-        presenter.onActivityCreated();
 
         recyclerView.setHasFixedSize(true);
         layoutManager.setReverseLayout(true);
@@ -78,9 +78,8 @@ public class MainActivity extends AppCompatActivity implements MainContract.Acti
         recyclerView.setAdapter(adapter);
 
         navView.setNavigationItemSelectedListener((item) -> {
-            switch(item.getItemId()) {
-                case R.id.nav_settings :
-                    drawerLayout.closeDrawers();
+            switch (item.getItemId()) {
+                case R.id.nav_settings:
                     presenter.onNavItemSettingsSelected();
             }
 
@@ -96,8 +95,8 @@ public class MainActivity extends AppCompatActivity implements MainContract.Acti
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch(item.getItemId()) {
-            case android.R.id.home :
+        switch (item.getItemId()) {
+            case android.R.id.home:
                 presenter.onHomeOptionsItemSelected();
         }
 
@@ -112,6 +111,13 @@ public class MainActivity extends AppCompatActivity implements MainContract.Acti
     @Override
     public void openDrawerMenu() {
         drawerLayout.openDrawer(GravityCompat.START);
+    }
+
+    @Override
+    public void closeDrawerMenu() {
+        if(drawerLayout.isDrawerOpen(GravityCompat.START)) {
+            drawerLayout.closeDrawer(GravityCompat.START);
+        }
     }
 
     @Override
@@ -140,6 +146,7 @@ public class MainActivity extends AppCompatActivity implements MainContract.Acti
 
     @Override
     public void startRunPreferencesActivity() {
+        drawerLayout.closeDrawers();
         intent.setClass(this, RunPreferencesActivity.class);
         startActivity(intent);
     }
@@ -151,14 +158,14 @@ public class MainActivity extends AppCompatActivity implements MainContract.Acti
     }
 
     @Override
+    public Context getContext() {
+        return this;
+    }
+
+    @Override
     public void setRunTotals(String totalRuns, String totalDistance, String totalTime) {
         tvTotalDistance.setText(totalDistance);
         tvTotalRuns.setText(totalRuns);
         tvTotalTime.setText(totalTime);
-    }
-
-    @Override
-    public Context getContext() {
-        return this;
     }
 }

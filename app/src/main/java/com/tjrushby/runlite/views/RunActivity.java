@@ -12,10 +12,10 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.ImageViewCompat;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatImageView;
 import android.support.v7.widget.AppCompatSeekBar;
 import android.support.v7.widget.Toolbar;
+import android.util.TypedValue;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
@@ -37,7 +37,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import timber.log.Timber;
 
-public class RunActivity extends AppCompatActivity implements RunContract.Activity {
+public class RunActivity extends BaseActivity implements RunContract.Activity {
     public static final int REQUEST_HIGH_ACCURACY_GPS = 254;
 
     private static final int REQUEST_PERMISSIONS = 255;
@@ -49,9 +49,11 @@ public class RunActivity extends AppCompatActivity implements RunContract.Activi
     };
 
     @Inject
-    public Intent intentRunService;
+    protected Intent intentRunService;
     @Inject
-    public RunContract.Presenter presenter;
+    protected RunContract.Presenter presenter;
+    @Inject
+    protected TypedValue typedValue;
 
     private Handler handler;
     private Runnable tick;
@@ -102,7 +104,7 @@ public class RunActivity extends AppCompatActivity implements RunContract.Activi
 
         setSupportActionBar(toolbar);
 
-        presenter.onViewCreated();
+        presenter.onActivityCreated();
 
         // check the Activity has the correct permissions, request them if not
         if(ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
@@ -132,6 +134,12 @@ public class RunActivity extends AppCompatActivity implements RunContract.Activi
 
         handler = new Handler();
         tick = () -> presenter.onTick();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        presenter.onActivityResumed();
     }
 
     @Override
@@ -270,8 +278,6 @@ public class RunActivity extends AppCompatActivity implements RunContract.Activi
 
     @Override
     public void setSeekBarProgress(int newProgress) {
-        // todo need to increase the size of the thumb, it's hard to grab on screen,
-        // todo would be a nightmare whilst running
         SeekBarAnimation animation = new SeekBarAnimation(sbLock, sbLock.getProgress(), newProgress);
         animation.setDuration(75);
         sbLock.startAnimation(animation);
@@ -289,12 +295,7 @@ public class RunActivity extends AppCompatActivity implements RunContract.Activi
 
     @Override
     public void tintIconLock() {
-        ImageViewCompat.setImageTintList(ivLock,
-                ColorStateList.valueOf(ContextCompat.getColor(
-                        this,
-                        R.color.secondaryColor)
-                )
-        );
+        ImageViewCompat.setImageTintList(ivLock, ColorStateList.valueOf(typedValue.data));
     }
 
     @Override
@@ -309,12 +310,7 @@ public class RunActivity extends AppCompatActivity implements RunContract.Activi
 
     @Override
     public void tintIconUnlock() {
-        ImageViewCompat.setImageTintList(ivUnlock,
-                ColorStateList.valueOf(ContextCompat.getColor(
-                        this,
-                        R.color.secondaryColor)
-                )
-        );
+        ImageViewCompat.setImageTintList(ivUnlock, ColorStateList.valueOf(typedValue.data));
     }
 
     /* methods for changing the state and properties of Button elements */
@@ -342,6 +338,11 @@ public class RunActivity extends AppCompatActivity implements RunContract.Activi
     @Override
     public void updateButtonStartText() {
         buttonStart.setText(R.string.button_resume);
+    }
+
+    @Override
+    public void updateColorAccentTypedValue() {
+        this.getTheme().resolveAttribute(R.attr.colorAccent, typedValue, true);
     }
 
     @Override

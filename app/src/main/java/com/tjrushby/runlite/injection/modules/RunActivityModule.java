@@ -2,6 +2,7 @@ package com.tjrushby.runlite.injection.modules;
 
 import android.content.Context;
 import android.content.Intent;
+import android.util.TypedValue;
 
 import com.tjrushby.runlite.contracts.RunContract;
 import com.tjrushby.runlite.injection.scopes.RunningActivityScope;
@@ -27,7 +28,14 @@ public class RunActivityModule {
     }
 
     @Provides
+    @RunningActivityScope
     Intent provideIntent(@Named("activity_context") Context context) {
         return new Intent(context, RunService.class);
+    }
+
+    @Provides
+    @RunningActivityScope
+    TypedValue provideTypedValues() {
+        return new TypedValue();
     }
 }

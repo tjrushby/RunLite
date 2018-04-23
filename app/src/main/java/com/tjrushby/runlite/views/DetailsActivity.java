@@ -46,7 +46,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.OnTextChanged;
 
-public class DetailsActivity extends AppCompatActivity
+public class DetailsActivity extends BaseActivity
         implements DetailsContract.Activity, TimePickerDialogListener, OnMapReadyCallback {
 
     @Inject

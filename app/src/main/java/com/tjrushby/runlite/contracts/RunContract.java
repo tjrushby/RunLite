@@ -54,6 +54,8 @@ public interface RunContract {
 
         void updateButtonStartText();
 
+        void updateColorAccentTypedValue();
+
         void updateGPSIconAverage();
 
         void updateGPSIconBad();
@@ -72,7 +74,9 @@ public interface RunContract {
     }
 
     interface Presenter {
-        void onViewCreated();
+        void onActivityCreated();
+
+        void onActivityResumed();
 
         void havePermissions();
 

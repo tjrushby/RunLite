@@ -17,6 +17,7 @@ public class MainPresenter implements MainContract.Presenter {
 
     @Override
     public void onActivityResumed() {
+        activity.closeDrawerMenu();
         activity.refreshRecyclerView();
     }
 
