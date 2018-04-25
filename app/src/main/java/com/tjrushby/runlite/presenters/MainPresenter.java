@@ -40,6 +40,7 @@ public class MainPresenter implements MainContract.Presenter {
     public void onDataAvailable() {
         activity.displayNoRuns(false);
         activity.displayProgressBar(false);
+        activity.scrollToTop();
     }
 
     @Override

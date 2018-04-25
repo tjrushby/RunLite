@@ -14,6 +14,8 @@ public interface MainContract {
 
         void refreshRecyclerView();
 
+        void scrollToTop();
+
         void startRunActivity();
 
         void startRunPreferencesActivity();

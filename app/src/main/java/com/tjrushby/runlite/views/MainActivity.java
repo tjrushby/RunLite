@@ -145,6 +145,12 @@ public class MainActivity extends BaseActivity implements MainContract.Activity 
     }
 
     @Override
+    public void scrollToTop() {
+        // scroll to itemCount - 1 as recyclerView.layoutManager uses reverse layout
+        recyclerView.scrollToPosition(recyclerView.getAdapter().getItemCount() - 1);
+    }
+
+    @Override
     public void startRunPreferencesActivity() {
         drawerLayout.closeDrawers();
         intent.setClass(this, RunPreferencesActivity.class);
