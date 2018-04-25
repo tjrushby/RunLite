@@ -17,13 +17,25 @@ public class MainPresenter implements MainContract.Presenter {
 
     @Override
     public void onActivityResumed() {
-        activity.closeDrawerMenu();
+        if(activity.getDrawerVisible()) {
+            activity.closeDrawerMenu();
+        }
+
         activity.refreshRecyclerView();
     }
 
     @Override
     public void onHomeOptionsItemSelected() {
         activity.openDrawerMenu();
+    }
+
+    @Override
+    public void onBackPressed() {
+        if(activity.getDrawerVisible()) {
+            activity.closeDrawerMenu();
+        } else {
+            activity.endActivity();
+        }
     }
 
     @Override

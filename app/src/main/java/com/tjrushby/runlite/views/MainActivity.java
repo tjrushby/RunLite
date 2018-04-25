@@ -103,6 +103,11 @@ public class MainActivity extends BaseActivity implements MainContract.Activity 
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    public void onBackPressed() {
+        presenter.onBackPressed();
+    }
+
     @OnClick(R.id.fabStartRun)
     public void fabClicked() {
         presenter.onFabStartRunPressed();
@@ -115,9 +120,7 @@ public class MainActivity extends BaseActivity implements MainContract.Activity 
 
     @Override
     public void closeDrawerMenu() {
-        if(drawerLayout.isDrawerOpen(GravityCompat.START)) {
-            drawerLayout.closeDrawer(GravityCompat.START);
-        }
+        drawerLayout.closeDrawer(GravityCompat.START);
     }
 
     @Override
@@ -151,10 +154,8 @@ public class MainActivity extends BaseActivity implements MainContract.Activity 
     }
 
     @Override
-    public void startRunPreferencesActivity() {
-        drawerLayout.closeDrawers();
-        intent.setClass(this, RunPreferencesActivity.class);
-        startActivity(intent);
+    public void endActivity() {
+        this.finish();
     }
 
     @Override
@@ -164,8 +165,24 @@ public class MainActivity extends BaseActivity implements MainContract.Activity 
     }
 
     @Override
+    public void startRunPreferencesActivity() {
+        drawerLayout.closeDrawers();
+        intent.setClass(this, RunPreferencesActivity.class);
+        startActivity(intent);
+    }
+
+    @Override
     public Context getContext() {
         return this;
+    }
+
+    @Override
+    public boolean getDrawerVisible() {
+        if(drawerLayout.isDrawerOpen(GravityCompat.START)) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     @Override

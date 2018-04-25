@@ -16,11 +16,15 @@ public interface MainContract {
 
         void scrollToTop();
 
+        void endActivity();
+
         void startRunActivity();
 
         void startRunPreferencesActivity();
 
         Context getContext();
+
+        boolean getDrawerVisible();
 
         void setRunTotals(String totalRuns, String totalDistance, String totalTime);
     }
@@ -31,6 +35,8 @@ public interface MainContract {
         void onActivityResumed();
 
         void onHomeOptionsItemSelected();
+
+        void onBackPressed();
 
         void onNavItemSettingsSelected();
 
