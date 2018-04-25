@@ -8,22 +8,35 @@ import android.support.v7.app.AppCompatActivity;
 
 import com.tjrushby.runlite.R;
 
+import timber.log.Timber;
+
 public abstract class BaseActivity extends AppCompatActivity {
     private boolean checkedDarkThemeEnabled;
+    private boolean changedTheme;
+
+    // int used to denote the currently applied theme: 0 for light, 1 for dark
+    private int currentTheme;
 
     protected SharedPreferences sharedPrefs;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+        currentTheme = 0;
         checkDarkThemeEnabled();
+
+        super.onCreate(savedInstanceState);
     }
 
     @Override
     protected void onResume() {
+        // only check the theme once to avoid looping between onCreate() and onResume()
         if(!checkedDarkThemeEnabled) {
             checkDarkThemeEnabled();
-            restartActivity();
+
+            if(changedTheme) {
+                // theme has been changed since last draw, restart the activity to reflect this
+                restartActivity();
+            }
         }
 
         super.onResume();
@@ -48,10 +61,24 @@ public abstract class BaseActivity extends AppCompatActivity {
     }
 
     private void checkDarkThemeEnabled() {
-        if(getDarkThemeEnabled()) {
+        boolean darkThemeEnabled = getDarkThemeEnabled();
+
+        if(darkThemeEnabled && currentTheme == 0) {
+            // dark theme is enabled but the light theme is currently applied, set the dark theme
+            // and flag that the theme has been changed since last draw
             setDarkTheme();
-        } else {
+            currentTheme = 1;
+            changedTheme = true;
+        } else if(!darkThemeEnabled && currentTheme == 1){
+            // dark theme is disabled but is currently applied, set the dark theme and flag that
+            // the theme has been changed since last draw
             setLightTheme();
+            currentTheme = 0;
+            changedTheme = true;
+        } else {
+            // the selected theme is currently applied, flag that the theme has not been changed
+            // since last draw
+            changedTheme = false;
         }
 
         checkedDarkThemeEnabled = true;
