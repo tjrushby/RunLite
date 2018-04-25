@@ -4,23 +4,25 @@ import android.content.Context;
 
 public interface MainContract {
     interface Activity {
-        void openDrawerMenu();
-
-        void closeDrawerMenu();
-
-        void displayProgressBar(boolean display);
-
-        void displayNoRuns(boolean display);
-
-        void refreshRecyclerView();
-
-        void scrollToTop();
-
         void endActivity();
 
         void startRunActivity();
 
         void startRunPreferencesActivity();
+
+        void displayProgressBar(boolean display);
+
+        void expandToolbar();
+
+        void refreshRecyclerView();
+
+        void scrollToTop();
+
+        void displayNoRuns(boolean display);
+
+        void openDrawerMenu();
+
+        void closeDrawerMenu();
 
         Context getContext();
 
@@ -42,7 +44,7 @@ public interface MainContract {
 
         void onFabStartRunPressed();
 
-        void onDataAvailable();
+        void onDataAvailable(boolean newData);
 
         void onDataNotAvailable();
     }

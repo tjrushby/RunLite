@@ -49,10 +49,14 @@ public class MainPresenter implements MainContract.Presenter {
     }
 
     @Override
-    public void onDataAvailable() {
+    public void onDataAvailable(boolean newData) {
         activity.displayNoRuns(false);
         activity.displayProgressBar(false);
-        activity.scrollToTop();
+
+        if(newData) {
+            activity.scrollToTop();
+            activity.expandToolbar();
+        }
     }
 
     @Override

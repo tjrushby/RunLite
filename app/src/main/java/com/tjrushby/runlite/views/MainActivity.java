@@ -3,6 +3,7 @@ package com.tjrushby.runlite.views;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -36,6 +37,8 @@ public class MainActivity extends BaseActivity implements MainContract.Activity 
     @Inject
     public RunModelAdapter adapter;
 
+    @BindView(R.id.appBarLayout)
+    protected AppBarLayout appBarLayout;
     @BindView(R.id.drawerLayout)
     protected DrawerLayout drawerLayout;
     @BindView(R.id.navView)
@@ -114,46 +117,6 @@ public class MainActivity extends BaseActivity implements MainContract.Activity 
     }
 
     @Override
-    public void openDrawerMenu() {
-        drawerLayout.openDrawer(GravityCompat.START);
-    }
-
-    @Override
-    public void closeDrawerMenu() {
-        drawerLayout.closeDrawer(GravityCompat.START);
-    }
-
-    @Override
-    public void displayProgressBar(boolean display) {
-        if(display) {
-            progressBar.setVisibility(View.VISIBLE);
-            progressBar.bringToFront();
-        } else {
-            progressBar.setVisibility(View.GONE);
-        }
-    }
-
-    @Override
-    public void displayNoRuns(boolean display) {
-        if(display) {
-            tvNoRuns.setVisibility(View.VISIBLE);
-        } else {
-            tvNoRuns.setVisibility(View.GONE);
-        }
-    }
-
-    @Override
-    public void refreshRecyclerView() {
-        adapter.loadRuns(this);
-    }
-
-    @Override
-    public void scrollToTop() {
-        // scroll to itemCount - 1 as recyclerView.layoutManager uses reverse layout
-        recyclerView.scrollToPosition(recyclerView.getAdapter().getItemCount() - 1);
-    }
-
-    @Override
     public void endActivity() {
         this.finish();
     }
@@ -169,6 +132,51 @@ public class MainActivity extends BaseActivity implements MainContract.Activity 
         drawerLayout.closeDrawers();
         intent.setClass(this, RunPreferencesActivity.class);
         startActivity(intent);
+    }
+
+    @Override
+    public void displayProgressBar(boolean display) {
+        if(display) {
+            progressBar.setVisibility(View.VISIBLE);
+            progressBar.bringToFront();
+        } else {
+            progressBar.setVisibility(View.GONE);
+        }
+    }
+
+    @Override
+    public void expandToolbar() {
+        appBarLayout.setExpanded(true);
+    }
+
+    @Override
+    public void refreshRecyclerView() {
+        adapter.loadRuns(this);
+    }
+
+    @Override
+    public void scrollToTop() {
+        // scroll to itemCount - 1 as recyclerView.layoutManager uses reverse layout
+        recyclerView.scrollToPosition(recyclerView.getAdapter().getItemCount() - 1);
+    }
+
+    @Override
+    public void displayNoRuns(boolean display) {
+        if(display) {
+            tvNoRuns.setVisibility(View.VISIBLE);
+        } else {
+            tvNoRuns.setVisibility(View.GONE);
+        }
+    }
+
+    @Override
+    public void openDrawerMenu() {
+        drawerLayout.openDrawer(GravityCompat.START);
+    }
+
+    @Override
+    public void closeDrawerMenu() {
+        drawerLayout.closeDrawer(GravityCompat.START);
     }
 
     @Override

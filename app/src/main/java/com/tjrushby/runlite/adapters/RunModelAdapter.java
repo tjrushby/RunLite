@@ -76,29 +76,34 @@ public class RunModelAdapter extends RecyclerView.Adapter<RunModelViewHolder> {
         runRepository.getRuns(new RunDataSource.LoadRunsCallback() {
             @Override
             public void onRunsLoaded(List<RunWithLatLng> runs) {
-                // clear the current contents of runsList and then repopulate using records
-                // from the database
-                runsList.clear();
-                runsList.addAll(runs);
+                if(!runsList.equals(runs)) {
+                    // clear the current contents of runsList and then repopulate using new records
+                    // from the database
+                    runsList.clear();
+                    runsList.addAll(runs);
 
-                double totalDistance = 0;
-                long totalTime = 0;
+                    double totalDistance = 0;
+                    long totalTime = 0;
 
-                // calculate totals from data set
-                for (RunWithLatLng run : runsList) {
-                    totalDistance += run.run.getDistanceTravelled();
-                    totalTime += run.run.getTimeElapsed();
+                    // calculate totals from data set
+                    for (RunWithLatLng run : runsList) {
+                        totalDistance += run.run.getDistanceTravelled();
+                        totalTime += run.run.getTimeElapsed();
+                    }
+
+                    if(context instanceof MainActivity) {
+                        ((MainActivity) context).setRunTotals(
+                                Integer.toString(runsList.size()),
+                                formatter.doubleToDistanceStringWithUnits(totalDistance),
+                                formatter.longToMinutesSeconds(totalTime)
+                        );
+                    }
+
+                    presenter.onDataAvailable(true);
+                } else {
+                    presenter.onDataAvailable(false);
                 }
 
-                if(context instanceof MainActivity) {
-                    ((MainActivity) context).setRunTotals(
-                            Integer.toString(runsList.size()),
-                            formatter.doubleToDistanceStringWithUnits(totalDistance),
-                            formatter.longToMinutesSeconds(totalTime)
-                    );
-                }
-
-                presenter.onDataAvailable();
                 notifyDataSetChanged();
             }
 
