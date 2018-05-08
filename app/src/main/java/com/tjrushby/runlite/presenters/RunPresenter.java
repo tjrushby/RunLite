@@ -125,6 +125,11 @@ public class RunPresenter implements RunContract.Presenter {
         // pause the timer
         view.pauseTick();
 
+        // disable the SeekBar and fade associated ImageView objects
+        view.disableSeekBar();
+        view.fadeIconLock();
+        view.fadeIconUnlock();
+
         // hide the pause button and display the start button, setting the start button text to resume
         view.hideButtonPause();
         view.showButtonStart();

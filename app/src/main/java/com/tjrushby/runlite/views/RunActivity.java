@@ -13,7 +13,6 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.ImageViewCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.AppCompatImageView;
-import android.support.v7.widget.AppCompatSeekBar;
 import android.support.v7.widget.Toolbar;
 import android.util.TypedValue;
 import android.view.View;
@@ -29,15 +28,16 @@ import com.tjrushby.runlite.contracts.RunContract;
 import com.tjrushby.runlite.injection.modules.RunActivityContextModule;
 import com.tjrushby.runlite.injection.modules.RunActivityModule;
 import com.tjrushby.runlite.util.SeekBarAnimation;
+import com.tjrushby.runlite.util.ThumbOnlySeekBar;
 
 import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import timber.log.Timber;
 
-public class RunActivity extends BaseActivity implements RunContract.Activity {
+public class RunActivity extends BaseActivity
+        implements RunContract.Activity, ThumbOnlySeekBar.OnSeekBarChangeListener {
     public static final int REQUEST_HIGH_ACCURACY_GPS = 254;
 
     private static final int REQUEST_PERMISSIONS = 255;
@@ -66,7 +66,7 @@ public class RunActivity extends BaseActivity implements RunContract.Activity {
     protected AppCompatImageView ivUnlock;
 
     @BindView(R.id.sbLock)
-    protected AppCompatSeekBar sbLock;
+    protected ThumbOnlySeekBar sbLock;
 
     @BindView(R.id.buttonPause)
     protected Button buttonPause;
@@ -99,9 +99,6 @@ public class RunActivity extends BaseActivity implements RunContract.Activity {
                 .plus(new RunActivityModule(this), new RunActivityContextModule(this))
                 .inject(this);
 
-        Timber.d("view: " + this);
-        Timber.d("presenter: " + presenter);
-
         setSupportActionBar(toolbar);
 
         presenter.onActivityCreated();
@@ -115,22 +112,7 @@ public class RunActivity extends BaseActivity implements RunContract.Activity {
             presenter.havePermissions();
         }
 
-        sbLock.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            @Override
-            public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
-
-            }
-
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
-
-            }
-
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
-                presenter.onSeekBarChanged();
-            }
-        });
+        sbLock.setOnSeekBarChangeListener(this);
 
         handler = new Handler();
         tick = () -> presenter.onTick();
@@ -165,7 +147,7 @@ public class RunActivity extends BaseActivity implements RunContract.Activity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if(requestCode == REQUEST_HIGH_ACCURACY_GPS) {
-            switch(resultCode) {
+            switch (resultCode) {
                 case Activity.RESULT_CANCELED:
                     presenter.enableHighAccuracyDialogNo();
             }
@@ -198,7 +180,6 @@ public class RunActivity extends BaseActivity implements RunContract.Activity {
 
     @Override
     public void startService() {
-        Timber.d("Calling startService()");
         startService(intentRunService);
     }
 
@@ -408,5 +389,16 @@ public class RunActivity extends BaseActivity implements RunContract.Activity {
     public void setTextViewsDistanceUnit(String distanceUnitsString) {
         tvDistanceUnit.setText(distanceUnitsString);
         tvPaceUnit.setText("Mins/" + distanceUnitsString);
+    }
+
+    @Override
+    public void onProgressChanged(SeekBar seekBar, int i, boolean b) {}
+
+    @Override
+    public void onStartTrackingTouch(SeekBar seekBar) {}
+
+    @Override
+    public void onStopTrackingTouch(SeekBar seekBar) {
+        presenter.onSeekBarChanged();
     }
 }
