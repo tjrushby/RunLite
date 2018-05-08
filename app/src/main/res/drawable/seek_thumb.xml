@@ -6,10 +6,10 @@
             android:thickness="4dp"
             android:useLevel="false">
             <solid
-                android:color="@color/thumb" />
+                android:color="@color/seek_thumb" />
             <size
-                android:width="24dp"
-                android:height="24dp" />
+                android:width="@dimen/seek_thumb_height"
+                android:height="@dimen/seek_thumb_height" />
         </shape>
     </item>
 </layer-list>
