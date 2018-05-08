@@ -158,7 +158,7 @@ public class RunPresenter implements RunContract.Presenter {
     @Override
     public void endRunAlertDialogYes() {
         model.setTimeElapsed(timeElapsed);
-        if(model.getDistanceTravelled() > 0) {
+        if(model.getDistanceTravelled() > 0.01) {
             Timber.d("if");
             runRepository.saveRun((Run) model, runLatLngList, runId -> view.endRun(Long.toString(runId)));
         } else {
