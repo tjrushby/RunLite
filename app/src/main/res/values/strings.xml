@@ -47,6 +47,7 @@
     <string name="toast_gps_mode">
         High Accuracy GPS needs to be enabled in order to use this feature
     </string>
+    <string name="toast_no_save_distance_low">Distance travelled too low. Run not saved</string>
     <string name="tv_default_date_time">01/01/2017, 12:00</string>
     <string name="tv_default_distance_travelled">0.00</string>
     <string name="tv_default_number_of_runs">0</string>

@@ -210,6 +210,11 @@ public class RunActivity extends BaseActivity
     }
 
     @Override
+    public void displayNoSaveToast() {
+        Toast.makeText(this, R.string.toast_no_save_distance_low, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
     public void displayEndRunAlertDialog() {
         new AlertDialog.Builder(this)
                 .setTitle("End Run?")

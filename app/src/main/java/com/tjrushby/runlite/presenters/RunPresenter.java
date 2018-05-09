@@ -163,6 +163,7 @@ public class RunPresenter implements RunContract.Presenter {
             runRepository.saveRun((Run) model, runLatLngList, runId -> view.endRun(Long.toString(runId)));
         } else {
             Timber.d("else");
+            view.displayNoSaveToast();
             view.endActivity();
         }
 

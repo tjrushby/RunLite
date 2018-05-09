@@ -16,6 +16,8 @@ public interface RunContract {
 
         void displayGPSModeToast();
 
+        void displayNoSaveToast();
+
         void displayEndRunAlertDialog();
 
         void displayExitAlertDialog();
