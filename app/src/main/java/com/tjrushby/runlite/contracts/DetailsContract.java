@@ -28,6 +28,10 @@ public interface DetailsContract {
 
         void displayNotFoundErrorToast();
 
+        void displayRunDeletedToast();
+
+        void displayRunUpdatedToast();
+
         void displayEditTextDistanceEmptyError();
 
         void displayEditTextDistanceNoNumbersError();

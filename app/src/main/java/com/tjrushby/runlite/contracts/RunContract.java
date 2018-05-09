@@ -18,6 +18,8 @@ public interface RunContract {
 
         void displayNoSaveToast();
 
+        void displaySaveToast();
+
         void displayEndRunAlertDialog();
 
         void displayExitAlertDialog();

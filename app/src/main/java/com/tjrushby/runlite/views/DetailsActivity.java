@@ -243,6 +243,16 @@ public class DetailsActivity extends BaseActivity
     }
 
     @Override
+    public void displayRunDeletedToast() {
+        Toast.makeText(this, R.string.toast_run_deleted, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void displayRunUpdatedToast() {
+        Toast.makeText(this, R.string.toast_run_updated, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
     public void displayEditTextDistanceEmptyError() {
         tilDistance.setError(getString(R.string.error_edit_text_distance_empty));
     }

@@ -94,6 +94,7 @@ public class DetailsPresenter implements DetailsContract.Presenter {
     @Override
     public void onButtonUpdateClicked() {
         updateRun();
+        view.displayRunUpdatedToast();
         view.endActivity();
     }
 
@@ -101,6 +102,7 @@ public class DetailsPresenter implements DetailsContract.Presenter {
     public void onDeleteRunAlertDialogYes() {
         // delete run from database
         runRepository.deleteRun(runWithLatLng.run);
+        view.displayRunDeletedToast();
         view.endActivity();
     }
 

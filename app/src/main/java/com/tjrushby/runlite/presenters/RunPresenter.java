@@ -161,6 +161,7 @@ public class RunPresenter implements RunContract.Presenter {
         if(model.getDistanceTravelled() > 0.01) {
             Timber.d("if");
             runRepository.saveRun((Run) model, runLatLngList, runId -> view.endRun(Long.toString(runId)));
+            view.displaySaveToast();
         } else {
             Timber.d("else");
             view.displayNoSaveToast();
