@@ -9,9 +9,11 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SwitchCompat;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.CompoundButton;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -26,8 +28,10 @@ import javax.inject.Inject;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import timber.log.Timber;
 
-public class MainActivity extends BaseActivity implements MainContract.Activity {
+public class MainActivity extends BaseActivity
+        implements MainContract.Activity, CompoundButton.OnCheckedChangeListener {
     @Inject
     public Intent intent;
     @Inject
@@ -58,9 +62,13 @@ public class MainActivity extends BaseActivity implements MainContract.Activity 
     @BindView(R.id.toolbar)
     protected Toolbar toolbar;
 
+    private SwitchCompat switchDarkMode;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        Timber.d("onCreate()");
 
         App.getAppComponent()
                 .plus(new MainActivityModule(this))
@@ -88,6 +96,12 @@ public class MainActivity extends BaseActivity implements MainContract.Activity 
 
             return true;
         });
+
+        if(navView.getMenu().findItem(R.id.nav_dark_mode).getActionView() instanceof SwitchCompat) {
+            switchDarkMode =
+                    (SwitchCompat) navView.getMenu().findItem(R.id.nav_dark_mode).getActionView();
+            switchDarkMode.setOnCheckedChangeListener(this);
+        }
     }
 
     @Override
@@ -122,6 +136,13 @@ public class MainActivity extends BaseActivity implements MainContract.Activity 
     }
 
     @Override
+    public void restartActivityWithFadeInOut() {
+        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+        startActivity(intent.setClass(this, this.getClass()));
+        this.finish();
+    }
+
+    @Override
     public void startRunActivity() {
         intent.setClass(this, RunActivity.class);
         startActivity(intent);
@@ -129,7 +150,6 @@ public class MainActivity extends BaseActivity implements MainContract.Activity 
 
     @Override
     public void startRunPreferencesActivity() {
-        drawerLayout.closeDrawers();
         intent.setClass(this, RunPreferencesActivity.class);
         startActivity(intent);
     }
@@ -185,6 +205,12 @@ public class MainActivity extends BaseActivity implements MainContract.Activity 
     }
 
     @Override
+    public boolean getDarkThemeEnabled() {
+        Timber.d("getDarkThemeEnabled(): " + super.getDarkThemeEnabled());
+        return super.getDarkThemeEnabled();
+    }
+
+    @Override
     public boolean getDrawerVisible() {
         if(drawerLayout.isDrawerOpen(GravityCompat.START)) {
             return true;
@@ -194,9 +220,37 @@ public class MainActivity extends BaseActivity implements MainContract.Activity 
     }
 
     @Override
+    public boolean getThemeChanged() {
+        return super.changedTheme;
+    }
+
+    @Override
+    public void setSwitchDarkModeChecked(boolean checked) {
+        if(navView.getMenu().findItem(R.id.nav_dark_mode).getActionView() instanceof SwitchCompat) {
+            ((SwitchCompat) navView.getMenu().findItem(R.id.nav_dark_mode).getActionView())
+                    .setChecked(checked);
+        }
+    }
+
+    @Override
     public void setRunTotals(String totalRuns, String totalDistance, String totalTime) {
         tvTotalDistance.setText(totalDistance);
         tvTotalRuns.setText(totalRuns);
         tvTotalTime.setText(totalTime);
+    }
+
+    @Override
+    public void setSharedPrefsDarkMode() {
+        super.sharedPrefs.edit()
+                .putBoolean(
+                        getString(R.string.pref_key_dark_mode),
+                        ((SwitchCompat) navView.getMenu().findItem(R.id.nav_dark_mode).getActionView())
+                                .isChecked()
+                ).apply();
+    }
+
+    @Override
+    public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+        presenter.onNavItemDarkModeChecked();
     }
 }

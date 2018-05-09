@@ -6,6 +6,8 @@ public interface MainContract {
     interface Activity {
         void endActivity();
 
+        void restartActivityWithFadeInOut();
+
         void startRunActivity();
 
         void startRunPreferencesActivity();
@@ -26,9 +28,17 @@ public interface MainContract {
 
         Context getContext();
 
+        boolean getDarkThemeEnabled();
+
         boolean getDrawerVisible();
 
+        boolean getThemeChanged();
+
+        void setSwitchDarkModeChecked(boolean checked);
+
         void setRunTotals(String totalRuns, String totalDistance, String totalTime);
+
+        void setSharedPrefsDarkMode();
     }
 
     interface Presenter {
@@ -39,6 +49,8 @@ public interface MainContract {
         void onHomeOptionsItemSelected();
 
         void onBackPressed();
+
+        void onNavItemDarkModeChecked();
 
         void onNavItemSettingsSelected();
 

@@ -1,6 +1,5 @@
 package com.tjrushby.runlite.presenters;
 
-
 import com.tjrushby.runlite.contracts.MainContract;
 
 public class MainPresenter implements MainContract.Presenter {
@@ -13,12 +12,20 @@ public class MainPresenter implements MainContract.Presenter {
     @Override
     public void onActivityCreated() {
         activity.displayProgressBar(true);
+
+        if(activity.getThemeChanged()) {
+            activity.setSwitchDarkModeChecked(activity.getDarkThemeEnabled());
+        }
     }
 
     @Override
     public void onActivityResumed() {
         if(activity.getDrawerVisible()) {
             activity.closeDrawerMenu();
+        }
+
+        if(activity.getThemeChanged()) {
+            activity.setSwitchDarkModeChecked(activity.getDarkThemeEnabled());
         }
 
         activity.refreshRecyclerView();
@@ -39,7 +46,15 @@ public class MainPresenter implements MainContract.Presenter {
     }
 
     @Override
+    public void onNavItemDarkModeChecked() {
+        activity.closeDrawerMenu();
+        activity.setSharedPrefsDarkMode();
+        activity.restartActivityWithFadeInOut();
+    }
+
+    @Override
     public void onNavItemSettingsSelected() {
+        activity.closeDrawerMenu();
         activity.startRunPreferencesActivity();
     }
 

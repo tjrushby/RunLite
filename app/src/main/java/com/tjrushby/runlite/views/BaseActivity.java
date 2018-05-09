@@ -12,10 +12,11 @@ import timber.log.Timber;
 
 public abstract class BaseActivity extends AppCompatActivity {
     private boolean checkedDarkThemeEnabled;
-    private boolean changedTheme;
+
+    protected boolean changedTheme;
 
     // int used to denote the currently applied theme: 0 for light, 1 for dark
-    private int currentTheme;
+    protected int currentTheme;
 
     protected SharedPreferences sharedPrefs;
 
@@ -35,6 +36,7 @@ public abstract class BaseActivity extends AppCompatActivity {
 
             if(changedTheme) {
                 // theme has been changed since last draw, restart the activity to reflect this
+                Timber.d("theme changed. restarting activity...");
                 restartActivity();
             }
         }
@@ -69,7 +71,7 @@ public abstract class BaseActivity extends AppCompatActivity {
             setDarkTheme();
             currentTheme = 1;
             changedTheme = true;
-        } else if(!darkThemeEnabled && currentTheme == 1){
+        } else if(!darkThemeEnabled && currentTheme == 1) {
             // dark theme is disabled but is currently applied, set the dark theme and flag that
             // the theme has been changed since last draw
             setLightTheme();
@@ -84,7 +86,7 @@ public abstract class BaseActivity extends AppCompatActivity {
         checkedDarkThemeEnabled = true;
     }
 
-    private boolean getDarkThemeEnabled() {
+    protected boolean getDarkThemeEnabled() {
         if(sharedPrefs == null) {
             sharedPrefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         }
