@@ -8,8 +8,6 @@ import android.support.v7.app.AppCompatActivity;
 
 import com.tjrushby.runlite.R;
 
-import timber.log.Timber;
-
 public abstract class BaseActivity extends AppCompatActivity {
     private boolean checkedDarkThemeEnabled;
 
@@ -36,7 +34,6 @@ public abstract class BaseActivity extends AppCompatActivity {
 
             if(changedTheme) {
                 // theme has been changed since last draw, restart the activity to reflect this
-                Timber.d("theme changed. restarting activity...");
                 restartActivity();
             }
         }

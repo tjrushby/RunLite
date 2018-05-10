@@ -11,6 +11,8 @@
     <string name="button_start">Start</string>
     <string name="button_stop">Stop</string>
     <string name="button_update">Update</string>
+    <string name="channel_name">RunLite</string>
+    <string name="channel_description">Run Info</string>
     <string name="dialog_number_picker_message">Minutes : Seconds</string>
     <string name="dialog_number_picker_title">Edit Time Elapsed</string>
     <string name="drawer_label_settings">Settings</string>
@@ -27,6 +29,7 @@
     <string name="label_runs">Runs</string>
     <string name="label_time_elapsed">Time Elapsed</string>
     <string name="nav_main_header_title">RunLite</string>
+    <string name="notification_default_content_title">Running</string>
     <string name="pref_file_key">com.tjrushby.runlite.PREF_FILE_KEY</string>
     <string name="pref_label_general">General</string>
     <string name="pref_key_dark_mode">pref_dark_mode</string>

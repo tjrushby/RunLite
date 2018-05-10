@@ -41,6 +41,7 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".views.RunActivity"
+            android:launchMode="singleTask"
             android:screenOrientation="portrait" />
         <activity
             android:name=".views.RunPreferencesActivity"

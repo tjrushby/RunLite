@@ -28,7 +28,6 @@ import javax.inject.Inject;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import timber.log.Timber;
 
 public class MainActivity extends BaseActivity
         implements MainContract.Activity, CompoundButton.OnCheckedChangeListener {
@@ -67,8 +66,6 @@ public class MainActivity extends BaseActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        Timber.d("onCreate()");
 
         App.getAppComponent()
                 .plus(new MainActivityModule(this))
@@ -206,7 +203,6 @@ public class MainActivity extends BaseActivity
 
     @Override
     public boolean getDarkThemeEnabled() {
-        Timber.d("getDarkThemeEnabled(): " + super.getDarkThemeEnabled());
         return super.getDarkThemeEnabled();
     }
 

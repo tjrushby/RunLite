@@ -62,6 +62,9 @@ public class RunPresenter implements RunContract.Presenter {
         if(timeElapsed > 0) {
             view.displayExitAlertDialog();
         } else {
+            Timber.d("else");
+            service.stopLocationUpdates();
+            view.removeNotification();
             view.endActivity();
         }
     }
@@ -85,6 +88,13 @@ public class RunPresenter implements RunContract.Presenter {
         } else {
             view.updateTextViewPace(formatter.longToMinutesSeconds((long) averagePace));
         }
+
+        // update notification
+        view.setNotificationContent(
+                formatter.longToMinutesSeconds(timeElapsed) + " · "
+                + formatter.doubleToDistanceString(model.getDistanceTravelled())
+                + formatter.getDistanceUnitsString()
+        );
 
         determineGPSIcon(model.getCurrentAccuracy());
         view.updateTextViewTime(formatter.longToMinutesSeconds(timeElapsed));
@@ -111,6 +121,15 @@ public class RunPresenter implements RunContract.Presenter {
         // start the timer
         view.nextTick();
 
+        if(timeElapsed == 0) {
+            // display a notification
+            view.displayNotification();
+        } else {
+            // if timeElapsed > 0 then the run has already been started and is now being un-paused
+            // set the existing notification text to "Running" as it will currently be "Paused"
+            view.setNotificationContentTitle("Running");
+        }
+
         // hide the start button and display the pause button, disable the stop button
         view.hideButtonStart();
         view.showButtonPause();
@@ -135,6 +154,9 @@ public class RunPresenter implements RunContract.Presenter {
         view.showButtonStart();
         view.updateButtonStartText();
         view.setTextViewPaceDefaultText();
+
+        // update the notification
+        view.setNotificationContentTitle("Paused");
     }
 
     // end the view Activity
@@ -157,23 +179,30 @@ public class RunPresenter implements RunContract.Presenter {
 
     @Override
     public void endRunAlertDialogYes() {
+        view.pauseTick();
         model.setTimeElapsed(timeElapsed);
+
         if(model.getDistanceTravelled() > 0.01) {
-            Timber.d("if");
-            runRepository.saveRun((Run) model, runLatLngList, runId -> view.endRun(Long.toString(runId)));
+            runRepository.saveRun(
+                    (Run) model, runLatLngList,
+                    runId -> view.startDetailsActivity(Long.toString(runId))
+            );
+
             view.displaySaveToast();
         } else {
-            Timber.d("else");
             view.displayNoSaveToast();
             view.endActivity();
         }
 
+        view.removeNotification();
         service.stopLocationUpdates();
     }
 
     @Override
     public void exitRunAlertDialogYes() {
+        view.pauseTick();
         view.endActivity();
+        view.removeNotification();
         service.stopLocationUpdates();
     }
 

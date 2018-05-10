@@ -12,7 +12,7 @@ public interface RunContract {
 
         void endActivity();
 
-        void endRun(String runId);
+        void startDetailsActivity(String runId);
 
         void displayGPSModeToast();
 
@@ -23,6 +23,14 @@ public interface RunContract {
         void displayEndRunAlertDialog();
 
         void displayExitAlertDialog();
+
+        void displayNotification();
+
+        void removeNotification();
+
+        void setNotificationContent(String content);
+
+        void setNotificationContentTitle(String contentTitle);
 
         void defaultScreenTimeout();
 

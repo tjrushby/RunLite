@@ -2,13 +2,19 @@ package com.tjrushby.runlite.views;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.ColorStateList;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.NotificationManagerCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.ImageViewCompat;
 import android.support.v7.app.AlertDialog;
@@ -36,17 +42,26 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
+import static android.support.v4.app.NotificationCompat.VISIBILITY_PUBLIC;
+
 public class RunActivity extends BaseActivity
         implements RunContract.Activity, ThumbOnlySeekBar.OnSeekBarChangeListener {
     public static final int REQUEST_HIGH_ACCURACY_GPS = 254;
 
     private static final int REQUEST_PERMISSIONS = 255;
 
+    private static final int NOTIFICATION_ID = 666;
+
+    private static final String CHANNEL_ID = "1";
+
     private final String[] permissions = {
             Manifest.permission.ACCESS_FINE_LOCATION,
             Manifest.permission.ACCESS_NETWORK_STATE,
             Manifest.permission.INTERNET
     };
+
+    private NotificationCompat.Builder notifBuilder;
+    private NotificationManagerCompat notifManager;
 
     @Inject
     protected Intent intentRunService;
@@ -116,6 +131,27 @@ public class RunActivity extends BaseActivity
 
         handler = new Handler();
         tick = () -> presenter.onTick();
+
+        notifBuilder = new NotificationCompat.Builder(this, CHANNEL_ID);
+
+        // set the notification to be ongoing so it can't be dismissed
+        notifBuilder.setOngoing(true);
+
+        // set the notification visibility so that all details can be viewed on the lock screen
+        notifBuilder.setVisibility(VISIBILITY_PUBLIC);
+
+        // set the click action for the notification to resume this activity
+        notifBuilder.setContentIntent(
+                PendingIntent.getActivity(
+                        this,
+                        0,
+                        new Intent(this, this.getClass()),
+                        PendingIntent.FLAG_UPDATE_CURRENT)
+        );
+
+        notifManager = NotificationManagerCompat.from(this);
+
+        createNotificationChannel();
     }
 
     @Override
@@ -159,6 +195,21 @@ public class RunActivity extends BaseActivity
         presenter.onBackPressed();
     }
 
+    private void createNotificationChannel() {
+        // create the NotificationChannel, but only on API 26+ because
+        // the NotificationChannel class is new and not in the support library
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            CharSequence name = getString(R.string.channel_name);
+            String description = getString(R.string.channel_description);
+            int importance = NotificationManager.IMPORTANCE_DEFAULT;
+            NotificationChannel channel = new NotificationChannel(CHANNEL_ID, name, importance);
+            channel.setDescription(description);
+            // register the channel with the system; you can't change the importance
+            // or other notification behaviors after this
+            getSystemService(NotificationManager.class).createNotificationChannel(channel);
+        }
+    }
+
     /* OnClick methods for Button objects */
 
     @OnClick(R.id.buttonStart)
@@ -199,7 +250,7 @@ public class RunActivity extends BaseActivity
     }
 
     @Override
-    public void endRun(String runId) {
+    public void startDetailsActivity(String runId) {
         startActivity(new Intent(this, DetailsActivity.class).putExtra("runId", runId));
         this.finish();
     }
@@ -240,6 +291,34 @@ public class RunActivity extends BaseActivity
                 .setPositiveButton("Yes", (dialog, which) -> presenter.exitRunAlertDialogYes())
                 .setNegativeButton("No", (dialog, which) -> dialog.dismiss())
                 .show();
+    }
+
+    @Override
+    public void displayNotification() {
+        notifBuilder
+                .setSmallIcon(R.drawable.ic_run_black_24dp)
+                .setContentTitle(getString(R.string.notification_default_content_title))
+                .setContentText(getString(R.string.tv_default_time_elapsed))
+                .setPriority(NotificationCompat.PRIORITY_DEFAULT);
+
+        notifManager.notify(NOTIFICATION_ID, notifBuilder.build());
+    }
+
+    @Override
+    public void removeNotification() {
+        notifManager.cancel(NOTIFICATION_ID);
+    }
+
+    @Override
+    public void setNotificationContent(String content) {
+        notifBuilder.setContentText(content);
+        notifManager.notify(NOTIFICATION_ID, notifBuilder.build());
+    }
+
+    @Override
+    public void setNotificationContentTitle(String contentTitle) {
+        notifBuilder.setContentTitle(contentTitle);
+        notifManager.notify(NOTIFICATION_ID, notifBuilder.build());
     }
 
     @Override
@@ -402,10 +481,12 @@ public class RunActivity extends BaseActivity
     }
 
     @Override
-    public void onProgressChanged(SeekBar seekBar, int i, boolean b) {}
+    public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
+    }
 
     @Override
-    public void onStartTrackingTouch(SeekBar seekBar) {}
+    public void onStartTrackingTouch(SeekBar seekBar) {
+    }
 
     @Override
     public void onStopTrackingTouch(SeekBar seekBar) {
