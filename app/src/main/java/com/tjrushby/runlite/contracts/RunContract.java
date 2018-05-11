@@ -80,6 +80,10 @@ public interface RunContract {
 
         void updateTextViewPace(String currentPace);
 
+        void setNotificationActionPause();
+
+        void setNotificationActionResume();
+
         void setTextViewPaceDefaultText();
 
         void setTextViewsDistanceUnit(String distanceUnitsString);

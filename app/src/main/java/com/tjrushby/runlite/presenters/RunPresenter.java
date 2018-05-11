@@ -92,8 +92,8 @@ public class RunPresenter implements RunContract.Presenter {
         // update notification
         view.setNotificationContent(
                 formatter.longToMinutesSeconds(timeElapsed) + " · "
-                + formatter.doubleToDistanceString(model.getDistanceTravelled())
-                + formatter.getDistanceUnitsString()
+                        + formatter.doubleToDistanceString(model.getDistanceTravelled())
+                        + formatter.getDistanceUnitsString()
         );
 
         determineGPSIcon(model.getCurrentAccuracy());
@@ -106,6 +106,19 @@ public class RunPresenter implements RunContract.Presenter {
     // tell model to start requesting location updates and the view to start a Runnable
     @Override
     public void onButtonStartPressed() {
+        if(timeElapsed == 0) {
+            // display a notification
+            view.displayNotification();
+        } else {
+            // only update the notification if the run is being resumed so we don't set the actions
+            // twice
+            view.setNotificationActionPause();
+
+            // if timeElapsed > 0 then the run has already been started and is now being un-paused
+            // set the existing notification text to "Running" as it will currently be "Paused"
+            view.setNotificationContentTitle("Running");
+        }
+
         // tint the unlock icon
         view.tintIconUnlock();
 
@@ -121,15 +134,6 @@ public class RunPresenter implements RunContract.Presenter {
         // start the timer
         view.nextTick();
 
-        if(timeElapsed == 0) {
-            // display a notification
-            view.displayNotification();
-        } else {
-            // if timeElapsed > 0 then the run has already been started and is now being un-paused
-            // set the existing notification text to "Running" as it will currently be "Paused"
-            view.setNotificationContentTitle("Running");
-        }
-
         // hide the start button and display the pause button, disable the stop button
         view.hideButtonStart();
         view.showButtonPause();
@@ -143,6 +147,8 @@ public class RunPresenter implements RunContract.Presenter {
 
         // pause the timer
         view.pauseTick();
+
+        view.setNotificationActionResume();
 
         // disable the SeekBar and fade associated ImageView objects
         view.disableSeekBar();

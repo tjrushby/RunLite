@@ -5,7 +5,10 @@ import android.app.Activity;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.content.res.ColorStateList;
 import android.os.Build;
@@ -33,6 +36,7 @@ import com.tjrushby.runlite.R;
 import com.tjrushby.runlite.contracts.RunContract;
 import com.tjrushby.runlite.injection.modules.RunActivityContextModule;
 import com.tjrushby.runlite.injection.modules.RunActivityModule;
+import com.tjrushby.runlite.services.RunService;
 import com.tjrushby.runlite.util.SeekBarAnimation;
 import com.tjrushby.runlite.util.ThumbOnlySeekBar;
 
@@ -60,17 +64,29 @@ public class RunActivity extends BaseActivity
             Manifest.permission.INTERNET
     };
 
-    private NotificationCompat.Builder notifBuilder;
-    private NotificationManagerCompat notifManager;
+    private BroadcastReceiver receiver;
 
     @Inject
+    protected Handler handler;
+    @Inject
+    protected Intent intentRunActivity;
+    @Inject
     protected Intent intentRunService;
+    @Inject
+    protected Intent intentPause;
+    @Inject
+    protected Intent intentResume;
+    @Inject
+    protected Intent intentStop;
+    @Inject
+    protected NotificationCompat.Builder notifBuilder;
+    @Inject
+    protected NotificationManagerCompat notifManager;
     @Inject
     protected RunContract.Presenter presenter;
     @Inject
     protected TypedValue typedValue;
 
-    private Handler handler;
     private Runnable tick;
 
     @BindView(R.id.ivAccuracy)
@@ -116,7 +132,14 @@ public class RunActivity extends BaseActivity
 
         setSupportActionBar(toolbar);
 
-        presenter.onActivityCreated();
+        // set intent properties
+        intentRunService.setClass(this, RunService.class);
+
+        intentPause.setAction(getString(R.string.notification_action_pause));
+        intentResume.setAction(getString(R.string.notification_action_resume));
+
+        intentStop.setClass(this, this.getClass());
+        intentStop.putExtra(getString(R.string.notification_action_stop), true);
 
         // check the Activity has the correct permissions, request them if not
         if(ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
@@ -127,31 +150,81 @@ public class RunActivity extends BaseActivity
             presenter.havePermissions();
         }
 
-        sbLock.setOnSeekBarChangeListener(this);
-
-        handler = new Handler();
-        tick = () -> presenter.onTick();
-
-        notifBuilder = new NotificationCompat.Builder(this, CHANNEL_ID);
-
         // set the notification to be ongoing so it can't be dismissed
         notifBuilder.setOngoing(true);
 
         // set the notification visibility so that all details can be viewed on the lock screen
         notifBuilder.setVisibility(VISIBILITY_PUBLIC);
 
-        // set the click action for the notification to resume this activity
+        // set the click action for the notification
         notifBuilder.setContentIntent(
                 PendingIntent.getActivity(
                         this,
-                        0,
-                        new Intent(this, this.getClass()),
+                        R.string.notification_default_content_title,
+                        intentRunActivity.setClass(this, this.getClass()),
+                        0)
+        );
+
+        // set the initial action buttons for the notification
+        NotificationCompat.Action actionPause = new NotificationCompat.Action(
+                0,
+                getString(R.string.notification_action_pause),
+                PendingIntent.getBroadcast(
+                        this,
+                        R.string.notification_action_pause,
+                        intentPause,
                         PendingIntent.FLAG_UPDATE_CURRENT)
         );
 
-        notifManager = NotificationManagerCompat.from(this);
+        NotificationCompat.Action actionStop = new NotificationCompat.Action(
+                0,
+                getString(R.string.notification_action_stop),
+                PendingIntent.getActivity(
+                        this,
+                        R.string.notification_action_stop,
+                        intentStop,
+                        PendingIntent.FLAG_UPDATE_CURRENT)
+        );
 
+        notifBuilder.addAction(actionPause);
+        notifBuilder.addAction(actionStop);
+
+        // create notification channel for API 26+
         createNotificationChannel();
+
+        // create a receiver for the 'Pause' and 'Resume' notification actions
+        receiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                if(intent.getAction().equals(getString(R.string.notification_action_pause))) {
+                    presenter.onButtonPausePressed();
+                } else if(intent.getAction()
+                        .equals(getString(R.string.notification_action_resume))) {
+                    presenter.onButtonStartPressed();
+                }
+            }
+        };
+
+        // register the receiver
+        registerReceiver(receiver, new IntentFilter(getString(R.string.notification_action_pause)));
+        registerReceiver(receiver, new IntentFilter(getString(R.string.notification_action_resume)));
+
+        sbLock.setOnSeekBarChangeListener(this);
+
+        // define runnable for timer
+        tick = () -> presenter.onTick();
+
+        // notify presenter
+        presenter.onActivityCreated();
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+
+        if(intent.hasExtra(getString(R.string.notification_action_stop))) {
+            presenter.onButtonStopPressed();
+        }
     }
 
     @Override
@@ -163,6 +236,7 @@ public class RunActivity extends BaseActivity
     @Override
     protected void onDestroy() {
         stopService(intentRunService);
+        unregisterReceiver(receiver);
         super.onDestroy();
     }
 
@@ -193,21 +267,6 @@ public class RunActivity extends BaseActivity
     @Override
     public void onBackPressed() {
         presenter.onBackPressed();
-    }
-
-    private void createNotificationChannel() {
-        // create the NotificationChannel, but only on API 26+ because
-        // the NotificationChannel class is new and not in the support library
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            CharSequence name = getString(R.string.channel_name);
-            String description = getString(R.string.channel_description);
-            int importance = NotificationManager.IMPORTANCE_DEFAULT;
-            NotificationChannel channel = new NotificationChannel(CHANNEL_ID, name, importance);
-            channel.setDescription(description);
-            // register the channel with the system; you can't change the importance
-            // or other notification behaviors after this
-            getSystemService(NotificationManager.class).createNotificationChannel(channel);
-        }
     }
 
     /* OnClick methods for Button objects */
@@ -481,15 +540,61 @@ public class RunActivity extends BaseActivity
     }
 
     @Override
-    public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
+    public void setNotificationActionResume() {
+        NotificationCompat.Action actionResume = new NotificationCompat.Action(
+                0,
+                getString(R.string.notification_action_resume),
+                PendingIntent.getBroadcast(
+                        this,
+                        R.string.notification_action_resume,
+                        intentResume,
+                        PendingIntent.FLAG_UPDATE_CURRENT)
+        );
+
+        notifBuilder.mActions.set(0, actionResume);
     }
 
     @Override
-    public void onStartTrackingTouch(SeekBar seekBar) {
+    public void setNotificationActionPause() {
+        NotificationCompat.Action actionPause = new NotificationCompat.Action(
+                0,
+                getString(R.string.notification_action_pause),
+                PendingIntent.getBroadcast(
+                        this,
+                        R.string.notification_action_pause,
+                        intentPause,
+                        PendingIntent.FLAG_UPDATE_CURRENT)
+        );
+
+        notifBuilder.mActions.set(0, actionPause);
     }
+
+    @Override
+    public void onProgressChanged(SeekBar seekBar, int i, boolean b) {}
+
+    @Override
+    public void onStartTrackingTouch(SeekBar seekBar) {}
 
     @Override
     public void onStopTrackingTouch(SeekBar seekBar) {
         presenter.onSeekBarChanged();
+    }
+
+    private void createNotificationChannel() {
+        // create the NotificationChannel, but only on API 26+ because
+        // the NotificationChannel class is new and not in the support library
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            CharSequence name = getString(R.string.channel_name);
+            String description = getString(R.string.channel_description);
+
+            // IMPORTANCE_LOW so as to have no sound played for the notification
+            int importance = NotificationManager.IMPORTANCE_LOW;
+
+            NotificationChannel channel = new NotificationChannel(CHANNEL_ID, name, importance);
+            channel.setDescription(description);
+            // register the channel with the system; you can't change the importance
+            // or other notification behaviors after this
+            getSystemService(NotificationManager.class).createNotificationChannel(channel);
+        }
     }
 }

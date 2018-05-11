@@ -2,11 +2,13 @@ package com.tjrushby.runlite.injection.modules;
 
 import android.content.Context;
 import android.content.Intent;
+import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.NotificationManagerCompat;
 import android.util.TypedValue;
 
+import com.tjrushby.runlite.R;
 import com.tjrushby.runlite.contracts.RunContract;
 import com.tjrushby.runlite.injection.scopes.RunningActivityScope;
-import com.tjrushby.runlite.services.RunService;
 
 import javax.inject.Named;
 
@@ -23,19 +25,36 @@ public class RunActivityModule {
 
     @Provides
     @RunningActivityScope
-    RunContract.Activity provideActivity() {
+    RunContract.Activity providesActivity() {
         return activity;
     }
 
     @Provides
-    @RunningActivityScope
-    Intent provideIntent(@Named("activity_context") Context context) {
-        return new Intent(context, RunService.class);
+    Intent providesIntent() {
+        return new Intent();
     }
 
     @Provides
     @RunningActivityScope
-    TypedValue provideTypedValues() {
+    NotificationCompat.Builder providesNotificationCompatBuilder(@Named("activity_context") Context context) {
+        return new NotificationCompat.Builder(
+                context, context.getString(R.string.notification_channel_id)
+        );
+    }
+
+    @Provides
+    @RunningActivityScope
+    NotificationManagerCompat providesNotificationManagerCompat(@Named("activity_context") Context context) {
+        return NotificationManagerCompat.from(context);
+    }
+
+    @Provides
+    @RunningActivityScope
+    TypedValue providesTypedValue() {
         return new TypedValue();
     }
+
+    /*NotificationCompat.Action providesNotificationCompatAction() {
+        return new NotificationCompat.Action();
+    }*/
 }
