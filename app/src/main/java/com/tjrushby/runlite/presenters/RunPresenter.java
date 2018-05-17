@@ -45,6 +45,9 @@ public class RunPresenter implements RunContract.Presenter {
     public void onActivityCreated() {
         view.disableSeekBar();
         view.setTextViewsDistanceUnit(formatter.getDistanceUnitsString());
+
+        // start the timer
+        view.nextTick();
     }
 
     @Override
@@ -55,6 +58,7 @@ public class RunPresenter implements RunContract.Presenter {
     @Override
     public void havePermissions() {
         view.startService();
+        service.startLocationUpdates();
     }
 
     @Override
@@ -62,7 +66,6 @@ public class RunPresenter implements RunContract.Presenter {
         if(timeElapsed > 0) {
             view.displayExitAlertDialog();
         } else {
-            Timber.d("else");
             service.stopLocationUpdates();
             view.removeNotification();
             view.endActivity();
@@ -72,33 +75,37 @@ public class RunPresenter implements RunContract.Presenter {
     // update the view with the latest data
     @Override
     public void onTick() {
-        // increment the timer
-        timeElapsed += 1;
-
-        // calculate the average pace
-        double averagePace = 0;
-
-        if(model.getDistanceTravelled() > 0) {
-            averagePace = timeElapsed / (model.getDistanceTravelled() / formatter.getDistanceUnits());
-        }
-
-        // update the TextView elements
-        if(averagePace == 0) {
-            view.setTextViewPaceDefaultText();
-        } else {
-            view.updateTextViewPace(formatter.longToMinutesSeconds((long) averagePace));
-        }
-
-        // update notification
-        view.setNotificationContent(
-                formatter.longToMinutesSeconds(timeElapsed) + " · "
-                        + formatter.doubleToDistanceString(model.getDistanceTravelled())
-                        + formatter.getDistanceUnitsString()
-        );
-
+        // update the gps icon
         determineGPSIcon(model.getCurrentAccuracy());
-        view.updateTextViewTime(formatter.longToMinutesSeconds(timeElapsed));
-        view.updateTextViewDistance(formatter.doubleToDistanceString(model.getDistanceTravelled()));
+
+        if(service.isRunning()) {
+            // increment the timer
+            timeElapsed += 1;
+
+            // calculate the average pace
+            double averagePace = 0;
+
+            if(model.getDistanceTravelled() > 0) {
+                averagePace = timeElapsed / (model.getDistanceTravelled() / formatter.getDistanceUnits());
+            }
+
+            // update the TextView elements
+            if(averagePace == 0) {
+                view.setTextViewPaceDefaultText();
+            } else {
+                view.updateTextViewPace(formatter.longToMinutesSeconds((long) averagePace));
+            }
+
+            // update notification
+            view.setNotificationContent(
+                    formatter.longToMinutesSeconds(timeElapsed) + " · "
+                            + formatter.doubleToDistanceString(model.getDistanceTravelled())
+                            + formatter.getDistanceUnitsString()
+            );
+
+            view.updateTextViewTime(formatter.longToMinutesSeconds(timeElapsed));
+            view.updateTextViewDistance(formatter.doubleToDistanceString(model.getDistanceTravelled()));
+        }
 
         view.nextTick();
     }
@@ -110,12 +117,12 @@ public class RunPresenter implements RunContract.Presenter {
             // display a notification
             view.displayNotification();
         } else {
-            // only update the notification if the run is being resumed so we don't set the actions
-            // twice
+            // if timeElapsed > 0 then the run has been paused and is now being resumed
+
+            // update the notification action so the user can now pause the run from it
             view.setNotificationActionPause();
 
-            // if timeElapsed > 0 then the run has already been started and is now being un-paused
-            // set the existing notification text to "Running" as it will currently be "Paused"
+            // set notification text to reflect the current state, i.e. running
             view.setNotificationContentTitle("Running");
         }
 
@@ -128,11 +135,8 @@ public class RunPresenter implements RunContract.Presenter {
         // enabled the stop button
         view.enableButtonsStartPauseStop();
 
-        // start requesting Location updates from locationClient
-        service.startLocationUpdates();
-
-        // start the timer
-        view.nextTick();
+        // let the service know the user is currently running
+        service.setRunning(true);
 
         // hide the start button and display the pause button, disable the stop button
         view.hideButtonStart();
@@ -142,11 +146,8 @@ public class RunPresenter implements RunContract.Presenter {
     // tell model to displayEndRunAlertDialog requesting location updates and the view to not post another Runnable
     @Override
     public void onButtonPausePressed() {
-        // displayEndRunAlertDialog requesting Location updates from locationClient whilst paused
-        service.stopLocationUpdates();
-
-        // pause the timer
-        view.pauseTick();
+        // let the service know the run is paused
+        service.setRunning(false);
 
         view.setNotificationActionResume();
 
@@ -161,7 +162,7 @@ public class RunPresenter implements RunContract.Presenter {
         view.updateButtonStartText();
         view.setTextViewPaceDefaultText();
 
-        // update the notification
+        // set notification text to reflect the current state
         view.setNotificationContentTitle("Paused");
     }
 
@@ -185,7 +186,6 @@ public class RunPresenter implements RunContract.Presenter {
 
     @Override
     public void endRunAlertDialogYes() {
-        view.pauseTick();
         model.setTimeElapsed(timeElapsed);
 
         if(model.getDistanceTravelled() > 0.01) {
@@ -197,6 +197,7 @@ public class RunPresenter implements RunContract.Presenter {
             view.displaySaveToast();
         } else {
             view.displayNoSaveToast();
+            view.pauseTick();
             view.endActivity();
         }
 

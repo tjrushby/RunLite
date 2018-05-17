@@ -147,5 +147,9 @@ public interface RunContract {
         void startLocationUpdates();
 
         void stopLocationUpdates();
+
+        boolean isRunning();
+
+        void setRunning(boolean running);
     }
 }

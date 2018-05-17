@@ -358,7 +358,8 @@ public class RunActivity extends BaseActivity
                 .setSmallIcon(R.drawable.ic_run_black_24dp)
                 .setContentTitle(getString(R.string.notification_default_content_title))
                 .setContentText(getString(R.string.tv_default_time_elapsed))
-                .setPriority(NotificationCompat.PRIORITY_DEFAULT);
+                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                .setChannelId(CHANNEL_ID);
 
         notifManager.notify(NOTIFICATION_ID, notifBuilder.build());
     }

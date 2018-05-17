@@ -32,11 +32,11 @@ import javax.inject.Inject;
 
 import timber.log.Timber;
 
-// todo separate gps accuracy from distance tracking
 public class RunService extends Service implements RunContract.Service {
     private static final long UPDATE_INTERVAL = 5000; // five seconds
     private static final long FASTEST_INTERVAL = 1000; // one second
 
+    private boolean running;
     private double currentAccuracy;
     private double currentSpeed;
     private double distanceTravelled;
@@ -127,6 +127,7 @@ public class RunService extends Service implements RunContract.Service {
     @SuppressWarnings({"MissingPermission"})
     @Override
     public void startLocationUpdates() {
+        Timber.d("starting location updates...");
         locationClient.requestLocationUpdates(locationRequest, locationCallback, Looper.myLooper());
     }
 
@@ -136,7 +137,6 @@ public class RunService extends Service implements RunContract.Service {
         if(locationCallback != null) {
             Timber.d("stopping location updates...");
             locationClient.removeLocationUpdates(locationCallback);
-            lastLocation = null;
         }
     }
 
@@ -152,45 +152,59 @@ public class RunService extends Service implements RunContract.Service {
             currentAccuracy = App.GPS_ACCURACY_BAD_THRESHOLD;
         }
 
-        // update locationTimeElapsed and distanceTravelled
-        if(lastLocation != null) {
-            // calculate the time and distance (in km) between location and lastLocation
-            double timeDifference = location.getTime() - lastLocation.getTime();
-            double distanceDifference = location.distanceTo(lastLocation) / 1000;
+        if(running) {
+            // update locationTimeElapsed and distanceTravelled
+            if(lastLocation != null) {
+                // calculate the time and distance (in km) between location and lastLocation
+                double timeDifference = location.getTime() - lastLocation.getTime();
+                double distanceDifference = location.distanceTo(lastLocation) / 1000;
 
-            Timber.d("distanceTravelled: " + distanceTravelled);
-            Timber.d("distanceDifference: " + distanceDifference);
+                Timber.d("distanceTravelled: " + distanceTravelled);
+                Timber.d("distanceDifference: " + distanceDifference);
 
-            // add the new differences to locationTimeElapsed and distanceTravelled
-            locationTimeElapsed += timeDifference;
-            distanceTravelled += distanceDifference;
+                // add the new differences to locationTimeElapsed and distanceTravelled
+                locationTimeElapsed += timeDifference;
+                distanceTravelled += distanceDifference;
 
-            Timber.d("newDistanceTravelled: " + distanceTravelled);
+                Timber.d("newDistanceTravelled: " + distanceTravelled);
 
-            // determine speed
-            if(!location.hasSpeed() && distanceTravelled != 0) {
-                // location has no speed value, calculate manually
-                currentSpeed = distanceTravelled * 1000 / locationTimeElapsed;  // km per hour
-            } else {
-                currentSpeed = location.getSpeed() * 3.6;   // km per hour
+                // determine speed
+                if(!location.hasSpeed() && distanceTravelled != 0) {
+                    // location has no speed value, calculate manually
+                    currentSpeed = distanceTravelled * 1000 / locationTimeElapsed;  // km per hour
+                } else {
+                    currentSpeed = location.getSpeed() * 3.6;   // km per hour
+                }
+
+                // update the model
+                model.setCurrentAccuracy(currentAccuracy);
+                model.setCurrentSpeed(currentSpeed);
+                model.setDistanceTravelled(distanceTravelled);
             }
 
-            // update the model
-            model.setCurrentAccuracy(currentAccuracy);
-            model.setCurrentSpeed(currentSpeed);
-            model.setDistanceTravelled(distanceTravelled);
+            // add the current latitude and longitude
+            runLatLngs.add(
+                new RunLatLng(
+                    location.getLatitude(),
+                    location.getLongitude(),
+                    Double.parseDouble(df.format(distanceTravelled))
+                )
+            );
+
+            // update lastLocation to location now that all calculations have been performed
+            lastLocation = location;
+        } else if(!running) {
+            lastLocation = null;
         }
+    }
 
-        // add the current latitude and longitude
-        runLatLngs.add(
-            new RunLatLng(
-                location.getLatitude(),
-                location.getLongitude(),
-                Double.parseDouble(df.format(distanceTravelled))
-            )
-        );
+    @Override
+    public boolean isRunning() {
+        return running;
+    }
 
-        // update lastLocation to location now that all calculations have been performed
-        lastLocation = location;
+    @Override
+    public void setRunning(boolean running) {
+        this.running = running;
     }
 }
