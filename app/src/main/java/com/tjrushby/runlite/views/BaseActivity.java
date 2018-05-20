@@ -88,6 +88,6 @@ public abstract class BaseActivity extends AppCompatActivity {
             sharedPrefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         }
 
-        return sharedPrefs.getBoolean(getString(R.string.pref_key_dark_mode), false);
+        return sharedPrefs.getBoolean(getString(R.string.pref_dark_mode_key), false);
     }
 }

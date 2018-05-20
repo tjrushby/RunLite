@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- FILE KEY -->
+    <string name="pref_file_key">com.tjrushby.runlite.PREF_FILE_KEY</string>
+
+    <!-- PREF KEYS -->
+    <string name="pref_audio_cue_enabled_key">pref_audio_cue_enabled</string>
+    <string name="pref_audio_cue_distance_distance_key">pref_audio_cue_distance_distance</string>
+    <string name="pref_audio_cue_distance_time_key">pref_audio_cue_distance_time</string>
+    <string name="pref_audio_cue_type_key">pref_audio_cue_type</string>
+    <string name="pref_dark_mode_key">pref_dark_mode</string>
+    <string name="pref_distance_units_key">pref_distance_units</string>
+
+    <!-- LABELS -->
+    <string name="pref_audio_cues_label">Audio Cues</string>
+    <string name="pref_general_label">General</string>
+    <string name="pref_interface_label">Interface</string>
+
+    <!-- TITLES -->
+    <string name="pref_audio_cue_enabled_title">Enabled</string>
+    <string name="pref_audio_cue_distance_distance_title">Distance Interval</string>
+    <string name="pref_audio_cue_distance_time_title">Time Interval</string>
+    <string name="pref_audio_cue_type_title">Audio Cue Type</string>
+    <string name="pref_dark_mode_title">Dark Mode</string>
+    <string name="pref_distance_units_title">Distance Units</string>
+
+    <!-- SUMMARIES -->
+    <string name="pref_audio_cue_enabled_summary">Audio information when you\'re running</string>
+    <string name="pref_audio_cue_interval_distance_summary">How far between cues</string>
+    <string name="pref_audio_cue_interval_time_summary">How long between cues</string>
+    <string name="pref_audio_cue_type_summary">When to give an audio cue</string>
+    <string name="pref_dark_mode_summary">Use the dark color theme</string>
+    <string name="pref_distance_units_summary">Kilometres or miles</string>
+</resources>

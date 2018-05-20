@@ -34,22 +34,6 @@
     <string name="notification_action_pause">Pause</string>
     <string name="notification_action_resume">Resume</string>
     <string name="notification_action_stop">Stop</string>
-    <string name="pref_file_key">com.tjrushby.runlite.PREF_FILE_KEY</string>
-    <string name="pref_label_general">General</string>
-    <string name="pref_key_dark_mode">pref_dark_mode</string>
-    <string name="pref_key_distance_units">pref_distance_units</string>
-    <string name="pref_title_distance_units">Distance Units</string>
-    <string name="pref_summary_distance_units">Kilometres or miles</string>
-    <string name="pref_label_audio_cues">Audio Cues</string>
-    <string name="pref_title_audio_cue_enabled">Enabled</string>
-    <string name="pref_summary_audio_cue_enabled">Audio information when you\'re running</string>
-    <string name="pref_title_audio_cue_distance">Distance</string>
-    <string name="pref_summary_audio_cue_distance">How often to give an audio cue</string>
-    <string name="pref_title_audio_cue_information">Information</string>
-    <string name="pref_summary_audio_cue_information">What information you\'d like to hear</string>
-    <string name="pref_label_interface">Interface</string>
-    <string name="pref_title_dark_mode">Dark Mode</string>
-    <string name="pref_summary_dark_mode">Use the dark color theme</string>
     <string name="title_activity_main">MainActivity</string>
     <string name="toast_gps_mode">
         High Accuracy GPS needs to be enabled in order to use this feature
@@ -67,20 +51,4 @@
     <string name="tv_no_runs">
         You haven\'t completed a run yet. Tap the button in the bottom right to start one.
     </string>
-
-    <string-array name="distance_units_options">
-        <item>Kilometers</item>
-        <item>Miles</item>
-    </string-array>
-
-    <string-array name="distance_units_options_short">
-        <item>km</item>
-        <item>mi</item>
-    </string-array>
-
-    <string-array name="distance_units_values">
-        <item>1</item>
-        <item>1.6</item>
-    </string-array>
-
 </resources>

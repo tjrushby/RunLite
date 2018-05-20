@@ -71,7 +71,7 @@ public class StringFormatterImpl implements StringFormatter {
     public void getDistanceUnitsFromSharedPreferences() {
         distanceUnits = Double.parseDouble(
                 sharedPrefs.getString(
-                        context.getString(R.string.pref_key_distance_units),
+                        context.getString(R.string.pref_distance_units_key),
                         context.getResources().getStringArray(R.array.distance_units_values)[0])
         );
 

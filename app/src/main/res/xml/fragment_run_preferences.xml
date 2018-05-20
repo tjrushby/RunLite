@@ -1,42 +1,61 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
-    <PreferenceCategory android:title="@string/pref_label_general">
+    <PreferenceCategory android:title="@string/pref_general_label">
 
         <ListPreference
-            android:key="@string/pref_key_distance_units"
+            android:defaultValue="1"
             android:entries="@array/distance_units_options"
             android:entryValues="@array/distance_units_values"
-            android:defaultValue="1"
+            android:key="@string/pref_distance_units_key"
             android:summary="%s"
-            android:title="@string/pref_title_distance_units" />
+            android:title="@string/pref_distance_units_title" />
 
     </PreferenceCategory>
 
-    <PreferenceCategory android:title="@string/pref_label_audio_cues">
+    <PreferenceCategory android:title="@string/pref_audio_cues_label">
 
         <SwitchPreference
             android:defaultValue="true"
-            android:summary="@string/pref_summary_audio_cue_enabled"
-            android:title="@string/pref_title_audio_cue_enabled" />
+            android:key="@string/pref_audio_cue_enabled_key"
+            android:summary="@string/pref_audio_cue_enabled_summary"
+            android:title="@string/pref_audio_cue_enabled_title" />
 
         <ListPreference
-            android:defaultValue="true"
-            android:summary="@string/pref_summary_audio_cue_distance"
-            android:title="@string/pref_title_audio_cue_distance" />
+            android:defaultValue="distance"
+            android:dependency="@string/pref_audio_cue_enabled_key"
+            android:entries="@array/audio_cue_type_options"
+            android:entryValues="@array/audio_cue_type_values"
+            android:key="@string/pref_audio_cue_type_key"
+            android:summary="%s"
+            android:title="@string/pref_audio_cue_type_title" />
 
-        <MultiSelectListPreference
-            android:summary="@string/pref_summary_audio_cue_information"
-            android:title="@string/pref_title_audio_cue_information" />
+        <ListPreference
+            android:defaultValue="1"
+            android:dependency="@string/pref_audio_cue_enabled_key"
+            android:entries="@array/audio_cue_distance_distance_options"
+            android:entryValues="@array/audio_cue_distance_distance_values"
+            android:key="@string/pref_audio_cue_distance_distance_key"
+            android:summary="%s"
+            android:title="@string/pref_audio_cue_distance_distance_title" />
+
+        <ListPreference
+            android:defaultValue="300000"
+            android:dependency="@string/pref_audio_cue_enabled_key"
+            android:entries="@array/audio_cue_distance_time_options"
+            android:entryValues="@array/audio_cue_distance_time_values"
+            android:key="@string/pref_audio_cue_distance_time_key"
+            android:summary="%s"
+            android:title="@string/pref_audio_cue_distance_time_title" />
 
     </PreferenceCategory>
 
-    <PreferenceCategory android:title="@string/pref_label_interface">
+    <PreferenceCategory android:title="@string/pref_interface_label">
 
         <SwitchPreference
-            android:key="@string/pref_key_dark_mode"
             android:defaultValue="false"
-            android:summary="@string/pref_summary_dark_mode"
-            android:title="@string/pref_title_dark_mode" />
+            android:key="@string/pref_dark_mode_key"
+            android:summary="@string/pref_dark_mode_summary"
+            android:title="@string/pref_dark_mode_title" />
 
     </PreferenceCategory>
 

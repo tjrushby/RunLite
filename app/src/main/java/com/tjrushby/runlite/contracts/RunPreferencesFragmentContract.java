@@ -6,13 +6,29 @@ public interface RunPreferencesFragmentContract {
 
         void unregisterSharedPreferencesListener();
 
+        void disableAudioCueDistancePref();
+
+        void enableAudioCueDistancePref();
+
+        void disableAudioCueTimePref();
+
+        void enableAudioCueTimePref();
+
+        String getAudioCueType();
+
+        void setPrefAudioCueFrequencyDistanceUnits();
+
         void updateStringFormatterDistanceUnits();
     }
 
     interface Presenter {
+        void onFragmentCreated();
+
         void onFragmentResumed();
 
         void onFragmentPaused();
+
+        void onAudioCueTypeChanged();
 
         void onDistanceUnitsChanged();
     }

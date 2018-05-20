@@ -239,7 +239,7 @@ public class MainActivity extends BaseActivity
     public void setSharedPrefsDarkMode() {
         super.sharedPrefs.edit()
                 .putBoolean(
-                        getString(R.string.pref_key_dark_mode),
+                        getString(R.string.pref_dark_mode_key),
                         ((SwitchCompat) navView.getMenu().findItem(R.id.nav_dark_mode).getActionView())
                                 .isChecked()
                 ).apply();

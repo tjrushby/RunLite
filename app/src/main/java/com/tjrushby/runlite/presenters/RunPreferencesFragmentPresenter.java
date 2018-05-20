@@ -10,6 +10,12 @@ public class RunPreferencesFragmentPresenter implements RunPreferencesFragmentCo
     }
 
     @Override
+    public void onFragmentCreated() {
+        setCorrectAudioCueFrequencyPrefEnabled();
+        fragment.setPrefAudioCueFrequencyDistanceUnits();
+    }
+
+    @Override
     public void onFragmentResumed() {
         fragment.registerSharedPreferencesListener();
     }
@@ -22,5 +28,23 @@ public class RunPreferencesFragmentPresenter implements RunPreferencesFragmentCo
     @Override
     public void onDistanceUnitsChanged() {
         fragment.updateStringFormatterDistanceUnits();
+        fragment.setPrefAudioCueFrequencyDistanceUnits();
+    }
+
+    @Override
+    public void onAudioCueTypeChanged() {
+        setCorrectAudioCueFrequencyPrefEnabled();
+    }
+
+    private void setCorrectAudioCueFrequencyPrefEnabled() {
+        if(fragment.getAudioCueType().equals("distance")) {
+            // enable distance interval pref, disable audio interval pref
+            fragment.enableAudioCueDistancePref();
+            fragment.disableAudioCueTimePref();
+        } else {
+            // enable time interval pref, disable distance interval pref
+            fragment.enableAudioCueTimePref();
+            fragment.disableAudioCueDistancePref();
+        }
     }
 }

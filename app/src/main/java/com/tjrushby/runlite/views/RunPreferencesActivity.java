@@ -9,7 +9,6 @@ import android.support.v7.widget.Toolbar;
 import com.tjrushby.runlite.App;
 import com.tjrushby.runlite.R;
 import com.tjrushby.runlite.contracts.RunPreferencesContract;
-import com.tjrushby.runlite.contracts.RunPreferencesFragmentContract;
 import com.tjrushby.runlite.injection.modules.RunPreferencesActivityModule;
 
 import javax.inject.Inject;
@@ -62,7 +61,7 @@ public class RunPreferencesActivity extends BaseActivity
 
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-        if(key.equals(getString(R.string.pref_key_dark_mode))) {
+        if(key.equals(getString(R.string.pref_dark_mode_key))) {
             presenter.onThemeChanged();
         }
     }
