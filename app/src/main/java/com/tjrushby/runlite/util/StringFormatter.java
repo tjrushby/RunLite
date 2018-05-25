@@ -11,9 +11,13 @@ public interface StringFormatter {
 
     String doubleToDistanceStringWithUnits(double distanceDouble);
 
+    String longToAveragePaceAudioCueString(long timeInSeconds);
+
     String longToAveragePaceString(long timeInSeconds);
 
     String longToMinutesSeconds(long timeInSeconds);
+
+    String longToMinutesSecondsAudioCueString(long timeInSeconds);
 
     void getDistanceUnitsFromSharedPreferences();
 

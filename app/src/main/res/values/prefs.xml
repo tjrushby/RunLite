@@ -5,8 +5,8 @@
 
     <!-- PREF KEYS -->
     <string name="pref_audio_cue_enabled_key">pref_audio_cue_enabled</string>
-    <string name="pref_audio_cue_distance_distance_key">pref_audio_cue_distance_distance</string>
-    <string name="pref_audio_cue_distance_time_key">pref_audio_cue_distance_time</string>
+    <string name="pref_audio_cue_interval_distance_key">pref_audio_cue_interval_distance</string>
+    <string name="pref_audio_cue_interval_time_key">pref_audio_cue_interval_time</string>
     <string name="pref_audio_cue_type_key">pref_audio_cue_type</string>
     <string name="pref_dark_mode_key">pref_dark_mode</string>
     <string name="pref_distance_units_key">pref_distance_units</string>
@@ -18,8 +18,8 @@
 
     <!-- TITLES -->
     <string name="pref_audio_cue_enabled_title">Enabled</string>
-    <string name="pref_audio_cue_distance_distance_title">Distance Interval</string>
-    <string name="pref_audio_cue_distance_time_title">Time Interval</string>
+    <string name="pref_audio_cue_interval_distance_title">Distance Interval</string>
+    <string name="pref_audio_cue_interval_time_title">Time Interval</string>
     <string name="pref_audio_cue_type_title">Audio Cue Type</string>
     <string name="pref_dark_mode_title">Dark Mode</string>
     <string name="pref_distance_units_title">Distance Units</string>

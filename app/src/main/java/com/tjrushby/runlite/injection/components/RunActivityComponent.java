@@ -12,7 +12,12 @@ import com.tjrushby.runlite.presenters.RunPresenter;
 import com.tjrushby.runlite.services.RunService;
 
 @RunningActivityScope
-@Subcomponent(modules = {RunActivityContextModule.class, RunActivityModule.class, RunPresenterModule.class, RunServiceModule.class})
+@Subcomponent(modules = {
+        RunActivityContextModule.class,
+        RunActivityModule.class,
+        RunPresenterModule.class,
+        RunServiceModule.class,
+})
 public interface RunActivityComponent {
     void inject(RunActivity activity);
     void inject(RunPresenter presenter);

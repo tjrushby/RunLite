@@ -36,6 +36,7 @@ import com.tjrushby.runlite.R;
 import com.tjrushby.runlite.contracts.RunContract;
 import com.tjrushby.runlite.injection.modules.RunActivityContextModule;
 import com.tjrushby.runlite.injection.modules.RunActivityModule;
+import com.tjrushby.runlite.services.AudioCueService;
 import com.tjrushby.runlite.services.RunService;
 import com.tjrushby.runlite.util.SeekBarAnimation;
 import com.tjrushby.runlite.util.ThumbOnlySeekBar;
@@ -70,6 +71,8 @@ public class RunActivity extends BaseActivity
     protected Handler handler;
     @Inject
     protected Intent intentRunActivity;
+    @Inject
+    protected Intent intentAudioCueService;
     @Inject
     protected Intent intentRunService;
     @Inject
@@ -134,6 +137,7 @@ public class RunActivity extends BaseActivity
 
         // set intent properties
         intentRunService.setClass(this, RunService.class);
+        intentAudioCueService.setClass(this, AudioCueService.class);
 
         intentPause.setAction(getString(R.string.notification_action_pause));
         intentResume.setAction(getString(R.string.notification_action_resume));
@@ -236,6 +240,7 @@ public class RunActivity extends BaseActivity
     @Override
     protected void onDestroy() {
         stopService(intentRunService);
+        stopService(intentAudioCueService);
         unregisterReceiver(receiver);
         super.onDestroy();
     }
@@ -289,18 +294,14 @@ public class RunActivity extends BaseActivity
     /* end OnClick methods */
 
     @Override
-    public void startService() {
+    public void startServices() {
         startService(intentRunService);
+        startService(intentAudioCueService);
     }
 
     @Override
-    public void nextTick() {
-        handler.postDelayed(tick, 1000);
-    }
-
-    @Override
-    public void pauseTick() {
-        handler.removeCallbacks(tick);
+    public void speak(String message) {
+        startService(intentAudioCueService.putExtra("message", message));
     }
 
     @Override
@@ -312,6 +313,35 @@ public class RunActivity extends BaseActivity
     public void startDetailsActivity(String runId) {
         startActivity(new Intent(this, DetailsActivity.class).putExtra("runId", runId));
         this.finish();
+    }
+
+    @Override
+    public void displayNotification() {
+        notifBuilder
+                .setSmallIcon(R.drawable.ic_run_black_24dp)
+                .setContentTitle(getString(R.string.notification_default_content_title))
+                .setContentText(getString(R.string.tv_default_time_elapsed))
+                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                .setChannelId(CHANNEL_ID);
+
+        notifManager.notify(NOTIFICATION_ID, notifBuilder.build());
+    }
+
+    @Override
+    public void removeNotification() {
+        notifManager.cancel(NOTIFICATION_ID);
+    }
+
+    @Override
+    public void setNotificationContent(String content) {
+        notifBuilder.setContentText(content);
+        notifManager.notify(NOTIFICATION_ID, notifBuilder.build());
+    }
+
+    @Override
+    public void setNotificationContentTitle(String contentTitle) {
+        notifBuilder.setContentTitle(contentTitle);
+        notifManager.notify(NOTIFICATION_ID, notifBuilder.build());
     }
 
     @Override
@@ -353,35 +383,6 @@ public class RunActivity extends BaseActivity
     }
 
     @Override
-    public void displayNotification() {
-        notifBuilder
-                .setSmallIcon(R.drawable.ic_run_black_24dp)
-                .setContentTitle(getString(R.string.notification_default_content_title))
-                .setContentText(getString(R.string.tv_default_time_elapsed))
-                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-                .setChannelId(CHANNEL_ID);
-
-        notifManager.notify(NOTIFICATION_ID, notifBuilder.build());
-    }
-
-    @Override
-    public void removeNotification() {
-        notifManager.cancel(NOTIFICATION_ID);
-    }
-
-    @Override
-    public void setNotificationContent(String content) {
-        notifBuilder.setContentText(content);
-        notifManager.notify(NOTIFICATION_ID, notifBuilder.build());
-    }
-
-    @Override
-    public void setNotificationContentTitle(String contentTitle) {
-        notifBuilder.setContentTitle(contentTitle);
-        notifManager.notify(NOTIFICATION_ID, notifBuilder.build());
-    }
-
-    @Override
     public void defaultScreenTimeout() {
         getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
     }
@@ -389,6 +390,16 @@ public class RunActivity extends BaseActivity
     @Override
     public void noScreenTimeout() {
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+    }
+
+    @Override
+    public void nextTick() {
+        handler.postDelayed(tick, 1000);
+    }
+
+    @Override
+    public void pauseTick() {
+        handler.removeCallbacks(tick);
     }
 
     @Override
@@ -538,6 +549,28 @@ public class RunActivity extends BaseActivity
     public void setTextViewsDistanceUnit(String distanceUnitsString) {
         tvDistanceUnit.setText(distanceUnitsString);
         tvPaceUnit.setText("Mins/" + distanceUnitsString);
+    }
+
+    @Override
+    public boolean isAudioCueEnabled() {
+        return sharedPrefs.getBoolean(getString(R.string.pref_audio_cue_enabled_key), true);
+    }
+
+    @Override
+    public String getAudioCueType() {
+        return sharedPrefs.getString(getString(R.string.pref_audio_cue_type_key), "distance");
+    }
+
+    @Override
+    public double getAudioCueDistanceInterval() {
+        return Double.parseDouble(
+                sharedPrefs.getString(getString(R.string.pref_audio_cue_interval_distance_key), "1"));
+    }
+
+    @Override
+    public int getAudioCueTimeInterval() {
+        return Integer.parseInt(
+                sharedPrefs.getString(getString(R.string.pref_audio_cue_interval_time_key), "1"));
     }
 
     @Override

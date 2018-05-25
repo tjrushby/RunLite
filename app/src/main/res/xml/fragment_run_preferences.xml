@@ -32,20 +32,20 @@
         <ListPreference
             android:defaultValue="1"
             android:dependency="@string/pref_audio_cue_enabled_key"
-            android:entries="@array/audio_cue_distance_distance_options"
-            android:entryValues="@array/audio_cue_distance_distance_values"
-            android:key="@string/pref_audio_cue_distance_distance_key"
+            android:entries="@array/audio_cue_interval_distance_options"
+            android:entryValues="@array/audio_cue_interval_distance_values"
+            android:key="@string/pref_audio_cue_interval_distance_key"
             android:summary="%s"
-            android:title="@string/pref_audio_cue_distance_distance_title" />
+            android:title="@string/pref_audio_cue_interval_distance_title" />
 
         <ListPreference
-            android:defaultValue="300000"
+            android:defaultValue="300"
             android:dependency="@string/pref_audio_cue_enabled_key"
-            android:entries="@array/audio_cue_distance_time_options"
-            android:entryValues="@array/audio_cue_distance_time_values"
-            android:key="@string/pref_audio_cue_distance_time_key"
+            android:entries="@array/audio_cue_interval_time_options"
+            android:entryValues="@array/audio_cue_interval_time_values"
+            android:key="@string/pref_audio_cue_interval_time_key"
             android:summary="%s"
-            android:title="@string/pref_audio_cue_distance_time_title" />
+            android:title="@string/pref_audio_cue_interval_time_title" />
 
     </PreferenceCategory>
 

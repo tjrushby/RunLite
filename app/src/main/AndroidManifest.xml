@@ -52,6 +52,11 @@
             android:name=".services.RunService"
             android:enabled="true"
             android:process=":runService" />
+
+        <service
+            android:name=".services.AudioCueService"
+            android:enabled="true"
+            android:process=":audioCueService" />
     </application>
 
 </manifest>

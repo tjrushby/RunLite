@@ -77,22 +77,22 @@ public class RunPreferencesFragment extends PreferenceFragment
 
     @Override
     public void disableAudioCueDistancePref() {
-        findPreference(getString(R.string.pref_audio_cue_distance_distance_key)).setEnabled(false);
+        findPreference(getString(R.string.pref_audio_cue_interval_distance_key)).setEnabled(false);
     }
 
     @Override
     public void enableAudioCueDistancePref() {
-        findPreference(getString(R.string.pref_audio_cue_distance_distance_key)).setEnabled(true);
+        findPreference(getString(R.string.pref_audio_cue_interval_distance_key)).setEnabled(true);
     }
 
     @Override
     public void disableAudioCueTimePref() {
-        findPreference(getString(R.string.pref_audio_cue_distance_time_key)).setEnabled(false);
+        findPreference(getString(R.string.pref_audio_cue_interval_time_key)).setEnabled(false);
     }
 
     @Override
     public void enableAudioCueTimePref() {
-        findPreference(getString(R.string.pref_audio_cue_distance_time_key)).setEnabled(true);
+        findPreference(getString(R.string.pref_audio_cue_interval_time_key)).setEnabled(true);
     }
 
     @Override
@@ -103,13 +103,13 @@ public class RunPreferencesFragment extends PreferenceFragment
     @Override
     public void setPrefAudioCueFrequencyDistanceUnits() {
         CharSequence[] entries =
-                getResources().getStringArray(R.array.audio_cue_distance_distance_options);
+                getResources().getStringArray(R.array.audio_cue_interval_distance_options);
 
         for (int i = 0; i < entries.length; i++) {
             entries[i] = entries[i] + " " + formatter.getDistanceUnitsString();
         }
 
-        ((ListPreference) findPreference(getString(R.string.pref_audio_cue_distance_distance_key)))
+        ((ListPreference) findPreference(getString(R.string.pref_audio_cue_interval_distance_key)))
                 .setEntries(entries);
     }
 

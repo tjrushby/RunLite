@@ -4,15 +4,21 @@ import java.util.Date;
 
 public interface RunContract {
     interface Activity {
-        void startService();
+        void startServices();
 
-        void nextTick();
-
-        void pauseTick();
+        void speak(String message);
 
         void endActivity();
 
         void startDetailsActivity(String runId);
+
+        void displayNotification();
+
+        void removeNotification();
+
+        void setNotificationContent(String content);
+
+        void setNotificationContentTitle(String contentTitle);
 
         void displayGPSModeToast();
 
@@ -24,17 +30,13 @@ public interface RunContract {
 
         void displayExitAlertDialog();
 
-        void displayNotification();
-
-        void removeNotification();
-
-        void setNotificationContent(String content);
-
-        void setNotificationContentTitle(String contentTitle);
-
         void defaultScreenTimeout();
 
         void noScreenTimeout();
+
+        void nextTick();
+
+        void pauseTick();
 
         void disableSeekBar();
 
@@ -87,6 +89,14 @@ public interface RunContract {
         void setTextViewPaceDefaultText();
 
         void setTextViewsDistanceUnit(String distanceUnitsString);
+
+        boolean isAudioCueEnabled();
+
+        String getAudioCueType();
+
+        double getAudioCueDistanceInterval();
+
+        int getAudioCueTimeInterval();
     }
 
     interface Presenter {
@@ -143,7 +153,7 @@ public interface RunContract {
         void setTimeElapsed(long timeElapsed);
     }
 
-    interface Service {
+    interface RunService {
         void startLocationUpdates();
 
         void stopLocationUpdates();
@@ -152,4 +162,5 @@ public interface RunContract {
 
         void setRunning(boolean running);
     }
+
 }

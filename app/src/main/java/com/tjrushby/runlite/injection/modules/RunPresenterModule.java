@@ -20,11 +20,11 @@ public class RunPresenterModule {
     @RunningActivityScope
     RunContract.Presenter providePresenter(RunContract.Activity activity,
                                            RunContract.Model model,
-                                           RunContract.Service service,
+                                           RunContract.RunService runService,
                                            RunRepository runRepository,
                                            List<RunLatLng> runLatLngList,
                                            StringFormatter formatter) {
-        return new RunPresenter(activity, model, service, runRepository, runLatLngList, formatter);
+        return new RunPresenter(activity, model, runService, runRepository, runLatLngList, formatter);
     }
 
     @Provides

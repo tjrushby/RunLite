@@ -53,8 +53,4 @@ public class RunActivityModule {
     TypedValue providesTypedValue() {
         return new TypedValue();
     }
-
-    /*NotificationCompat.Action providesNotificationCompatAction() {
-        return new NotificationCompat.Action();
-    }*/
 }

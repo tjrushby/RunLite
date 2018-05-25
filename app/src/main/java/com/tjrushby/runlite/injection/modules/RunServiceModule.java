@@ -1,6 +1,5 @@
 package com.tjrushby.runlite.injection.modules;
 
-
 import android.content.Context;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -24,14 +23,14 @@ import dagger.Provides;
 public class RunServiceModule {
     @Provides
     @RunningActivityScope
-    RunContract.Service provideFusedLocationService(@Named("activity_context") Context context,
-                                                    DecimalFormat df,
-                                                    RunContract.Activity view,
-                                                    RunContract.Model model,
-                                                    List<RunLatLng> runLatLngs,
-                                                    FusedLocationProviderClient locationClient,
-                                                    LocationRequest locationRequest,
-                                                    LocationSettingsRequest.Builder builder) {
+    RunContract.RunService providesRunService(@Named("activity_context") Context context,
+                                              DecimalFormat df,
+                                              RunContract.Activity view,
+                                              RunContract.Model model,
+                                              List<RunLatLng> runLatLngs,
+                                              FusedLocationProviderClient locationClient,
+                                              LocationRequest locationRequest,
+                                              LocationSettingsRequest.Builder builder) {
 
         return new RunService(context, df, view, model, runLatLngs, locationClient, locationRequest, builder);
     }

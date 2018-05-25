@@ -32,7 +32,7 @@ import javax.inject.Inject;
 
 import timber.log.Timber;
 
-public class RunService extends Service implements RunContract.Service {
+public class RunService extends Service implements RunContract.RunService {
     private static final long UPDATE_INTERVAL = 5000; // five seconds
     private static final long FASTEST_INTERVAL = 1000; // one second
 

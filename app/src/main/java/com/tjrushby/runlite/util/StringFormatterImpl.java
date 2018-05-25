@@ -55,6 +55,15 @@ public class StringFormatterImpl implements StringFormatter {
     }
 
     @Override
+    public String longToAveragePaceAudioCueString(long timeInSeconds) {
+        if(timeInSeconds == 0) {
+            return "Unavailable";
+        } else {
+            return longToMinutesSecondsAudioCueString(timeInSeconds) + " / " + distanceUnitsString;
+        }
+    }
+
+    @Override
     public String longToAveragePaceString(long timeInSeconds) {
         return " Mins/" + distanceUnitsString + " " + longToMinutesSeconds(timeInSeconds);
     }
@@ -65,6 +74,20 @@ public class StringFormatterImpl implements StringFormatter {
         long minutes = timeInSeconds / 60;
 
         return String.format(Locale.getDefault(), "%02d:%02d", minutes, seconds);
+    }
+
+    @Override
+    public String longToMinutesSecondsAudioCueString(long timeInSeconds) {
+        long seconds = timeInSeconds % 60;
+        long minutes = timeInSeconds / 60;
+
+        if(minutes < 1) {
+            return String.format(Locale.getDefault(), "%d seconds", seconds);
+        } else {
+            return String.format(
+                    Locale.getDefault(), "%d minutes, %d seconds", minutes, seconds
+            );
+        }
     }
 
     @Override
