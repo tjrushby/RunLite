@@ -2,10 +2,13 @@ package com.tjrushby.runlite.adapters;
 
 import android.content.Context;
 import android.content.Intent;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
+import com.tjrushby.runlite.R;
 import com.tjrushby.runlite.adapters.viewholders.RunModelViewHolder;
 import com.tjrushby.runlite.adapters.viewholders.RunModelViewHolderFactory;
 import com.tjrushby.runlite.contracts.MainContract;
@@ -49,7 +52,6 @@ public class RunModelAdapter extends RecyclerView.Adapter<RunModelViewHolder> {
         double averagePace = run.run.getTimeElapsed() /
                 (run.run.getDistanceTravelled() / formatter.getDistanceUnits());
 
-        // todo need average pace stored in model class?
         holder.setDateTime(formatter.dateToString(run.run.getDateTime()));
         holder.setTimeElapsed(formatter.longToMinutesSeconds(run.run.getTimeElapsed()));
         holder.setDistance(formatter.doubleToDistanceStringWithUnits(run.run.getDistanceTravelled()));
@@ -64,6 +66,29 @@ public class RunModelAdapter extends RecyclerView.Adapter<RunModelViewHolder> {
             intent.setClass(view.getContext(), DetailsActivity.class);
             intent.putExtra("runId", Long.toString(run.run.getId()));
             view.getContext().startActivity(intent);
+        });
+
+        holder.itemView.setLongClickable(true);
+
+        holder.itemView.setOnLongClickListener(view -> {
+            new AlertDialog.Builder(view.getContext())
+                    .setTitle("Delete Run?")
+                    .setMessage(
+                            formatter.dateToString(run.run.getDateTime()) +
+                            " - " + formatter.doubleToDistanceStringWithUnits(
+                                run.run.getDistanceTravelled()) +
+                            "\nThis action cannot be undone")
+                    .setPositiveButton("Yes", (dialog, which) ->
+                            runRepository.deleteRun(run.run, () -> {
+                                loadRuns(view.getContext());
+                                Toast.makeText(
+                                        view.getContext(), R.string.toast_run_deleted,
+                                        Toast.LENGTH_SHORT).show();
+                            }))
+                    .setNegativeButton("No", (dialog, which) -> dialog.dismiss())
+                    .show();
+
+            return true;
         });
     }
 

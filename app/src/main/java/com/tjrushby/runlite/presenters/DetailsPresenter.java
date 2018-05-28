@@ -101,9 +101,11 @@ public class DetailsPresenter implements DetailsContract.Presenter {
     @Override
     public void onDeleteRunAlertDialogYes() {
         // delete run from database
-        runRepository.deleteRun(runWithLatLng.run);
-        view.displayRunDeletedToast();
-        view.endActivity();
+        runRepository.deleteRun(runWithLatLng.run, () -> {
+            view.displayRunDeletedToast();
+            view.endActivity();
+
+        });
     }
 
     @Override

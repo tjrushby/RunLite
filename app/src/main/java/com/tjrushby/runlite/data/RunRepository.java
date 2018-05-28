@@ -101,12 +101,13 @@ public class RunRepository implements RunDataSource {
     }
 
     @Override
-    public void deleteRun(Run run) {
+    public void deleteRun(Run run, DeleteRunCallback callback) {
         // remove from database
-        runLocalDataSource.deleteRun(run);
-
-        // remove from cache
-        cachedRuns.remove(run.getId());
+        runLocalDataSource.deleteRun(run, () -> {
+            // remove from cache
+            cachedRuns.remove(run.getId());
+            callback.onRunDeleted();
+        });
     }
 
     private RunWithLatLng getRunFromCacheById(Long id) {

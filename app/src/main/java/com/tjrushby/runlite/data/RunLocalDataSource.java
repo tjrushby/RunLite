@@ -79,8 +79,12 @@ public class RunLocalDataSource implements RunDataSource {
     }
 
     @Override
-    public void deleteRun(Run run) {
-        Runnable runnable = () -> runDao.delete(run);
+    public void deleteRun(Run run, DeleteRunCallback callback) {
+        Runnable runnable = () -> {
+            runDao.delete(run);
+            callback.onRunDeleted();
+        };
+
         executor.execute(runnable);
     }
 }

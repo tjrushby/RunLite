@@ -9,22 +9,23 @@ import java.util.List;
 public interface RunDataSource {
 
     interface LoadRunsCallback {
-
         void onRunsLoaded(List<RunWithLatLng> runs);
 
         void onDataNotAvailable();
     }
 
     interface GetRunCallback {
-
         void onRunLoaded(RunWithLatLng run);
 
         void onDataNotAvailable();
     }
 
     interface SaveRunCallback {
-
         void onRunSaved(Long runId);
+    }
+
+    interface DeleteRunCallback {
+        void onRunDeleted();
     }
 
     void getRuns(LoadRunsCallback callback);
@@ -35,5 +36,5 @@ public interface RunDataSource {
 
     void updateRun(RunWithLatLng run);
 
-    void deleteRun(Run run);
+    void deleteRun(Run run, DeleteRunCallback callback);
 }
