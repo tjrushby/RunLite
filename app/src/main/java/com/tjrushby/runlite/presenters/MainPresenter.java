@@ -28,6 +28,8 @@ public class MainPresenter implements MainContract.Presenter {
             activity.setSwitchDarkModeChecked(activity.getDarkThemeEnabled());
         }
 
+        activity.setSwitchAudioCueChecked(activity.isAudioCueEnabled());
+
         activity.refreshRecyclerView();
     }
 
@@ -43,6 +45,11 @@ public class MainPresenter implements MainContract.Presenter {
         } else {
             activity.endActivity();
         }
+    }
+
+    @Override
+    public void onNavItemAudioCueChecked() {
+        activity.setSharedPrefsAudioCueEnabled();
     }
 
     @Override

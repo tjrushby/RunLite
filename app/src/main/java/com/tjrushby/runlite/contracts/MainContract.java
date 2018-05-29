@@ -28,15 +28,21 @@ public interface MainContract {
 
         Context getContext();
 
+        boolean isAudioCueEnabled();
+
         boolean getDarkThemeEnabled();
 
         boolean getDrawerVisible();
 
         boolean getThemeChanged();
 
+        void setSwitchAudioCueChecked(boolean checked);
+
         void setSwitchDarkModeChecked(boolean checked);
 
         void setRunTotals(String totalRuns, String totalDistance, String totalTime);
+
+        void setSharedPrefsAudioCueEnabled();
 
         void setSharedPrefsDarkMode();
     }
@@ -49,6 +55,8 @@ public interface MainContract {
         void onHomeOptionsItemSelected();
 
         void onBackPressed();
+
+        void onNavItemAudioCueChecked();
 
         void onNavItemDarkModeChecked();
 

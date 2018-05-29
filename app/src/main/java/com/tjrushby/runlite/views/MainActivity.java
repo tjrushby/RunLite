@@ -28,6 +28,7 @@ import javax.inject.Inject;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import timber.log.Timber;
 
 public class MainActivity extends BaseActivity
         implements MainContract.Activity, CompoundButton.OnCheckedChangeListener {
@@ -61,6 +62,7 @@ public class MainActivity extends BaseActivity
     @BindView(R.id.toolbar)
     protected Toolbar toolbar;
 
+    private SwitchCompat switchAudioCue;
     private SwitchCompat switchDarkMode;
 
     @Override
@@ -98,6 +100,12 @@ public class MainActivity extends BaseActivity
             switchDarkMode =
                     (SwitchCompat) navView.getMenu().findItem(R.id.nav_dark_mode).getActionView();
             switchDarkMode.setOnCheckedChangeListener(this);
+        }
+
+        if(navView.getMenu().findItem(R.id.nav_audio_cues).getActionView() instanceof SwitchCompat) {
+            switchAudioCue =
+                    (SwitchCompat) navView.getMenu().findItem(R.id.nav_audio_cues).getActionView();
+            switchAudioCue.setOnCheckedChangeListener(this);
         }
     }
 
@@ -202,6 +210,11 @@ public class MainActivity extends BaseActivity
     }
 
     @Override
+    public boolean isAudioCueEnabled() {
+        return super.sharedPrefs.getBoolean(getString(R.string.pref_audio_cue_enabled_key), true);
+    }
+
+    @Override
     public boolean getDarkThemeEnabled() {
         return super.getDarkThemeEnabled();
     }
@@ -221,7 +234,15 @@ public class MainActivity extends BaseActivity
     }
 
     @Override
+    public void setSwitchAudioCueChecked(boolean checked) {
+        switchAudioCue.setChecked(checked);
+    }
+
+    @Override
     public void setSwitchDarkModeChecked(boolean checked) {
+        // manually find the view instead of using the variable as this needs to be called in
+        // onCreate before instantiating the variable and setting onCheckedChangedListener to
+        // avoid a loop that restarts the Activity
         if(navView.getMenu().findItem(R.id.nav_dark_mode).getActionView() instanceof SwitchCompat) {
             ((SwitchCompat) navView.getMenu().findItem(R.id.nav_dark_mode).getActionView())
                     .setChecked(checked);
@@ -236,17 +257,33 @@ public class MainActivity extends BaseActivity
     }
 
     @Override
+    public void setSharedPrefsAudioCueEnabled() {
+        super.sharedPrefs.edit()
+                .putBoolean(
+                        getString(R.string.pref_audio_cue_enabled_key),
+                        switchAudioCue.isChecked())
+                .apply();
+    }
+
+    @Override
     public void setSharedPrefsDarkMode() {
         super.sharedPrefs.edit()
                 .putBoolean(
                         getString(R.string.pref_dark_mode_key),
-                        ((SwitchCompat) navView.getMenu().findItem(R.id.nav_dark_mode).getActionView())
-                                .isChecked()
-                ).apply();
+                        switchDarkMode.isChecked())
+                .apply();
     }
 
     @Override
     public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-        presenter.onNavItemDarkModeChecked();
+        switch (compoundButton.getId()) {
+            case R.id.nav_dark_mode:
+                presenter.onNavItemDarkModeChecked();
+                break;
+
+            case R.id.nav_audio_cues:
+                presenter.onNavItemAudioCueChecked();
+                break;
+        }
     }
 }
