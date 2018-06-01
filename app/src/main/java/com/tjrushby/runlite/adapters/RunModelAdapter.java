@@ -49,13 +49,10 @@ public class RunModelAdapter extends RecyclerView.Adapter<RunModelViewHolder> {
     public void onBindViewHolder(RunModelViewHolder holder, int position) {
         RunWithLatLng run = runsList.get(position);
 
-        double averagePace = run.run.getTimeElapsed() /
-                (run.run.getDistanceTravelled() / formatter.getDistanceUnits());
-
         holder.setDateTime(formatter.dateToString(run.run.getDateTime()));
         holder.setTimeElapsed(formatter.longToMinutesSeconds(run.run.getTimeElapsed()));
         holder.setDistance(formatter.doubleToDistanceStringWithUnits(run.run.getDistanceTravelled()));
-        holder.setAveragePace(formatter.longToAveragePaceString((long) averagePace));
+        holder.setAveragePace(formatter.longToAveragePaceString((long) run.run.getAveragePace()));
 
         holder.itemView.setOnClickListener((View view) -> {
             if(view.getContext() instanceof MainActivity) {

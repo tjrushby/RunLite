@@ -2,12 +2,10 @@ package com.tjrushby.runlite.models;
 
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.PrimaryKey;
-import android.arch.persistence.room.Relation;
 
 import com.tjrushby.runlite.contracts.RunContract;
 
 import java.util.Date;
-import java.util.List;
 
 @Entity(tableName = "runs")
 public class Run implements RunContract.Model {
@@ -15,7 +13,7 @@ public class Run implements RunContract.Model {
     private long id;
     private Date dateTime;
     private double currentAccuracy;
-    private double currentSpeed;
+    private double averagePace;
     private double distanceTravelled;
     private long timeElapsed;
 
@@ -49,13 +47,13 @@ public class Run implements RunContract.Model {
     }
 
     @Override
-    public double getCurrentSpeed() {
-        return currentSpeed;
+    public double getAveragePace() {
+        return averagePace;
     }
 
     @Override
-    public void setCurrentSpeed(double currentSpeed) {
-        this.currentSpeed = currentSpeed;
+    public void setAveragePace(double averagePace) {
+        this.averagePace = averagePace;
     }
 
     @Override

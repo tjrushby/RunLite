@@ -178,7 +178,7 @@ public class RunService extends Service implements RunContract.RunService {
 
                 // update the model
                 model.setCurrentAccuracy(currentAccuracy);
-                model.setCurrentSpeed(currentSpeed);
+                model.setAveragePace(currentSpeed);
                 model.setDistanceTravelled(distanceTravelled);
             }
 

@@ -140,9 +140,9 @@ public interface RunContract {
 
         void setCurrentAccuracy(double currentAccuracy);
 
-        double getCurrentSpeed();
+        double getAveragePace();
 
-        void setCurrentSpeed(double currentSpeed);
+        void setAveragePace(double averagePace);
 
         double getDistanceTravelled();
 

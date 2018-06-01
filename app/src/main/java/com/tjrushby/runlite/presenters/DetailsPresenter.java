@@ -45,15 +45,10 @@ public class DetailsPresenter implements DetailsContract.Presenter {
             public void onRunLoaded(RunWithLatLng run) {
                 runWithLatLng = run;
 
-                double averagePace = calculateAveragePace(
-                        run.run.getTimeElapsed(),
-                        run.run.getDistanceTravelled()
-                );
-
                 view.setTextViews(
                         formatter.longToMinutesSeconds(run.run.getTimeElapsed()),
                         formatter.doubleToDistanceString(run.run.getDistanceTravelled()),
-                        formatter.longToMinutesSeconds((long) averagePace)
+                        formatter.longToMinutesSeconds((long) run.run.getAveragePace())
                 );
 
                 view.setToolbarTitle("Run on " + formatter.dateToString(run.run.getDateTime()));
@@ -260,6 +255,13 @@ public class DetailsPresenter implements DetailsContract.Presenter {
     private void updateRun() {
         runWithLatLng.run.setDistanceTravelled(Double.parseDouble(view.getEditTextDistance()));
         runWithLatLng.run.setTimeElapsed(formatter.minutesSecondsToLong(view.getEditTextTimeElapsed()));
+
+        long timeElapsed = formatter.minutesSecondsToLong(view.getEditTextTimeElapsed());
+        double distanceTravelled = Double.parseDouble(view.getEditTextDistance());
+
+        long averagePace = calculateAveragePace(timeElapsed, distanceTravelled);
+
+        runWithLatLng.run.setAveragePace(averagePace);
 
         // save run to database if it has been changed
         runRepository.updateRun(runWithLatLng);

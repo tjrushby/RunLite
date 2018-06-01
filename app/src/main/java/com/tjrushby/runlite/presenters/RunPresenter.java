@@ -267,6 +267,12 @@ public class RunPresenter implements RunContract.Presenter {
         model.setTimeElapsed(timeElapsed);
 
         if(model.getDistanceTravelled() > 0.01) {
+            // set averagePace in the model now as we're not going to be updating it every tick now.
+            // storing averagePace in the database saves having to calculate it again when
+            // retrieving the run (i.e., loading run list in MainActivity).
+            // recalculate averagePace now to ensure it is accurate now that the run has stopped
+            model.setAveragePace(timeElapsed / distanceTravelled);
+
             runRepository.saveRun(
                     (Run) model, runLatLngList,
                     runId -> view.startDetailsActivity(Long.toString(runId))
