@@ -16,6 +16,7 @@ import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.tjrushby.runlite.App;
 import com.tjrushby.runlite.R;
@@ -192,6 +193,11 @@ public class MainActivity extends BaseActivity
         } else {
             tvNoRuns.setVisibility(View.GONE);
         }
+    }
+
+    @Override
+    public void displayRunDeletedToast() {
+        Toast.makeText(this, R.string.toast_run_deleted, Toast.LENGTH_SHORT).show();
     }
 
     @Override

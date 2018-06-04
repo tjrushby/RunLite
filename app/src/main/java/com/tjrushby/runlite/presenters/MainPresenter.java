@@ -86,4 +86,10 @@ public class MainPresenter implements MainContract.Presenter {
         activity.displayNoRuns(true);
         activity.displayProgressBar(false);
     }
+
+    @Override
+    public void onRunDeleted() {
+        activity.displayRunDeletedToast();
+        activity.refreshRecyclerView();
+    }
 }

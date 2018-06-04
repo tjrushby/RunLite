@@ -22,6 +22,8 @@ public interface MainContract {
 
         void displayNoRuns(boolean display);
 
+        void displayRunDeletedToast();
+
         void openDrawerMenu();
 
         void closeDrawerMenu();
@@ -67,5 +69,7 @@ public interface MainContract {
         void onDataAvailable(boolean newData);
 
         void onDataNotAvailable();
+
+        void onRunDeleted();
     }
 }

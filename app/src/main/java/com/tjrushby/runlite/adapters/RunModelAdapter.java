@@ -77,10 +77,7 @@ public class RunModelAdapter extends RecyclerView.Adapter<RunModelViewHolder> {
                             "\nThis action cannot be undone")
                     .setPositiveButton("Yes", (dialog, which) ->
                             runRepository.deleteRun(run.run, () -> {
-                                loadRuns(view.getContext());
-                                Toast.makeText(
-                                        view.getContext(), R.string.toast_run_deleted,
-                                        Toast.LENGTH_SHORT).show();
+                                presenter.onRunDeleted();
                             }))
                     .setNegativeButton("No", (dialog, which) -> dialog.dismiss())
                     .show();
@@ -99,20 +96,16 @@ public class RunModelAdapter extends RecyclerView.Adapter<RunModelViewHolder> {
             @Override
             public void onRunsLoaded(List<RunWithLatLng> runs) {
                 if(!runsList.equals(runs)) {
-                    // clear the current contents of runsList and then repopulate using new records
-                    // from the database
-                    runsList.clear();
-                    runsList.addAll(runs);
-
+                    // calculate new run totals from data set
                     double totalDistance = 0;
                     int totalTime = 0;
 
-                    // calculate totals from data set
-                    for (RunWithLatLng run : runsList) {
+                    for (RunWithLatLng run : runs) {
                         totalDistance += run.run.getDistanceTravelled();
                         totalTime += run.run.getTimeElapsed();
                     }
 
+                    // set run totals toolbar
                     if(context instanceof MainActivity) {
                         ((MainActivity) context).setRunTotals(
                                 Integer.toString(runsList.size()),
@@ -121,8 +114,15 @@ public class RunModelAdapter extends RecyclerView.Adapter<RunModelViewHolder> {
                         );
                     }
 
+                    // clear the current contents of runsList and then repopulate using new records
+                    // from the database
+                    runsList.clear();
+                    runsList.addAll(runs);
+
+                    // notify presenter that there is new data available
                     presenter.onDataAvailable(true);
                 } else {
+                    // notify presenter that there is no new data available
                     presenter.onDataAvailable(false);
                 }
 
@@ -131,6 +131,15 @@ public class RunModelAdapter extends RecyclerView.Adapter<RunModelViewHolder> {
 
             @Override
             public void onDataNotAvailable() {
+                // set run totals toolbar
+                if(context instanceof MainActivity) {
+                    ((MainActivity) context).setRunTotals(
+                            Integer.toString(0),
+                            formatter.doubleToDistanceStringWithUnits(0),
+                            formatter.intToMinutesSeconds(0)
+                    );
+                }
+
                 runsList.clear();
                 presenter.onDataNotAvailable();
                 notifyDataSetChanged();
