@@ -31,10 +31,10 @@ public class StringFormatterImpl implements StringFormatter {
     }
 
     @Override
-    public long minutesSecondsToLong(String minutesSeconds) {
+    public int minutesSecondsToInt(String minutesSeconds) {
         String[] split = minutesSeconds.split(":");
-        long minutes = Long.parseLong(split[0]);
-        long seconds = Long.parseLong(split[1]);
+        int minutes = Integer.parseInt(split[0]);
+        int seconds = Integer.parseInt(split[1]);
 
         return minutes * 60 + seconds;
     }
@@ -42,6 +42,20 @@ public class StringFormatterImpl implements StringFormatter {
     @Override
     public String dateToString(Date date) {
         return dateFormat.format(date);
+    }
+
+    @Override
+    public String doubleToAveragePaceAudioCueString(double averagePace) {
+        if(averagePace == 0) {
+            return "Unavailable";
+        } else {
+            return intToMinutesSecondsAudioCueString((int) averagePace) + " / " + distanceUnitsString;
+        }
+    }
+
+    @Override
+    public String doubleToAveragePaceString(double averagePace) {
+        return " Mins/" + distanceUnitsString + " " + intToMinutesSeconds((int) averagePace);
     }
 
     @Override
@@ -55,21 +69,7 @@ public class StringFormatterImpl implements StringFormatter {
     }
 
     @Override
-    public String longToAveragePaceAudioCueString(long timeInSeconds) {
-        if(timeInSeconds == 0) {
-            return "Unavailable";
-        } else {
-            return longToMinutesSecondsAudioCueString(timeInSeconds) + " / " + distanceUnitsString;
-        }
-    }
-
-    @Override
-    public String longToAveragePaceString(long timeInSeconds) {
-        return " Mins/" + distanceUnitsString + " " + longToMinutesSeconds(timeInSeconds);
-    }
-
-    @Override
-    public String longToMinutesSeconds(long timeInSeconds) {
+    public String intToMinutesSeconds(int timeInSeconds) {
         long seconds = timeInSeconds % 60;
         long minutes = timeInSeconds / 60;
 
@@ -77,7 +77,7 @@ public class StringFormatterImpl implements StringFormatter {
     }
 
     @Override
-    public String longToMinutesSecondsAudioCueString(long timeInSeconds) {
+    public String intToMinutesSecondsAudioCueString(int timeInSeconds) {
         long seconds = timeInSeconds % 60;
         long minutes = timeInSeconds / 60;
 

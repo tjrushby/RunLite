@@ -22,6 +22,7 @@ import com.google.android.gms.location.SettingsClient;
 import com.google.android.gms.tasks.Task;
 import com.tjrushby.runlite.App;
 import com.tjrushby.runlite.contracts.RunContract;
+import com.tjrushby.runlite.models.Run;
 import com.tjrushby.runlite.models.RunLatLng;
 import com.tjrushby.runlite.views.RunActivity;
 
@@ -45,7 +46,7 @@ public class RunService extends Service implements RunContract.RunService {
     private Context context;
     private DecimalFormat df;
     private RunContract.Activity view;
-    private RunContract.Model model;
+    private Run model;
     private List<RunLatLng> runLatLngs;
 
     private FusedLocationProviderClient locationClient;
@@ -59,7 +60,7 @@ public class RunService extends Service implements RunContract.RunService {
     public RunService(Context context,
                       DecimalFormat df,
                       RunContract.Activity view,
-                      RunContract.Model model,
+                      Run model,
                       List<RunLatLng> runLatLngs,
                       FusedLocationProviderClient locationClient,
                       LocationRequest locationRequest,
@@ -121,7 +122,8 @@ public class RunService extends Service implements RunContract.RunService {
     }
 
     @Override
-    public void onDestroy() {}
+    public void onDestroy() {
+    }
 
     // start requesting location updates from the FusedLocationProviderClient
     @SuppressWarnings({"MissingPermission"})
@@ -184,11 +186,11 @@ public class RunService extends Service implements RunContract.RunService {
 
             // add the current latitude and longitude
             runLatLngs.add(
-                new RunLatLng(
-                    location.getLatitude(),
-                    location.getLongitude(),
-                    Double.parseDouble(df.format(distanceTravelled))
-                )
+                    new RunLatLng(
+                            location.getLatitude(),
+                            location.getLongitude(),
+                            Double.parseDouble(df.format(distanceTravelled))
+                    )
             );
 
             // update lastLocation to location now that all calculations have been performed

@@ -19,7 +19,7 @@ public class RunPresenterModule {
     @Provides
     @RunningActivityScope
     RunContract.Presenter providePresenter(RunContract.Activity activity,
-                                           RunContract.Model model,
+                                           Run model,
                                            RunContract.RunService runService,
                                            RunRepository runRepository,
                                            List<RunLatLng> runLatLngList,
@@ -29,10 +29,10 @@ public class RunPresenterModule {
 
     @Provides
     @RunningActivityScope
-    RunContract.Model provideModel() {
-        RunContract.Model runModel = new Run();
-        runModel.setDateTime(new Date());
+    Run providesRun() {
+        Run run = new Run();
+        run.setDateTime(new Date());
 
-        return runModel;
+        return run;
     }
 }

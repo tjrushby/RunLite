@@ -7,6 +7,7 @@ import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationSettingsRequest;
 import com.tjrushby.runlite.contracts.RunContract;
 import com.tjrushby.runlite.injection.scopes.RunningActivityScope;
+import com.tjrushby.runlite.models.Run;
 import com.tjrushby.runlite.models.RunLatLng;
 import com.tjrushby.runlite.services.RunService;
 
@@ -26,7 +27,7 @@ public class RunServiceModule {
     RunContract.RunService providesRunService(@Named("activity_context") Context context,
                                               DecimalFormat df,
                                               RunContract.Activity view,
-                                              RunContract.Model model,
+                                              Run model,
                                               List<RunLatLng> runLatLngs,
                                               FusedLocationProviderClient locationClient,
                                               LocationRequest locationRequest,

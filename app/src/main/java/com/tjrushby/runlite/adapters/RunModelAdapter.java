@@ -50,9 +50,9 @@ public class RunModelAdapter extends RecyclerView.Adapter<RunModelViewHolder> {
         RunWithLatLng run = runsList.get(position);
 
         holder.setDateTime(formatter.dateToString(run.run.getDateTime()));
-        holder.setTimeElapsed(formatter.longToMinutesSeconds(run.run.getTimeElapsed()));
+        holder.setTimeElapsed(formatter.intToMinutesSeconds(run.run.getTimeElapsed()));
         holder.setDistance(formatter.doubleToDistanceStringWithUnits(run.run.getDistanceTravelled()));
-        holder.setAveragePace(formatter.longToAveragePaceString((long) run.run.getAveragePace()));
+        holder.setAveragePace(formatter.doubleToAveragePaceString((long) run.run.getAveragePace()));
 
         holder.itemView.setOnClickListener((View view) -> {
             if(view.getContext() instanceof MainActivity) {
@@ -105,7 +105,7 @@ public class RunModelAdapter extends RecyclerView.Adapter<RunModelViewHolder> {
                     runsList.addAll(runs);
 
                     double totalDistance = 0;
-                    long totalTime = 0;
+                    int totalTime = 0;
 
                     // calculate totals from data set
                     for (RunWithLatLng run : runsList) {
@@ -117,7 +117,7 @@ public class RunModelAdapter extends RecyclerView.Adapter<RunModelViewHolder> {
                         ((MainActivity) context).setRunTotals(
                                 Integer.toString(runsList.size()),
                                 formatter.doubleToDistanceStringWithUnits(totalDistance),
-                                formatter.longToMinutesSeconds(totalTime)
+                                formatter.intToMinutesSeconds(totalTime)
                         );
                     }
 

@@ -46,9 +46,9 @@ public class DetailsPresenter implements DetailsContract.Presenter {
                 runWithLatLng = run;
 
                 view.setTextViews(
-                        formatter.longToMinutesSeconds(run.run.getTimeElapsed()),
+                        formatter.intToMinutesSeconds(run.run.getTimeElapsed()),
                         formatter.doubleToDistanceString(run.run.getDistanceTravelled()),
-                        formatter.longToMinutesSeconds((long) run.run.getAveragePace())
+                        formatter.intToMinutesSeconds((int) run.run.getAveragePace())
                 );
 
                 view.setToolbarTitle("Run on " + formatter.dateToString(run.run.getDateTime()));
@@ -136,8 +136,8 @@ public class DetailsPresenter implements DetailsContract.Presenter {
                 .setScale(2, BigDecimal.ROUND_HALF_UP);
 
         // calculate new average pace value from the values in the TextViews, using rounded distance
-        long averagePace = calculateAveragePace(
-                formatter.minutesSecondsToLong(view.getEditTextTimeElapsed()),
+        double averagePace = calculateAveragePace(
+                formatter.minutesSecondsToInt(view.getEditTextTimeElapsed()),
                 roundedDistance.doubleValue()
         );
 
@@ -148,7 +148,7 @@ public class DetailsPresenter implements DetailsContract.Presenter {
 
         // update TextView for average pace, clear error messages (if any) and enable button for
         // saving changes
-        view.setTextViewAveragePace(formatter.longToMinutesSeconds(averagePace));
+        view.setTextViewAveragePace(formatter.intToMinutesSeconds((int) averagePace));
         view.clearEditTextDistanceError();
 
         // check if the TextViews contain different values to the model
@@ -161,17 +161,17 @@ public class DetailsPresenter implements DetailsContract.Presenter {
     }
 
     @Override
-    public void onEditTextTimeElapsedUpdated(long timeElapsed) {
+    public void onEditTextTimeElapsedUpdated(int timeElapsed) {
         // calculate average pace using new timeElapsed value and the current value in the EditText
         // for distance
-        long averagePace = calculateAveragePace(
+        double averagePace = calculateAveragePace(
                 timeElapsed,
                 Double.parseDouble(view.getEditTextDistance().toString())
         );
 
         // update the TextViews for time and average pace
-        view.setTextViewAveragePace(formatter.longToMinutesSeconds((long) averagePace));
-        view.setEditTextTimeElapsed(formatter.longToMinutesSeconds(timeElapsed));
+        view.setTextViewAveragePace(formatter.intToMinutesSeconds((int) averagePace));
+        view.setEditTextTimeElapsed(formatter.intToMinutesSeconds(timeElapsed));
 
         // check if the TextViews contain different values to the model
         determineDataChanged();
@@ -229,12 +229,12 @@ public class DetailsPresenter implements DetailsContract.Presenter {
         }
     }
 
-    private long calculateAveragePace(double timeElapsed, double distance) {
-        return (long) (timeElapsed / (distance / formatter.getDistanceUnits()));
+    private double calculateAveragePace(double timeElapsed, double distance) {
+        return (timeElapsed / (distance / formatter.getDistanceUnits()));
     }
 
     private void determineDataChanged() {
-        long timeElapsed = formatter.minutesSecondsToLong(view.getEditTextTimeElapsed());
+        long timeElapsed = formatter.minutesSecondsToInt(view.getEditTextTimeElapsed());
         double distanceTravelled = Double.parseDouble(view.getEditTextDistance());
         double cachedDistanceTravelled = Double.parseDouble(
                 formatter.doubleToDistanceString(runWithLatLng.run.getDistanceTravelled())
@@ -254,12 +254,12 @@ public class DetailsPresenter implements DetailsContract.Presenter {
 
     private void updateRun() {
         runWithLatLng.run.setDistanceTravelled(Double.parseDouble(view.getEditTextDistance()));
-        runWithLatLng.run.setTimeElapsed(formatter.minutesSecondsToLong(view.getEditTextTimeElapsed()));
+        runWithLatLng.run.setTimeElapsed(formatter.minutesSecondsToInt(view.getEditTextTimeElapsed()));
 
-        long timeElapsed = formatter.minutesSecondsToLong(view.getEditTextTimeElapsed());
+        int timeElapsed = formatter.minutesSecondsToInt(view.getEditTextTimeElapsed());
         double distanceTravelled = Double.parseDouble(view.getEditTextDistance());
 
-        long averagePace = calculateAveragePace(timeElapsed, distanceTravelled);
+        double averagePace = calculateAveragePace(timeElapsed, distanceTravelled);
 
         runWithLatLng.run.setAveragePace(averagePace);
 

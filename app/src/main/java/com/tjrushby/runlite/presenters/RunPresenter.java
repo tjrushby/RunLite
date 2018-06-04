@@ -20,12 +20,12 @@ public class RunPresenter implements RunContract.Presenter {
     private double distanceTravelled;
     private double prevMod;
 
-    private long timeElapsed;
+    private int timeElapsed;
 
     private String audioCueType;
 
     private RunContract.Activity view;
-    private RunContract.Model model;
+    private Run model;
     private RunContract.RunService runService;
     private RunRepository runRepository;
     private List<RunLatLng> runLatLngList;
@@ -34,7 +34,7 @@ public class RunPresenter implements RunContract.Presenter {
 
     @Inject
     public RunPresenter(RunContract.Activity view,
-                        RunContract.Model model,
+                        Run model,
                         RunContract.RunService runService,
                         RunRepository runRepository,
                         List<RunLatLng> runLatLngList,
@@ -112,15 +112,15 @@ public class RunPresenter implements RunContract.Presenter {
             if(averagePace == 0) {
                 view.setTextViewPaceDefaultText();
             } else {
-                view.updateTextViewPace(formatter.longToMinutesSeconds((long) averagePace));
+                view.updateTextViewPace(formatter.intToMinutesSeconds((int) averagePace));
             }
 
-            view.updateTextViewTime(formatter.longToMinutesSeconds(timeElapsed));
+            view.updateTextViewTime(formatter.intToMinutesSeconds(timeElapsed));
             view.updateTextViewDistance(formatter.doubleToDistanceString(distanceTravelled));
 
             // update notification
             view.setNotificationContent(
-                    formatter.longToMinutesSeconds(timeElapsed) + " · "
+                    formatter.intToMinutesSeconds(timeElapsed) + " · "
                             + formatter.doubleToDistanceString(distanceTravelled)
                             + formatter.getDistanceUnitsString()
             );
@@ -345,8 +345,8 @@ public class RunPresenter implements RunContract.Presenter {
     private void startAudioCueServiceRunDetails() {
         view.speak(
                 formatter.doubleToDistanceStringWithUnits(distanceTravelled) +
-                        " in " + formatter.longToMinutesSecondsAudioCueString(timeElapsed) +
-                        ". Average pace " + formatter.longToAveragePaceAudioCueString((long) averagePace) +
+                        " in " + formatter.intToMinutesSecondsAudioCueString(timeElapsed) +
+                        ". Average pace " + formatter.doubleToAveragePaceAudioCueString((long) averagePace) +
                         ". "
         );
     }

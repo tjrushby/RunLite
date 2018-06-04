@@ -127,32 +127,6 @@ public interface RunContract {
         void onSeekBarChanged();
     }
 
-    interface Model {
-        long getId();
-
-        void setId(long id);
-
-        Date getDateTime();
-
-        void setDateTime(Date dateTime);
-
-        double getCurrentAccuracy();
-
-        void setCurrentAccuracy(double currentAccuracy);
-
-        double getAveragePace();
-
-        void setAveragePace(double averagePace);
-
-        double getDistanceTravelled();
-
-        void setDistanceTravelled(double distanceTravelled);
-
-        long getTimeElapsed();
-
-        void setTimeElapsed(long timeElapsed);
-    }
-
     interface RunService {
         void startLocationUpdates();
 

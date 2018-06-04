@@ -422,7 +422,7 @@ public class DetailsActivity extends BaseActivity
     }
 
     @Override
-    public void onTimePickerDialogPositiveClick(long timeElapsed) {
+    public void onTimePickerDialogPositiveClick(int timeElapsed) {
         presenter.onEditTextTimeElapsedUpdated(timeElapsed);
     }
 }

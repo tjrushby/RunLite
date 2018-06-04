@@ -106,7 +106,7 @@ public interface DetailsContract {
 
         void onEditTextTimeElapsedClicked();
 
-        void onEditTextTimeElapsedUpdated(long timeElapsed);
+        void onEditTextTimeElapsedUpdated(int timeElapsed);
 
         void onImageViewFullscreenClicked();
 
