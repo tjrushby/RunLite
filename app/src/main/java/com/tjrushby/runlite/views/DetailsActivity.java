@@ -238,7 +238,7 @@ public class DetailsActivity extends BaseActivity
 
     @Override
     public void displayNotFoundErrorToast() {
-        Toast.makeText(this, "Error. Could not load run.", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, R.string.toast_run_not_found, Toast.LENGTH_SHORT).show();
         endActivity();
     }
 
