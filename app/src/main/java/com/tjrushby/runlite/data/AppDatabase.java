@@ -9,7 +9,7 @@ import com.tjrushby.runlite.data.dao.RunLatLngDAO;
 import com.tjrushby.runlite.models.Run;
 import com.tjrushby.runlite.models.RunLatLng;
 
-@Database(entities = {Run.class, RunLatLng.class}, version = 3)
+@Database(entities = {Run.class, RunLatLng.class}, version = 4)
 @TypeConverters(DateConverter.class)
 public abstract class AppDatabase extends RoomDatabase {
     public abstract RunDAO runDAO();

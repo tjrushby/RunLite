@@ -4,6 +4,7 @@ import android.arch.persistence.room.Dao;
 import android.arch.persistence.room.Delete;
 import android.arch.persistence.room.Insert;
 import android.arch.persistence.room.Query;
+import android.arch.persistence.room.Transaction;
 import android.arch.persistence.room.Update;
 
 import com.tjrushby.runlite.contracts.RunContract;
@@ -14,9 +15,11 @@ import java.util.List;
 
 @Dao
 public interface RunDAO {
+    @Transaction
     @Query("SELECT * FROM runs WHERE id LIKE :id")
     RunWithLatLng findById(String id);
 
+    @Transaction
     @Query("SELECT * FROM runs")
     List<RunWithLatLng> loadRunWithLatLng();
 
