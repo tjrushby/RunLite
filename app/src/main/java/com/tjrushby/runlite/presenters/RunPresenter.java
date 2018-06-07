@@ -1,6 +1,5 @@
 package com.tjrushby.runlite.presenters;
 
-import com.tjrushby.runlite.App;
 import com.tjrushby.runlite.contracts.RunContract;
 import com.tjrushby.runlite.data.RunRepository;
 import com.tjrushby.runlite.models.Run;
@@ -12,6 +11,9 @@ import java.util.List;
 import javax.inject.Inject;
 
 public class RunPresenter implements RunContract.Presenter {
+    public int GPS_ACCURACY_BAD_THRESHOLD;
+    public int GPS_ACCURACY_GOOD_THRESHOLD;
+
     private boolean isAudioCueEnabled;
     private double audioCueDistanceInterval;
     private int audioCueTimeInterval;
@@ -48,6 +50,9 @@ public class RunPresenter implements RunContract.Presenter {
 
         timeElapsed = 0;
         prevMod = 0;
+
+        GPS_ACCURACY_BAD_THRESHOLD = view.getGPSAccuracyBadThreshold();
+        GPS_ACCURACY_GOOD_THRESHOLD = view.getGPSAccuracyGoodThreshold();
     }
 
     @Override
@@ -70,7 +75,7 @@ public class RunPresenter implements RunContract.Presenter {
 
     @Override
     public void onActivityResumed() {
-        view.updateColorAccentTypedValue();
+        view.setColorAccentTypedValue();
     }
 
     @Override
@@ -82,7 +87,7 @@ public class RunPresenter implements RunContract.Presenter {
     @Override
     public void onBackPressed() {
         if(runService.isRunning() || timeElapsed > 0) {
-            view.displayExitAlertDialog();
+            view.displayDialogCancelRun();
         } else {
             runService.stopLocationUpdates();
             view.removeNotification();
@@ -94,7 +99,7 @@ public class RunPresenter implements RunContract.Presenter {
     @Override
     public void onTick() {
         // update the gps icon
-        determineGPSIcon(model.getCurrentAccuracy());
+        determineGPSIconTint(model.getCurrentAccuracy());
 
         if(runService.isRunning()) {
             // increment the timer
@@ -112,11 +117,11 @@ public class RunPresenter implements RunContract.Presenter {
             if(averagePace == 0) {
                 view.setTextViewPaceDefaultText();
             } else {
-                view.updateTextViewPace(formatter.intToMinutesSeconds((int) averagePace));
+                view.setTextViewPace(formatter.intToMinutesSeconds((int) averagePace));
             }
 
-            view.updateTextViewTime(formatter.intToMinutesSeconds(timeElapsed));
-            view.updateTextViewDistance(formatter.doubleToDistanceString(distanceTravelled));
+            view.setTextViewTime(formatter.intToMinutesSeconds(timeElapsed));
+            view.setTextViewDistance(formatter.doubleToDistanceString(distanceTravelled));
 
             // update notification
             view.setNotificationContent(
@@ -140,7 +145,7 @@ public class RunPresenter implements RunContract.Presenter {
                         if(currentMod == 0 || currentMod < prevMod) {
                             // if currentMod is zero or less than prevMod it is either the interval
                             // defined in audioCueDistanceInterval or the closest location to it
-                            startAudioCueServiceRunDetails();
+                            speakRunDetails();
                         }
 
                         prevMod = currentMod;
@@ -148,7 +153,7 @@ public class RunPresenter implements RunContract.Presenter {
                 } else {
                     // time-based audio cue
                     if(timeElapsed % audioCueTimeInterval == 0) {
-                        startAudioCueServiceRunDetails();
+                        speakRunDetails();
                     }
                 }
             }
@@ -196,7 +201,7 @@ public class RunPresenter implements RunContract.Presenter {
         view.showButtonPause();
     }
 
-    // tell model to displayEndRunAlertDialog requesting location updates and the view to not post another Runnable
+    // tell model to displayDialogEndRun requesting location updates and the view to not post another Runnable
     @Override
     public void onButtonPausePressed() {
         // let the runService know the run is paused
@@ -215,7 +220,7 @@ public class RunPresenter implements RunContract.Presenter {
         // hide the pause button and display the start button, setting the start button text to resume
         view.hideButtonPause();
         view.showButtonStart();
-        view.updateButtonStartText();
+        view.setButtonStartText();
 
         // set notification text to reflect the current state
         view.setNotificationContentTitle("Paused");
@@ -240,27 +245,27 @@ public class RunPresenter implements RunContract.Presenter {
         // hide the pause button and display the start button, setting the start button text to resume
         view.hideButtonPause();
         view.showButtonStart();
-        view.updateButtonStartText();
+        view.setButtonStartText();
 
         // set notification text to reflect the current state
         view.setNotificationContentTitle("Paused");
 
-        view.displayEndRunAlertDialog();
+        view.displayDialogEndRun();
     }
 
     @Override
-    public void enableHighAccuracyDialogNo() {
-        view.displayGPSModeToast();
+    public void onDialogEnableHighAccuracyNo() {
+        view.displayToastGPSMode();
         view.endActivity();
     }
 
     @Override
-    public void endRunAlertDialogNo() {
+    public void onDialogEndRunNo() {
         onButtonStartPressed();
     }
 
     @Override
-    public void endRunAlertDialogYes() {
+    public void onDialogEndRunYes() {
         // announce the run ending
         view.speak("Run completed. ");
 
@@ -278,9 +283,9 @@ public class RunPresenter implements RunContract.Presenter {
                     runId -> view.startDetailsActivity(Long.toString(runId))
             );
 
-            view.displaySaveToast();
+            view.displayToastRunSaved();
         } else {
-            view.displayNoSaveToast();
+            view.displayToastRunNotSaved();
             view.pauseTick();
             view.endActivity();
         }
@@ -290,7 +295,7 @@ public class RunPresenter implements RunContract.Presenter {
     }
 
     @Override
-    public void exitRunAlertDialogYes() {
+    public void onDialogCancelRunYes() {
         // announce the run being cancelled
         view.speak("Run cancelled. ");
 
@@ -312,7 +317,7 @@ public class RunPresenter implements RunContract.Presenter {
 
             // lock the controls, keep screen turned on
             view.disableButtonsStartPauseStop();
-            view.noScreenTimeout();
+            view.setScreenTimeoutNone();
         } else {
             // set the progress to 0
             view.setSeekBarProgress(0);
@@ -323,31 +328,31 @@ public class RunPresenter implements RunContract.Presenter {
 
             // unlock the controls, reset screen timeout to default
             view.enableButtonsStartPauseStop();
-            view.defaultScreenTimeout();
+            view.setScreenTimeoutDefault();
         }
     }
 
     // determines what color to tint the GPS icon based on the value of currentAccuracy
-    private void determineGPSIcon(double currentAccuracy) {
-        if(currentAccuracy > App.GPS_ACCURACY_BAD_THRESHOLD) {
+    private void determineGPSIconTint(double currentAccuracy) {
+        if(currentAccuracy > GPS_ACCURACY_BAD_THRESHOLD) {
             // bad GPS accuracy
-            view.updateGPSIconBad();
-        } else if(currentAccuracy > App.GPS_ACCURACY_GOOD_THRESHOLD &&
-                currentAccuracy <= App.GPS_ACCURACY_BAD_THRESHOLD) {
+            view.tintIconGPSBad();
+        } else if(currentAccuracy > GPS_ACCURACY_GOOD_THRESHOLD &&
+                currentAccuracy <= GPS_ACCURACY_BAD_THRESHOLD) {
             // average GPS accuracy
-            view.updateGPSIconAverage();
-        } else if(currentAccuracy <= App.GPS_ACCURACY_GOOD_THRESHOLD) {
+            view.tintIconGPSAverage();
+        } else if(currentAccuracy <= GPS_ACCURACY_GOOD_THRESHOLD) {
             // good GPS accuracy
-            view.updateGPSIconGood();
+            view.tintIconGPSGood();
         }
     }
 
-    private void startAudioCueServiceRunDetails() {
+    private void speakRunDetails() {
         view.speak(
                 formatter.doubleToDistanceStringWithUnits(distanceTravelled) +
                         " in " + formatter.intToMinutesSecondsAudioCueString(timeElapsed) +
-                        ". Average pace " + formatter.doubleToAveragePaceAudioCueString((long) averagePace) +
-                        ". "
+                        ". Average pace " +
+                        formatter.doubleToAveragePaceAudioCueString((long) averagePace) + ". "
         );
     }
 }

@@ -1,16 +1,18 @@
 package com.tjrushby.runlite.contracts;
 
-import java.util.Date;
-
 public interface RunContract {
     interface Activity {
+        void endActivity();
+
+        void startDetailsActivity(String runId);
+
         void startServices();
 
         void speak(String message);
 
-        void endActivity();
+        void nextTick();
 
-        void startDetailsActivity(String runId);
+        void pauseTick();
 
         void displayNotification();
 
@@ -20,39 +22,31 @@ public interface RunContract {
 
         void setNotificationContentTitle(String contentTitle);
 
-        void displayGPSModeToast();
+        void setNotificationActionPause();
 
-        void displayNoSaveToast();
+        void setNotificationActionResume();
 
-        void displaySaveToast();
+        void displayDialogCancelRun();
 
-        void displayEndRunAlertDialog();
+        void displayDialogEndRun();
 
-        void displayExitAlertDialog();
+        void displayToastGPSMode();
 
-        void defaultScreenTimeout();
+        void displayToastRunNotSaved();
 
-        void noScreenTimeout();
+        void displayToastRunSaved();
 
-        void nextTick();
+        void setScreenTimeoutDefault();
 
-        void pauseTick();
+        void setScreenTimeoutNone();
 
         void disableSeekBar();
 
         void enableSeekBar();
 
-        int getSeekBarProgress();
+        void disableButtonsStartPauseStop();
 
-        void setSeekBarProgress(int progress);
-
-        void fadeIconLock();
-
-        void tintIconLock();
-
-        void fadeIconUnlock();
-
-        void tintIconUnlock();
+        void enableButtonsStartPauseStop();
 
         void hideButtonPause();
 
@@ -62,33 +56,19 @@ public interface RunContract {
 
         void showButtonStart();
 
-        void disableButtonsStartPauseStop();
+        void tintIconGPSAverage();
 
-        void enableButtonsStartPauseStop();
+        void tintIconGPSBad();
 
-        void updateButtonStartText();
+        void tintIconGPSGood();
 
-        void updateColorAccentTypedValue();
+        void fadeIconLock();
 
-        void updateGPSIconAverage();
+        void tintIconLock();
 
-        void updateGPSIconBad();
+        void fadeIconUnlock();
 
-        void updateGPSIconGood();
-
-        void updateTextViewTime(String timeElapsed);
-
-        void updateTextViewDistance(String distanceTravelled);
-
-        void updateTextViewPace(String currentPace);
-
-        void setNotificationActionPause();
-
-        void setNotificationActionResume();
-
-        void setTextViewPaceDefaultText();
-
-        void setTextViewsDistanceUnit(String distanceUnitsString);
+        void tintIconUnlock();
 
         boolean isAudioCueEnabled();
 
@@ -97,6 +77,28 @@ public interface RunContract {
         double getAudioCueDistanceInterval();
 
         int getAudioCueTimeInterval();
+
+        void setButtonStartText();
+
+        void setColorAccentTypedValue();
+
+        int getGPSAccuracyBadThreshold();
+
+        int getGPSAccuracyGoodThreshold();
+
+        int getSeekBarProgress();
+
+        void setSeekBarProgress(int progress);
+
+        void setTextViewsDistanceUnit(String distanceUnitsString);
+
+        void setTextViewDistance(String distanceTravelled);
+
+        void setTextViewPace(String currentPace);
+
+        void setTextViewPaceDefaultText();
+
+        void setTextViewTime(String timeElapsed);
     }
 
     interface Presenter {
@@ -116,13 +118,13 @@ public interface RunContract {
 
         void onButtonStopPressed();
 
-        void enableHighAccuracyDialogNo();
+        void onDialogEnableHighAccuracyNo();
 
-        void endRunAlertDialogNo();
+        void onDialogEndRunNo();
 
-        void endRunAlertDialogYes();
+        void onDialogEndRunYes();
 
-        void exitRunAlertDialogYes();
+        void onDialogCancelRunYes();
 
         void onSeekBarChanged();
     }

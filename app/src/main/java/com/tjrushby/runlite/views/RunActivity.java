@@ -264,7 +264,7 @@ public class RunActivity extends BaseActivity
         if(requestCode == REQUEST_HIGH_ACCURACY_GPS) {
             switch (resultCode) {
                 case Activity.RESULT_CANCELED:
-                    presenter.enableHighAccuracyDialogNo();
+                    presenter.onDialogEnableHighAccuracyNo();
             }
         }
     }
@@ -273,8 +273,6 @@ public class RunActivity extends BaseActivity
     public void onBackPressed() {
         presenter.onBackPressed();
     }
-
-    /* OnClick methods for Button objects */
 
     @OnClick(R.id.buttonStart)
     public void buttonStartClicked() {
@@ -291,7 +289,16 @@ public class RunActivity extends BaseActivity
         presenter.onButtonStopPressed();
     }
 
-    /* end OnClick methods */
+    @Override
+    public void endActivity() {
+        this.finish();
+    }
+
+    @Override
+    public void startDetailsActivity(String runId) {
+        startActivity(new Intent(this, DetailsActivity.class).putExtra("runId", runId));
+        this.finish();
+    }
 
     @Override
     public void startServices() {
@@ -305,14 +312,13 @@ public class RunActivity extends BaseActivity
     }
 
     @Override
-    public void endActivity() {
-        this.finish();
+    public void nextTick() {
+        handler.postDelayed(tick, 1000);
     }
 
     @Override
-    public void startDetailsActivity(String runId) {
-        startActivity(new Intent(this, DetailsActivity.class).putExtra("runId", runId));
-        this.finish();
+    public void pauseTick() {
+        handler.removeCallbacks(tick);
     }
 
     @Override
@@ -345,61 +351,81 @@ public class RunActivity extends BaseActivity
     }
 
     @Override
-    public void displayGPSModeToast() {
-        Toast.makeText(this, R.string.toast_gps_mode, Toast.LENGTH_LONG).show();
+    public void setNotificationActionPause() {
+        NotificationCompat.Action actionPause = new NotificationCompat.Action(
+                0,
+                getString(R.string.notification_action_pause),
+                PendingIntent.getBroadcast(
+                        this,
+                        R.string.notification_action_pause,
+                        intentPause,
+                        PendingIntent.FLAG_UPDATE_CURRENT)
+        );
+
+        notifBuilder.mActions.set(0, actionPause);
     }
 
     @Override
-    public void displayNoSaveToast() {
-        Toast.makeText(this, R.string.toast_no_save_distance_low, Toast.LENGTH_SHORT).show();
+    public void setNotificationActionResume() {
+        NotificationCompat.Action actionResume = new NotificationCompat.Action(
+                0,
+                getString(R.string.notification_action_resume),
+                PendingIntent.getBroadcast(
+                        this,
+                        R.string.notification_action_resume,
+                        intentResume,
+                        PendingIntent.FLAG_UPDATE_CURRENT)
+        );
+
+        notifBuilder.mActions.set(0, actionResume);
     }
 
     @Override
-    public void displaySaveToast() {
-        Toast.makeText(this, R.string.toast_run_saved, Toast.LENGTH_SHORT).show();
+    public void displayDialogCancelRun() {
+        new AlertDialog.Builder(this)
+                .setTitle("Are you sure?")
+                .setMessage("If you go back now you will lose all progress.")
+                .setPositiveButton("Yes", (dialog, which) -> presenter.onDialogCancelRunYes())
+                .setNegativeButton("No", (dialog, which) -> dialog.dismiss())
+                .show();
     }
 
     @Override
-    public void displayEndRunAlertDialog() {
+    public void displayDialogEndRun() {
         new AlertDialog.Builder(this)
                 .setTitle("End Run?")
                 .setMessage("Have you finished?")
-                .setPositiveButton("Yes", (dialog, which) -> presenter.endRunAlertDialogYes())
+                .setPositiveButton("Yes", (dialog, which) -> presenter.onDialogEndRunYes())
                 .setNegativeButton("No", (dialog, which) -> {
-                    presenter.endRunAlertDialogNo();
+                    presenter.onDialogEndRunNo();
                     dialog.dismiss();
                 })
                 .show();
     }
 
     @Override
-    public void displayExitAlertDialog() {
-        new AlertDialog.Builder(this)
-                .setTitle("Are you sure?")
-                .setMessage("If you go back now you will lose all progress.")
-                .setPositiveButton("Yes", (dialog, which) -> presenter.exitRunAlertDialogYes())
-                .setNegativeButton("No", (dialog, which) -> dialog.dismiss())
-                .show();
+    public void displayToastGPSMode() {
+        Toast.makeText(this, R.string.toast_gps_mode, Toast.LENGTH_LONG).show();
     }
 
     @Override
-    public void defaultScreenTimeout() {
+    public void displayToastRunNotSaved() {
+        Toast.makeText(this, R.string.toast_no_save_distance_low, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void displayToastRunSaved() {
+        Toast.makeText(this, R.string.toast_run_saved, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void setScreenTimeoutDefault() {
         getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
     }
 
     @Override
-    public void noScreenTimeout() {
+    public void setScreenTimeoutNone() {
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-    }
-
-    @Override
-    public void nextTick() {
-        handler.postDelayed(tick, 1000);
-    }
-
-    @Override
-    public void pauseTick() {
-        handler.removeCallbacks(tick);
     }
 
     @Override
@@ -413,15 +439,58 @@ public class RunActivity extends BaseActivity
     }
 
     @Override
-    public int getSeekBarProgress() {
-        return sbLock.getProgress();
+    public void disableButtonsStartPauseStop() {
+        buttonStart.setEnabled(false);
+        buttonPause.setEnabled(false);
+        buttonStop.setEnabled(false);
     }
 
     @Override
-    public void setSeekBarProgress(int newProgress) {
-        SeekBarAnimation animation = new SeekBarAnimation(sbLock, sbLock.getProgress(), newProgress);
-        animation.setDuration(75);
-        sbLock.startAnimation(animation);
+    public void enableButtonsStartPauseStop() {
+        buttonStart.setEnabled(true);
+        buttonPause.setEnabled(true);
+        buttonStop.setEnabled(true);
+    }
+
+    @Override
+    public void hideButtonPause() {
+        buttonPause.setVisibility(View.INVISIBLE);
+    }
+
+    @Override
+    public void showButtonPause() {
+        buttonPause.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void hideButtonStart() {
+        buttonStart.setVisibility(View.INVISIBLE);
+    }
+
+    @Override
+    public void showButtonStart() {
+        buttonStart.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void tintIconGPSAverage() {
+        ImageViewCompat.setImageTintList(ivAccuracy,
+                ColorStateList.valueOf(ContextCompat.getColor(this, R.color.colorGPSAverage)
+                ));
+    }
+
+    @Override
+    public void tintIconGPSBad() {
+        ImageViewCompat.setImageTintList(ivAccuracy,
+                ColorStateList.valueOf(ContextCompat.getColor(this, R.color.colorGPSBad)
+                ));
+    }
+
+    @Override
+    public void tintIconGPSGood() {
+        ImageViewCompat.setImageTintList(ivAccuracy,
+                ColorStateList.valueOf(ContextCompat.getColor(this, R.color.colorGPSGood)
+                ));
     }
 
     @Override
@@ -454,103 +523,6 @@ public class RunActivity extends BaseActivity
         ImageViewCompat.setImageTintList(ivUnlock, ColorStateList.valueOf(typedValue.data));
     }
 
-    /* methods for changing the state and properties of Button elements */
-
-    @Override
-    public void hideButtonPause() {
-        buttonPause.setVisibility(View.INVISIBLE);
-    }
-
-    @Override
-    public void showButtonPause() {
-        buttonPause.setVisibility(View.VISIBLE);
-    }
-
-    @Override
-    public void hideButtonStart() {
-        buttonStart.setVisibility(View.INVISIBLE);
-    }
-
-    @Override
-    public void showButtonStart() {
-        buttonStart.setVisibility(View.VISIBLE);
-    }
-
-    @Override
-    public void updateButtonStartText() {
-        buttonStart.setText(R.string.button_resume);
-    }
-
-    @Override
-    public void updateColorAccentTypedValue() {
-        this.getTheme().resolveAttribute(R.attr.colorAccent, typedValue, true);
-    }
-
-    @Override
-    public void disableButtonsStartPauseStop() {
-        buttonStart.setEnabled(false);
-        buttonPause.setEnabled(false);
-        buttonStop.setEnabled(false);
-    }
-
-    @Override
-    public void enableButtonsStartPauseStop() {
-        buttonStart.setEnabled(true);
-        buttonPause.setEnabled(true);
-        buttonStop.setEnabled(true);
-    }
-
-    /* methods for changing the tint of the GPS Icon */
-
-    @Override
-    public void updateGPSIconAverage() {
-        ImageViewCompat.setImageTintList(ivAccuracy,
-                ColorStateList.valueOf(ContextCompat.getColor(this, R.color.colorGPSAverage)
-                ));
-    }
-
-    @Override
-    public void updateGPSIconBad() {
-        ImageViewCompat.setImageTintList(ivAccuracy,
-                ColorStateList.valueOf(ContextCompat.getColor(this, R.color.colorGPSBad)
-                ));
-    }
-
-    @Override
-    public void updateGPSIconGood() {
-        ImageViewCompat.setImageTintList(ivAccuracy,
-                ColorStateList.valueOf(ContextCompat.getColor(this, R.color.colorGPSGood)
-                ));
-    }
-
-    /* methods for updating the TextView elements */
-
-    @Override
-    public void updateTextViewTime(String timeElapsed) {
-        tvTime.setText(timeElapsed);
-    }
-
-    @Override
-    public void updateTextViewDistance(String distanceTravelled) {
-        tvDistance.setText(distanceTravelled);
-    }
-
-    @Override
-    public void updateTextViewPace(String currentPace) {
-        tvAveragePace.setText(currentPace);
-    }
-
-    @Override
-    public void setTextViewPaceDefaultText() {
-        tvAveragePace.setText(R.string.tv_default_pace);
-    }
-
-    @Override
-    public void setTextViewsDistanceUnit(String distanceUnitsString) {
-        tvDistanceUnit.setText(distanceUnitsString);
-        tvPaceUnit.setText("Mins/" + distanceUnitsString);
-    }
-
     @Override
     public boolean isAudioCueEnabled() {
         return sharedPrefs.getBoolean(getString(R.string.pref_audio_cue_enabled_key), true);
@@ -574,33 +546,61 @@ public class RunActivity extends BaseActivity
     }
 
     @Override
-    public void setNotificationActionResume() {
-        NotificationCompat.Action actionResume = new NotificationCompat.Action(
-                0,
-                getString(R.string.notification_action_resume),
-                PendingIntent.getBroadcast(
-                        this,
-                        R.string.notification_action_resume,
-                        intentResume,
-                        PendingIntent.FLAG_UPDATE_CURRENT)
-        );
-
-        notifBuilder.mActions.set(0, actionResume);
+    public void setButtonStartText() {
+        buttonStart.setText(R.string.button_resume);
     }
 
     @Override
-    public void setNotificationActionPause() {
-        NotificationCompat.Action actionPause = new NotificationCompat.Action(
-                0,
-                getString(R.string.notification_action_pause),
-                PendingIntent.getBroadcast(
-                        this,
-                        R.string.notification_action_pause,
-                        intentPause,
-                        PendingIntent.FLAG_UPDATE_CURRENT)
-        );
+    public void setColorAccentTypedValue() {
+        this.getTheme().resolveAttribute(R.attr.colorAccent, typedValue, true);
+    }
 
-        notifBuilder.mActions.set(0, actionPause);
+    @Override
+    public int getGPSAccuracyBadThreshold() {
+        return App.GPS_ACCURACY_BAD_THRESHOLD;
+    }
+
+    @Override
+    public int getGPSAccuracyGoodThreshold() {
+        return App.GPS_ACCURACY_GOOD_THRESHOLD;
+    }
+
+    @Override
+    public int getSeekBarProgress() {
+        return sbLock.getProgress();
+    }
+
+    @Override
+    public void setSeekBarProgress(int newProgress) {
+        SeekBarAnimation animation = new SeekBarAnimation(sbLock, sbLock.getProgress(), newProgress);
+        animation.setDuration(75);
+        sbLock.startAnimation(animation);
+    }
+
+    @Override
+    public void setTextViewsDistanceUnit(String distanceUnitsString) {
+        tvDistanceUnit.setText(distanceUnitsString);
+        tvPaceUnit.setText("Mins/" + distanceUnitsString);
+    }
+
+    @Override
+    public void setTextViewDistance(String distanceTravelled) {
+        tvDistance.setText(distanceTravelled);
+    }
+
+    @Override
+    public void setTextViewPace(String currentPace) {
+        tvAveragePace.setText(currentPace);
+    }
+
+    @Override
+    public void setTextViewPaceDefaultText() {
+        tvAveragePace.setText(R.string.tv_default_pace);
+    }
+
+    @Override
+    public void setTextViewTime(String timeElapsed) {
+        tvTime.setText(timeElapsed);
     }
 
     @Override
