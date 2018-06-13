@@ -3,7 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fitsSystemWindows="true">
+    android:fitsSystemWindows="true"
+    android:focusableInTouchMode="true">
 
     <android.support.design.widget.AppBarLayout
         android:id="@+id/appBarLayout"
@@ -110,72 +111,74 @@
 
     <!-- Run Details -->
 
-    <LinearLayout
+    <EditText
+        android:id="@+id/etTimeElapsed"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:focusable="true"
-        android:focusableInTouchMode="true"
-        android:orientation="vertical"
-        app:layout_constraintBottom_toBottomOf="@id/guidelineDetails"
-        app:layout_constraintLeft_toRightOf="parent"
-        app:layout_constraintRight_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/guidelineDetailsHeader">
+        android:focusableInTouchMode="false"
+        android:imeOptions="actionNone"
+        android:text="@string/tv_default_time_elapsed"
+        android:textAlignment="center"
+        android:textSize="@dimen/text_size_header"
+        app:layout_constraintBottom_toTopOf="@id/labelTimeElapsed"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/guidelineDetailsHeader" />
 
-        <EditText
-            android:id="@+id/etTimeElapsed"
+    <TextView
+        android:id="@+id/labelTimeElapsed"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/label_time_elapsed"
+        android:textAlignment="center"
+        app:layout_constraintBottom_toTopOf="@id/guidelineDetails"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/etTimeElapsed" />
+
+    <TextView
+        android:id="@+id/labelDistanceTravelled"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/header_margin"
+        android:text="@string/label_distance_travelled"
+        android:textAlignment="center"
+        app:layout_constraintBottom_toTopOf="@id/tilDistance"
+        app:layout_constraintEnd_toStartOf="@id/guidelineCenter"
+        app:layout_constraintStart_toEndOf="@id/guidelineLeft"
+        app:layout_constraintTop_toBottomOf="@id/guidelineDetails" />
+
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/tilDistance"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toTopOf="@id/tvDistanceUnit"
+        app:layout_constraintEnd_toStartOf="@id/guidelineCenter"
+        app:layout_constraintStart_toEndOf="@id/guidelineLeft"
+        app:layout_constraintTop_toBottomOf="@id/labelDistanceTravelled">
+
+        <android.support.design.widget.TextInputEditText
+            android:id="@+id/etDistance"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:focusableInTouchMode="false"
-            android:imeOptions="actionNone"
-            android:text="@string/tv_default_time_elapsed"
-            android:textAlignment="center"
-            android:textSize="@dimen/text_size_header" />
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:text="@string/label_time_elapsed"
-            android:textAlignment="center" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_constraintBottom_toTopOf="@id/guidelineButtons"
-        app:layout_constraintLeft_toRightOf="@id/guidelineLeft"
-        app:layout_constraintRight_toLeftOf="@id/guidelineCenter"
-        app:layout_constraintTop_toBottomOf="@id/guidelineDetails">
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:text="@string/label_distance_travelled"
-            android:textAlignment="center" />
-
-        <android.support.design.widget.TextInputLayout
-            android:id="@+id/tilDistance"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <android.support.design.widget.TextInputEditText
-                android:id="@+id/etDistance"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="numberDecimal"
-                android:text="@string/tv_default_distance_travelled"
-                android:textAlignment="center"
-                android:textSize="@dimen/text_size_details" />
-        </android.support.design.widget.TextInputLayout>
-
-        <TextView
-            android:id="@+id/tvDistanceUnit"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:text="@string/label_distance_travelled_unit_km"
+            android:inputType="numberDecimal"
+            android:text="@string/tv_default_distance_travelled"
             android:textAlignment="center"
             android:textSize="@dimen/text_size_details" />
-    </LinearLayout>
+    </android.support.design.widget.TextInputLayout>
+
+    <TextView
+        android:id="@+id/tvDistanceUnit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/header_margin"
+        android:text="@string/label_distance_travelled_unit_km"
+        android:textAlignment="center"
+        android:textSize="@dimen/text_size_details"
+        app:layout_constraintBottom_toTopOf="@id/guidelineButtons"
+        app:layout_constraintEnd_toStartOf="@id/guidelineCenter"
+        app:layout_constraintStart_toEndOf="@id/guidelineLeft"
+        app:layout_constraintTop_toBottomOf="@id/tilDistance" />
 
     <LinearLayout
         android:layout_width="wrap_content"
@@ -197,8 +200,8 @@
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:text="@string/button_delete"
-        app:layout_constraintLeft_toRightOf="@id/guidelineLeft"
-        app:layout_constraintRight_toLeftOf="@id/guidelineCenter"
+        app:layout_constraintEnd_toStartOf="@id/guidelineCenter"
+        app:layout_constraintStart_toEndOf="@id/guidelineLeft"
         app:layout_constraintTop_toBottomOf="@id/guidelineButtons" />
 
     <Button
@@ -209,8 +212,8 @@
         android:layout_weight="1"
         android:text="@string/button_update"
         android:visibility="gone"
-        app:layout_constraintLeft_toRightOf="@id/guidelineCenter"
-        app:layout_constraintRight_toLeftOf="@id/guidelineRight"
+        app:layout_constraintEnd_toStartOf="@id/guidelineRight"
+        app:layout_constraintStart_toEndOf="@id/guidelineCenter"
         app:layout_constraintTop_toBottomOf="@id/guidelineButtons" />
 
     <Button
@@ -221,8 +224,8 @@
         android:layout_weight="1"
         android:enabled="true"
         android:text="@string/button_done"
-        app:layout_constraintLeft_toRightOf="@id/guidelineCenter"
-        app:layout_constraintRight_toLeftOf="@id/guidelineRight"
+        app:layout_constraintEnd_toStartOf="@id/guidelineRight"
+        app:layout_constraintStart_toEndOf="@id/guidelineCenter"
         app:layout_constraintTop_toBottomOf="@id/guidelineButtons" />
 
 </android.support.constraint.ConstraintLayout>

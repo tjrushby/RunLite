@@ -20,7 +20,7 @@
     <string name="drawer_label_toggle_dark_mode">Dark Mode</string>
     <string name="error_edit_text_distance_empty">Field cannot be empty</string>
     <string name="error_edit_text_distance_no_numbers">Field must contain numbers</string>
-    <string name="error_edit_text_distance_zero">Distance must be greater then zero</string>
+    <string name="error_edit_text_distance_zero">Distance must be greater than zero</string>
     <string name="label_average_pace">Average Pace</string>
     <string name="label_distance_travelled">Distance Travelled</string>
     <string name="label_distance_unit_km">km</string>
