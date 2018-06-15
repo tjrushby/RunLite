@@ -10,6 +10,8 @@ import com.tjrushby.runlite.util.StringFormatter;
 import java.math.BigDecimal;
 import java.util.List;
 
+import timber.log.Timber;
+
 public class DetailsPresenter implements DetailsContract.Presenter {
     private boolean changed;
     private boolean mapFullscreen;
@@ -115,13 +117,33 @@ public class DetailsPresenter implements DetailsContract.Presenter {
         // validate user input
         if(distanceString.isEmpty()) {
             view.displayEditTextDistanceEmptyError();
+
+            if(changed) {
+                view.hideButtonUpdate();
+                view.showButtonDone();
+            }
+
         } else if(distanceString.equals(".")) {
             view.displayEditTextDistanceNoNumbersError();
+
+            if(changed) {
+                view.hideButtonUpdate();
+                view.showButtonDone();
+            }
+
         } else if(Double.parseDouble(distanceString) == 0) {
             view.displayEditTextDistanceZeroError();
+
+            if(changed) {
+                view.hideButtonUpdate();
+                view.showButtonDone();
+            }
+
         } else {
+            // input is valid
             double distanceDouble = Double.parseDouble(distanceString);
 
+            // round input to two decimal places
             BigDecimal roundedDistance = new BigDecimal(distanceDouble)
                     .setScale(2, BigDecimal.ROUND_HALF_UP);
 
@@ -141,8 +163,17 @@ public class DetailsPresenter implements DetailsContract.Presenter {
             view.setTextViewAveragePace(formatter.intToMinutesSeconds((int) averagePace));
             view.clearEditTextDistanceError();
 
-            // check if the TextViews contain different values to the model
-            determineDataChanged();
+            // check if the TextViews contain different values to the model before giving option to
+            // save to database
+            if(isDataChanged()) {
+                changed = true;
+                view.hideButtonDone();
+                view.showButtonUpdate();
+            } else {
+                changed = false;
+                view.hideButtonUpdate();
+                view.showButtonDone();
+            }
         }
     }
 
@@ -165,7 +196,7 @@ public class DetailsPresenter implements DetailsContract.Presenter {
         view.setEditTextTimeElapsed(formatter.intToMinutesSeconds(timeElapsed));
 
         // check if the TextViews contain different values to the model
-        determineDataChanged();
+        isDataChanged();
     }
 
     @Override
@@ -224,22 +255,18 @@ public class DetailsPresenter implements DetailsContract.Presenter {
         return (timeElapsed / (distance / formatter.getDistanceUnits()));
     }
 
-    private void determineDataChanged() {
+    private boolean isDataChanged() {
         long timeElapsed = formatter.minutesSecondsToInt(view.getEditTextTimeElapsed());
-        double distanceTravelled = Double.parseDouble(view.getEditTextDistance());
-        double cachedDistanceTravelled = Double.parseDouble(
+        double etDistanceTravelled = Double.parseDouble(view.getEditTextDistance());
+        double runDistanceTravelled = Double.parseDouble(
                 formatter.doubleToDistanceString(runWithLatLng.run.getDistanceTravelled())
         );
 
         if(timeElapsed != runWithLatLng.run.getTimeElapsed()
-                || distanceTravelled != cachedDistanceTravelled) {
-            changed = true;
-            view.hideButtonDone();
-            view.showButtonUpdate();
+                || etDistanceTravelled != runDistanceTravelled) {
+            return true;
         } else {
-            changed = false;
-            view.hideButtonUpdate();
-            view.showButtonDone();
+            return false;
         }
     }
 
