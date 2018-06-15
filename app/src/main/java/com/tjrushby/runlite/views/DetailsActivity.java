@@ -406,20 +406,7 @@ public class DetailsActivity extends BaseActivity
         buttonUpdate.setVisibility(View.VISIBLE);
     }
 
-    @Override
-    public void validateEditTextDistance() {
-        String distanceText = etDistance.getText().toString();
 
-        if(TextUtils.isEmpty(distanceText)) {
-            presenter.onEditTextDistanceEmpty();
-        } else if(distanceText.equals(".")) {
-            presenter.onEditTextDistanceNoNumbers();
-        } else if(Double.parseDouble(distanceText) == 0) {
-            presenter.onEditTextDistanceZero();
-        } else {
-            presenter.onEditTextDistanceValid();
-        }
-    }
 
     @Override
     public void onTimePickerDialogPositiveClick(int timeElapsed) {

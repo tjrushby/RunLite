@@ -75,8 +75,6 @@ public interface DetailsContract {
         void hideButtonUpdate();
 
         void showButtonUpdate();
-
-        void validateEditTextDistance();
     }
 
     interface Presenter {
@@ -95,14 +93,6 @@ public interface DetailsContract {
         void onExitAlertDialogYes();
 
         void onEditTextDistanceChanged();
-
-        void onEditTextDistanceEmpty();
-
-        void onEditTextDistanceNoNumbers();
-
-        void onEditTextDistanceZero();
-
-        void onEditTextDistanceValid();
 
         void onEditTextTimeElapsedClicked();
 

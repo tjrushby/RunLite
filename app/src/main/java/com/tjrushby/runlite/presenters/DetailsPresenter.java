@@ -110,49 +110,40 @@ public class DetailsPresenter implements DetailsContract.Presenter {
 
     @Override
     public void onEditTextDistanceChanged() {
-        view.validateEditTextDistance();
-    }
+        String distanceString = view.getEditTextDistance();
 
-    @Override
-    public void onEditTextDistanceEmpty() {
-        view.displayEditTextDistanceEmptyError();
-    }
+        // validate user input
+        if(distanceString.isEmpty()) {
+            view.displayEditTextDistanceEmptyError();
+        } else if(distanceString.equals(".")) {
+            view.displayEditTextDistanceNoNumbersError();
+        } else if(Double.parseDouble(distanceString) == 0) {
+            view.displayEditTextDistanceZeroError();
+        } else {
+            double distanceDouble = Double.parseDouble(distanceString);
 
-    @Override
-    public void onEditTextDistanceNoNumbers() {
-        view.displayEditTextDistanceNoNumbersError();
-    }
+            BigDecimal roundedDistance = new BigDecimal(distanceDouble)
+                    .setScale(2, BigDecimal.ROUND_HALF_UP);
 
-    @Override
-    public void onEditTextDistanceZero() {
-        view.displayEditTextDistanceZeroError();
-    }
+            // calculate new average pace value from the values in the TextViews, using rounded distance
+            double averagePace = calculateAveragePace(
+                    formatter.minutesSecondsToInt(view.getEditTextTimeElapsed()),
+                    roundedDistance.doubleValue()
+            );
 
-    @Override
-    public void onEditTextDistanceValid() {
-        double distance = Double.parseDouble(view.getEditTextDistance());
+            // if the user input isn't rounded to two decimal places then do so
+            if(distanceDouble != roundedDistance.doubleValue()) {
+                view.setEditTextDistance(roundedDistance.toString());
+            }
 
-        BigDecimal roundedDistance = new BigDecimal(distance)
-                .setScale(2, BigDecimal.ROUND_HALF_UP);
+            // update TextView for average pace, clear error messages (if any) and enable button for
+            // saving changes
+            view.setTextViewAveragePace(formatter.intToMinutesSeconds((int) averagePace));
+            view.clearEditTextDistanceError();
 
-        // calculate new average pace value from the values in the TextViews, using rounded distance
-        double averagePace = calculateAveragePace(
-                formatter.minutesSecondsToInt(view.getEditTextTimeElapsed()),
-                roundedDistance.doubleValue()
-        );
-
-        // if the user input isn't rounded to two decimal places then do so
-        if(distance != roundedDistance.doubleValue()) {
-            view.setEditTextDistance(roundedDistance.toString());
+            // check if the TextViews contain different values to the model
+            determineDataChanged();
         }
-
-        // update TextView for average pace, clear error messages (if any) and enable button for
-        // saving changes
-        view.setTextViewAveragePace(formatter.intToMinutesSeconds((int) averagePace));
-        view.clearEditTextDistanceError();
-
-        // check if the TextViews contain different values to the model
-        determineDataChanged();
     }
 
     @Override
