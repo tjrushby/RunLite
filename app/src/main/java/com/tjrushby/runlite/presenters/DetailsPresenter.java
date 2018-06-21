@@ -15,6 +15,7 @@ import timber.log.Timber;
 public class DetailsPresenter implements DetailsContract.Presenter {
     private boolean changed;
     private boolean mapFullscreen;
+    private double distanceUnits;
 
     private DetailsContract.Activity view;
     private List<RunLatLng> mapMarkerCoordinates;
@@ -32,12 +33,14 @@ public class DetailsPresenter implements DetailsContract.Presenter {
         this.runRepository = runRepository;
         this.runWithLatLng = runWithLatLng;
         this.formatter = formatter;
+
+        distanceUnits = formatter.getDistanceUnits();
     }
 
     @Override
     public void onViewCreated(String runId) {
         view.displayProgressBar(true);
-        view.setDistanceUnits(formatter.getDistanceUnits());
+        view.setDistanceUnits(distanceUnits);
         view.setTextViewsDistanceUnit(formatter.getDistanceUnitsString());
 
         mapFullscreen = false;
@@ -252,15 +255,13 @@ public class DetailsPresenter implements DetailsContract.Presenter {
     }
 
     private double calculateAveragePace(double timeElapsed, double distance) {
-        return (timeElapsed / (distance / formatter.getDistanceUnits()));
+        return (timeElapsed / (distance / distanceUnits));
     }
 
     private boolean isDataChanged() {
         long timeElapsed = formatter.minutesSecondsToInt(view.getEditTextTimeElapsed());
         double etDistanceTravelled = Double.parseDouble(view.getEditTextDistance());
-        double runDistanceTravelled = Double.parseDouble(
-                formatter.doubleToDistanceString(runWithLatLng.run.getDistanceTravelled())
-        );
+        double runDistanceTravelled = runWithLatLng.run.getDistanceTravelled() / distanceUnits;
 
         if(timeElapsed != runWithLatLng.run.getTimeElapsed()
                 || etDistanceTravelled != runDistanceTravelled) {
@@ -271,7 +272,10 @@ public class DetailsPresenter implements DetailsContract.Presenter {
     }
 
     private void updateRun() {
-        runWithLatLng.run.setDistanceTravelled(Double.parseDouble(view.getEditTextDistance()));
+        runWithLatLng.run.setDistanceTravelled(
+                Double.parseDouble(view.getEditTextDistance()) * distanceUnits
+        );
+
         runWithLatLng.run.setTimeElapsed(formatter.minutesSecondsToInt(view.getEditTextTimeElapsed()));
 
         int timeElapsed = formatter.minutesSecondsToInt(view.getEditTextTimeElapsed());
