@@ -3,7 +3,7 @@ package com.tjrushby.runlite.util;
 import java.util.Date;
 
 public interface StringFormatter {
-    int minutesSecondsToInt(String minutesSeconds);
+    int hoursMinutesSecondsToInt(String hoursMinutesSeconds);
 
     String dateToString(Date date);
 
@@ -15,7 +15,7 @@ public interface StringFormatter {
 
     String doubleToDistanceStringWithUnits(double distanceDouble);
 
-    String intToMinutesSeconds(int timeInSeconds);
+    String intToHoursMinutesSeconds(int timeInSeconds);
 
     String intToMinutesSecondsAudioCueString(int timeInSeconds);
 

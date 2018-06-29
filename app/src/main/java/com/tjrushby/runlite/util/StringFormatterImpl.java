@@ -31,12 +31,23 @@ public class StringFormatterImpl implements StringFormatter {
     }
 
     @Override
-    public int minutesSecondsToInt(String minutesSeconds) {
-        String[] split = minutesSeconds.split(":");
-        int minutes = Integer.parseInt(split[0]);
-        int seconds = Integer.parseInt(split[1]);
+    public int hoursMinutesSecondsToInt(String hoursMinutesSeconds) {
+        String[] split = hoursMinutesSeconds.split(":");
 
-        return minutes * 60 + seconds;
+        if(split.length == 3) {
+            // string contains hh:mm:ss
+            int hours = Integer.parseInt(split[0]);
+            int minutes = Integer.parseInt(split[1]);
+            int seconds = Integer.parseInt(split[2]);
+
+            return (hours * 60 * 60) + (minutes * 60) + seconds;
+        } else {
+            // string only mm:ss
+            int minutes = Integer.parseInt(split[0]);
+            int seconds = Integer.parseInt(split[1]);
+
+            return minutes * 60 + seconds;
+        }
     }
 
     @Override
@@ -55,7 +66,7 @@ public class StringFormatterImpl implements StringFormatter {
 
     @Override
     public String doubleToAveragePaceString(double averagePace) {
-        return " Mins/" + distanceUnitsString + " " + intToMinutesSeconds((int) averagePace);
+        return " Mins/" + distanceUnitsString + " " + intToHoursMinutesSeconds((int) averagePace);
     }
 
     @Override
@@ -69,11 +80,16 @@ public class StringFormatterImpl implements StringFormatter {
     }
 
     @Override
-    public String intToMinutesSeconds(int timeInSeconds) {
+    public String intToHoursMinutesSeconds(int timeInSeconds) {
         long seconds = timeInSeconds % 60;
-        long minutes = timeInSeconds / 60;
+        long minutes = (timeInSeconds / 60) % 60;
+        long hours = (timeInSeconds / 60 / 60) % 60;
 
-        return String.format(Locale.getDefault(), "%02d:%02d", minutes, seconds);
+        if(hours < 1) {
+            return String.format(Locale.getDefault(), "%02d:%02d", minutes, seconds);
+        } else {
+            return String.format(Locale.getDefault(), "%02d:%02d:%02d", hours, minutes, seconds);
+        }
     }
 
     @Override

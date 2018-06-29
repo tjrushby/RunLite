@@ -117,15 +117,15 @@ public class RunPresenter implements RunContract.Presenter {
             if(averagePace == 0) {
                 view.setTextViewPaceDefaultText();
             } else {
-                view.setTextViewPace(formatter.intToMinutesSeconds((int) averagePace));
+                view.setTextViewPace(formatter.intToHoursMinutesSeconds((int) averagePace));
             }
 
-            view.setTextViewTime(formatter.intToMinutesSeconds(timeElapsed));
+            view.setTextViewTime(formatter.intToHoursMinutesSeconds(timeElapsed));
             view.setTextViewDistance(formatter.doubleToDistanceString(distanceTravelled));
 
             // update notification
             view.setNotificationContent(
-                    formatter.intToMinutesSeconds(timeElapsed) + " · "
+                    formatter.intToHoursMinutesSeconds(timeElapsed) + " · "
                             + formatter.doubleToDistanceString(distanceTravelled)
                             + formatter.getDistanceUnitsString()
             );

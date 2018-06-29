@@ -5,24 +5,25 @@
     android:layout_height="match_parent"
     android:layout_gravity="center">
 
-    <android.support.constraint.Guideline
-        android:id="@+id/dialogCenter"
+    <NumberPicker
+        android:id="@+id/numberPickerHours"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.5" />
+        android:layout_margin="@dimen/text_space"
+        app:layout_constraintEnd_toStartOf="@id/numberPickerMinutes" />
 
     <NumberPicker
         android:id="@+id/numberPickerMinutes"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/text_space"
-        app:layout_constraintEnd_toStartOf="@id/dialogCenter" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <NumberPicker
         android:id="@+id/numberPickerSeconds"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/text_space"
-        app:layout_constraintStart_toEndOf="@id/dialogCenter" />
+        app:layout_constraintStart_toEndOf="@id/numberPickerMinutes" />
 </android.support.constraint.ConstraintLayout>

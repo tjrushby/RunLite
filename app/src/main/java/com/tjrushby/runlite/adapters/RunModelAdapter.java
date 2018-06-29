@@ -6,9 +6,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
-import com.tjrushby.runlite.R;
 import com.tjrushby.runlite.adapters.viewholders.RunModelViewHolder;
 import com.tjrushby.runlite.adapters.viewholders.RunModelViewHolderFactory;
 import com.tjrushby.runlite.contracts.MainContract;
@@ -50,7 +48,7 @@ public class RunModelAdapter extends RecyclerView.Adapter<RunModelViewHolder> {
         RunWithLatLng run = runsList.get(position);
 
         holder.setDateTime(formatter.dateToString(run.run.getDateTime()));
-        holder.setTimeElapsed(formatter.intToMinutesSeconds(run.run.getTimeElapsed()));
+        holder.setTimeElapsed(formatter.intToHoursMinutesSeconds(run.run.getTimeElapsed()));
         holder.setDistance(formatter.doubleToDistanceStringWithUnits(run.run.getDistanceTravelled()));
         holder.setAveragePace(formatter.doubleToAveragePaceString((long) run.run.getAveragePace()));
 
@@ -110,7 +108,7 @@ public class RunModelAdapter extends RecyclerView.Adapter<RunModelViewHolder> {
                         ((MainActivity) context).setRunTotals(
                                 Integer.toString(runsList.size()),
                                 formatter.doubleToDistanceStringWithUnits(totalDistance),
-                                formatter.intToMinutesSeconds(totalTime)
+                                formatter.intToHoursMinutesSeconds(totalTime)
                         );
                     }
 
@@ -136,7 +134,7 @@ public class RunModelAdapter extends RecyclerView.Adapter<RunModelViewHolder> {
                     ((MainActivity) context).setRunTotals(
                             Integer.toString(0),
                             formatter.doubleToDistanceStringWithUnits(0),
-                            formatter.intToMinutesSeconds(0)
+                            formatter.intToHoursMinutesSeconds(0)
                     );
                 }
 

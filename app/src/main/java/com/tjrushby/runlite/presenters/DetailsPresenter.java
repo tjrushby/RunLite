@@ -51,9 +51,9 @@ public class DetailsPresenter implements DetailsContract.Presenter {
                 runWithLatLng = run;
 
                 view.setTextViews(
-                        formatter.intToMinutesSeconds(run.run.getTimeElapsed()),
+                        formatter.intToHoursMinutesSeconds(run.run.getTimeElapsed()),
                         formatter.doubleToDistanceString(run.run.getDistanceTravelled()),
-                        formatter.intToMinutesSeconds((int) run.run.getAveragePace())
+                        formatter.intToHoursMinutesSeconds((int) run.run.getAveragePace())
                 );
 
                 view.setToolbarTitle("Run on " + formatter.dateToString(run.run.getDateTime()));
@@ -152,7 +152,7 @@ public class DetailsPresenter implements DetailsContract.Presenter {
 
             // calculate new average pace value from the values in the TextViews, using rounded distance
             double averagePace = calculateAveragePace(
-                    formatter.minutesSecondsToInt(view.getEditTextTimeElapsed()),
+                    formatter.hoursMinutesSecondsToInt(view.getEditTextTimeElapsed()),
                     roundedDistance.doubleValue()
             );
 
@@ -163,20 +163,12 @@ public class DetailsPresenter implements DetailsContract.Presenter {
 
             // update TextView for average pace, clear error messages (if any) and enable button for
             // saving changes
-            view.setTextViewAveragePace(formatter.intToMinutesSeconds((int) averagePace));
+            view.setTextViewAveragePace(formatter.intToHoursMinutesSeconds((int) averagePace));
             view.clearEditTextDistanceError();
 
             // check if the TextViews contain different values to the model before giving option to
             // save to database
-            if(isDataChanged()) {
-                changed = true;
-                view.hideButtonDone();
-                view.showButtonUpdate();
-            } else {
-                changed = false;
-                view.hideButtonUpdate();
-                view.showButtonDone();
-            }
+            isDataChanged();
         }
     }
 
@@ -186,7 +178,7 @@ public class DetailsPresenter implements DetailsContract.Presenter {
     }
 
     @Override
-    public void onEditTextTimeElapsedUpdated(int timeElapsed) {
+    public void onEditTextTimeElapsedChanged(int timeElapsed) {
         // calculate average pace using new timeElapsed value and the current value in the EditText
         // for distance
         double averagePace = calculateAveragePace(
@@ -195,10 +187,11 @@ public class DetailsPresenter implements DetailsContract.Presenter {
         );
 
         // update the TextViews for time and average pace
-        view.setTextViewAveragePace(formatter.intToMinutesSeconds((int) averagePace));
-        view.setEditTextTimeElapsed(formatter.intToMinutesSeconds(timeElapsed));
+        view.setTextViewAveragePace(formatter.intToHoursMinutesSeconds((int) averagePace));
+        view.setEditTextTimeElapsed(formatter.intToHoursMinutesSeconds(timeElapsed));
 
-        // check if the TextViews contain different values to the model
+        // check if the TextViews contain different values to the model before giving option to
+        // save to database
         isDataChanged();
     }
 
@@ -258,16 +251,25 @@ public class DetailsPresenter implements DetailsContract.Presenter {
         return (timeElapsed / (distance / distanceUnits));
     }
 
-    private boolean isDataChanged() {
-        long timeElapsed = formatter.minutesSecondsToInt(view.getEditTextTimeElapsed());
+    private void isDataChanged() {
+        Timber.d("isDataChanged()");
+
+        long etTimeElapsed = formatter.hoursMinutesSecondsToInt(view.getEditTextTimeElapsed());
         double etDistanceTravelled = Double.parseDouble(view.getEditTextDistance());
         double runDistanceTravelled = runWithLatLng.run.getDistanceTravelled() / distanceUnits;
 
-        if(timeElapsed != runWithLatLng.run.getTimeElapsed()
+        Timber.d("etTimeElapsed: " + etTimeElapsed);
+        Timber.d("timeElapsed: " + runWithLatLng.run.getTimeElapsed());
+
+        if(etTimeElapsed != runWithLatLng.run.getTimeElapsed()
                 || etDistanceTravelled != runDistanceTravelled) {
-            return true;
+            changed = true;
+            view.hideButtonDone();
+            view.showButtonUpdate();
         } else {
-            return false;
+            changed = false;
+            view.hideButtonUpdate();
+            view.showButtonDone();
         }
     }
 
@@ -276,9 +278,9 @@ public class DetailsPresenter implements DetailsContract.Presenter {
                 Double.parseDouble(view.getEditTextDistance()) * distanceUnits
         );
 
-        runWithLatLng.run.setTimeElapsed(formatter.minutesSecondsToInt(view.getEditTextTimeElapsed()));
+        runWithLatLng.run.setTimeElapsed(formatter.hoursMinutesSecondsToInt(view.getEditTextTimeElapsed()));
 
-        int timeElapsed = formatter.minutesSecondsToInt(view.getEditTextTimeElapsed());
+        int timeElapsed = formatter.hoursMinutesSecondsToInt(view.getEditTextTimeElapsed());
         double distanceTravelled = Double.parseDouble(view.getEditTextDistance());
 
         double averagePace = calculateAveragePace(timeElapsed, distanceTravelled);

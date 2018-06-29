@@ -6,10 +6,8 @@ import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.TextInputEditText;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatImageView;
 import android.support.v7.widget.Toolbar;
-import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -407,9 +405,8 @@ public class DetailsActivity extends BaseActivity
     }
 
 
-
     @Override
     public void onTimePickerDialogPositiveClick(int timeElapsed) {
-        presenter.onEditTextTimeElapsedUpdated(timeElapsed);
+        presenter.onEditTextTimeElapsedChanged(timeElapsed);
     }
 }
