@@ -50,7 +50,7 @@ public class RunModelAdapter extends RecyclerView.Adapter<RunModelViewHolder> {
         holder.setDateTime(formatter.dateToString(run.run.getDateTime()));
         holder.setTimeElapsed(formatter.intToHoursMinutesSeconds(run.run.getTimeElapsed()));
         holder.setDistance(formatter.doubleToDistanceStringWithUnits(run.run.getDistanceTravelled()));
-        holder.setAveragePace(formatter.doubleToAveragePaceString((long) run.run.getAveragePace()));
+        holder.setAveragePace(formatter.doubleToAveragePaceString(run.run.getAveragePace()));
 
         holder.itemView.setOnClickListener((View view) -> {
             if(view.getContext() instanceof MainActivity) {

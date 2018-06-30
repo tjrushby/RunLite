@@ -56,17 +56,29 @@ public class StringFormatterImpl implements StringFormatter {
     }
 
     @Override
+    public String averagePaceToMinutesSecondsString(double averagePace) {
+        // averagePace is always in min/km, * by the distanceUnits value to convert
+        // to miles if needed
+        int averagePaceAdjusted = (int) (averagePace * distanceUnits);
+
+        long seconds = averagePaceAdjusted % 60;
+        long minutes = (averagePaceAdjusted / 60) % 60;
+
+        return String.format(Locale.getDefault(), "%02d:%02d", minutes, seconds);
+    }
+
+    @Override
     public String doubleToAveragePaceAudioCueString(double averagePace) {
         if(averagePace == 0) {
             return "Unavailable";
         } else {
-            return intToMinutesSecondsAudioCueString((int) averagePace) + " / " + distanceUnitsString;
+            return averagePaceToMinutesSecondsString(averagePace) + " / " + distanceUnitsString;
         }
     }
 
     @Override
     public String doubleToAveragePaceString(double averagePace) {
-        return " Mins/" + distanceUnitsString + " " + intToHoursMinutesSeconds((int) averagePace);
+        return " Mins/" + distanceUnitsString + " " + averagePaceToMinutesSecondsString(averagePace);
     }
 
     @Override

@@ -589,7 +589,7 @@ public class RunActivity extends BaseActivity
     }
 
     @Override
-    public void setTextViewPace(String currentPace) {
+    public void setTextViewAveragePace(String currentPace) {
         tvAveragePace.setText(currentPace);
     }
 

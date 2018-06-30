@@ -7,6 +7,8 @@ public interface StringFormatter {
 
     String dateToString(Date date);
 
+    String averagePaceToMinutesSecondsString(double averagePace);
+
     String doubleToAveragePaceAudioCueString(double averagePace);
 
     String doubleToAveragePaceString(double averagePace);

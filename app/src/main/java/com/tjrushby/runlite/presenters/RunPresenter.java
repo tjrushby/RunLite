@@ -110,14 +110,16 @@ public class RunPresenter implements RunContract.Presenter {
 
             // calculate the average pace
             if(model.getDistanceTravelled() > 0) {
-                averagePace = timeElapsed / distanceTravelled / formatter.getDistanceUnits();
+                averagePace = timeElapsed / distanceTravelled;
             }
 
             // update the TextView elements
             if(averagePace == 0) {
                 view.setTextViewPaceDefaultText();
             } else {
-                view.setTextViewPace(formatter.intToHoursMinutesSeconds((int) averagePace));
+                view.setTextViewAveragePace(
+                        formatter.averagePaceToMinutesSecondsString(averagePace)
+                );
             }
 
             view.setTextViewTime(formatter.intToHoursMinutesSeconds(timeElapsed));
@@ -125,9 +127,9 @@ public class RunPresenter implements RunContract.Presenter {
 
             // update notification
             view.setNotificationContent(
-                    formatter.intToHoursMinutesSeconds(timeElapsed) + " · "
-                            + formatter.doubleToDistanceString(distanceTravelled)
-                            + formatter.getDistanceUnitsString()
+                    formatter.intToHoursMinutesSeconds(timeElapsed) + " · " +
+                    formatter.doubleToDistanceString(distanceTravelled) +
+                    formatter.getDistanceUnitsString()
             );
 
             // audio cue
@@ -352,7 +354,7 @@ public class RunPresenter implements RunContract.Presenter {
                 formatter.doubleToDistanceStringWithUnits(distanceTravelled) +
                         " in " + formatter.intToMinutesSecondsAudioCueString(timeElapsed) +
                         ". Average pace " +
-                        formatter.doubleToAveragePaceAudioCueString((long) averagePace) + ". "
+                        formatter.doubleToAveragePaceAudioCueString(averagePace) + ". "
         );
     }
 }

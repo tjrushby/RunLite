@@ -94,7 +94,7 @@ public interface RunContract {
 
         void setTextViewDistance(String distanceTravelled);
 
-        void setTextViewPace(String currentPace);
+        void setTextViewAveragePace(String currentPace);
 
         void setTextViewPaceDefaultText();
 

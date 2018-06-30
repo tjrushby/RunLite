@@ -53,7 +53,7 @@ public class DetailsPresenter implements DetailsContract.Presenter {
                 view.setTextViews(
                         formatter.intToHoursMinutesSeconds(run.run.getTimeElapsed()),
                         formatter.doubleToDistanceString(run.run.getDistanceTravelled()),
-                        formatter.intToHoursMinutesSeconds((int) run.run.getAveragePace())
+                        formatter.averagePaceToMinutesSecondsString(run.run.getAveragePace())
                 );
 
                 view.setToolbarTitle("Run on " + formatter.dateToString(run.run.getDateTime()));
@@ -163,7 +163,7 @@ public class DetailsPresenter implements DetailsContract.Presenter {
 
             // update TextView for average pace, clear error messages (if any) and enable button for
             // saving changes
-            view.setTextViewAveragePace(formatter.intToHoursMinutesSeconds((int) averagePace));
+            view.setTextViewAveragePace(formatter.averagePaceToMinutesSecondsString(averagePace));
             view.clearEditTextDistanceError();
 
             // check if the TextViews contain different values to the model before giving option to
@@ -187,7 +187,7 @@ public class DetailsPresenter implements DetailsContract.Presenter {
         );
 
         // update the TextViews for time and average pace
-        view.setTextViewAveragePace(formatter.intToHoursMinutesSeconds((int) averagePace));
+        view.setTextViewAveragePace(formatter.averagePaceToMinutesSecondsString(averagePace));
         view.setEditTextTimeElapsed(formatter.intToHoursMinutesSeconds(timeElapsed));
 
         // check if the TextViews contain different values to the model before giving option to
@@ -248,7 +248,8 @@ public class DetailsPresenter implements DetailsContract.Presenter {
     }
 
     private double calculateAveragePace(double timeElapsed, double distance) {
-        return (timeElapsed / (distance / distanceUnits));
+        // multiply distance by distanceUnits to ensure it is converted to miles if needed
+        return (timeElapsed / (distance * distanceUnits));
     }
 
     private void isDataChanged() {
@@ -257,9 +258,6 @@ public class DetailsPresenter implements DetailsContract.Presenter {
         long etTimeElapsed = formatter.hoursMinutesSecondsToInt(view.getEditTextTimeElapsed());
         double etDistanceTravelled = Double.parseDouble(view.getEditTextDistance());
         double runDistanceTravelled = runWithLatLng.run.getDistanceTravelled() / distanceUnits;
-
-        Timber.d("etTimeElapsed: " + etTimeElapsed);
-        Timber.d("timeElapsed: " + runWithLatLng.run.getTimeElapsed());
 
         if(etTimeElapsed != runWithLatLng.run.getTimeElapsed()
                 || etDistanceTravelled != runDistanceTravelled) {
@@ -274,18 +272,16 @@ public class DetailsPresenter implements DetailsContract.Presenter {
     }
 
     private void updateRun() {
-        runWithLatLng.run.setDistanceTravelled(
-                Double.parseDouble(view.getEditTextDistance()) * distanceUnits
-        );
-
-        runWithLatLng.run.setTimeElapsed(formatter.hoursMinutesSecondsToInt(view.getEditTextTimeElapsed()));
-
         int timeElapsed = formatter.hoursMinutesSecondsToInt(view.getEditTextTimeElapsed());
         double distanceTravelled = Double.parseDouble(view.getEditTextDistance());
-
         double averagePace = calculateAveragePace(timeElapsed, distanceTravelled);
 
         runWithLatLng.run.setAveragePace(averagePace);
+
+        // * by distanceUnits to ensure that we're saving the distance in meters
+        runWithLatLng.run.setDistanceTravelled(distanceTravelled * distanceUnits);
+
+        runWithLatLng.run.setTimeElapsed(timeElapsed);
 
         // save run to database if it has been changed
         runRepository.updateRun(runWithLatLng);
