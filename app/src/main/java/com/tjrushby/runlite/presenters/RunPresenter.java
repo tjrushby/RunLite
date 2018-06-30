@@ -118,17 +118,17 @@ public class RunPresenter implements RunContract.Presenter {
                 view.setTextViewPaceDefaultText();
             } else {
                 view.setTextViewAveragePace(
-                        formatter.averagePaceToMinutesSecondsString(averagePace)
+                        formatter.averagePaceToTimeString(averagePace)
                 );
             }
 
-            view.setTextViewTime(formatter.intToHoursMinutesSeconds(timeElapsed));
-            view.setTextViewDistance(formatter.doubleToDistanceString(distanceTravelled));
+            view.setTextViewTime(formatter.secondsToTimeString(timeElapsed));
+            view.setTextViewDistance(formatter.distanceToString(distanceTravelled));
 
             // update notification
             view.setNotificationContent(
-                    formatter.intToHoursMinutesSeconds(timeElapsed) + " · " +
-                    formatter.doubleToDistanceString(distanceTravelled) +
+                    formatter.secondsToTimeString(timeElapsed) + " · " +
+                    formatter.distanceToString(distanceTravelled) +
                     formatter.getDistanceUnitsString()
             );
 
@@ -351,10 +351,10 @@ public class RunPresenter implements RunContract.Presenter {
 
     private void speakRunDetails() {
         view.speak(
-                formatter.doubleToDistanceStringWithUnits(distanceTravelled) +
-                        " in " + formatter.intToMinutesSecondsAudioCueString(timeElapsed) +
+                formatter.distanceToStringWithUnits(distanceTravelled) +
+                        " in " + formatter.secondsToTimeStringAudioCue(timeElapsed) +
                         ". Average pace " +
-                        formatter.doubleToAveragePaceAudioCueString(averagePace) + ". "
+                        formatter.averagePaceToTimeStringAudioCue(averagePace) + ". "
         );
     }
 }

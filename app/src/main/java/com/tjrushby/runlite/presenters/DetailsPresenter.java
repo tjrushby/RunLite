@@ -51,9 +51,9 @@ public class DetailsPresenter implements DetailsContract.Presenter {
                 runWithLatLng = run;
 
                 view.setTextViews(
-                        formatter.intToHoursMinutesSeconds(run.run.getTimeElapsed()),
-                        formatter.doubleToDistanceString(run.run.getDistanceTravelled()),
-                        formatter.averagePaceToMinutesSecondsString(run.run.getAveragePace())
+                        formatter.secondsToTimeString(run.run.getTimeElapsed()),
+                        formatter.distanceToString(run.run.getDistanceTravelled()),
+                        formatter.averagePaceToTimeString(run.run.getAveragePace())
                 );
 
                 view.setToolbarTitle("Run on " + formatter.dateToString(run.run.getDateTime()));
@@ -152,7 +152,7 @@ public class DetailsPresenter implements DetailsContract.Presenter {
 
             // calculate new average pace value from the values in the TextViews, using rounded distance
             double averagePace = calculateAveragePace(
-                    formatter.hoursMinutesSecondsToInt(view.getEditTextTimeElapsed()),
+                    formatter.timeStringToSeconds(view.getEditTextTimeElapsed()),
                     roundedDistance.doubleValue()
             );
 
@@ -163,7 +163,7 @@ public class DetailsPresenter implements DetailsContract.Presenter {
 
             // update TextView for average pace, clear error messages (if any) and enable button for
             // saving changes
-            view.setTextViewAveragePace(formatter.averagePaceToMinutesSecondsString(averagePace));
+            view.setTextViewAveragePace(formatter.averagePaceToTimeString(averagePace));
             view.clearEditTextDistanceError();
 
             // check if the TextViews contain different values to the model before giving option to
@@ -187,8 +187,8 @@ public class DetailsPresenter implements DetailsContract.Presenter {
         );
 
         // update the TextViews for time and average pace
-        view.setTextViewAveragePace(formatter.averagePaceToMinutesSecondsString(averagePace));
-        view.setEditTextTimeElapsed(formatter.intToHoursMinutesSeconds(timeElapsed));
+        view.setTextViewAveragePace(formatter.averagePaceToTimeString(averagePace));
+        view.setEditTextTimeElapsed(formatter.secondsToTimeString(timeElapsed));
 
         // check if the TextViews contain different values to the model before giving option to
         // save to database
@@ -255,7 +255,7 @@ public class DetailsPresenter implements DetailsContract.Presenter {
     private void isDataChanged() {
         Timber.d("isDataChanged()");
 
-        long etTimeElapsed = formatter.hoursMinutesSecondsToInt(view.getEditTextTimeElapsed());
+        long etTimeElapsed = formatter.timeStringToSeconds(view.getEditTextTimeElapsed());
         double etDistanceTravelled = Double.parseDouble(view.getEditTextDistance());
         double runDistanceTravelled = runWithLatLng.run.getDistanceTravelled() / distanceUnits;
 
@@ -272,7 +272,7 @@ public class DetailsPresenter implements DetailsContract.Presenter {
     }
 
     private void updateRun() {
-        int timeElapsed = formatter.hoursMinutesSecondsToInt(view.getEditTextTimeElapsed());
+        int timeElapsed = formatter.timeStringToSeconds(view.getEditTextTimeElapsed());
         double distanceTravelled = Double.parseDouble(view.getEditTextDistance());
         double averagePace = calculateAveragePace(timeElapsed, distanceTravelled);
 

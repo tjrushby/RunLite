@@ -48,9 +48,9 @@ public class RunModelAdapter extends RecyclerView.Adapter<RunModelViewHolder> {
         RunWithLatLng run = runsList.get(position);
 
         holder.setDateTime(formatter.dateToString(run.run.getDateTime()));
-        holder.setTimeElapsed(formatter.intToHoursMinutesSeconds(run.run.getTimeElapsed()));
-        holder.setDistance(formatter.doubleToDistanceStringWithUnits(run.run.getDistanceTravelled()));
-        holder.setAveragePace(formatter.doubleToAveragePaceString(run.run.getAveragePace()));
+        holder.setTimeElapsed(formatter.secondsToTimeString(run.run.getTimeElapsed()));
+        holder.setDistance(formatter.distanceToStringWithUnits(run.run.getDistanceTravelled()));
+        holder.setAveragePace(formatter.averagePaceToTimeStringWithLabel(run.run.getAveragePace()));
 
         holder.itemView.setOnClickListener((View view) -> {
             if(view.getContext() instanceof MainActivity) {
@@ -70,7 +70,7 @@ public class RunModelAdapter extends RecyclerView.Adapter<RunModelViewHolder> {
                     .setTitle("Delete Run?")
                     .setMessage(
                             formatter.dateToString(run.run.getDateTime()) +
-                            " - " + formatter.doubleToDistanceStringWithUnits(
+                            " - " + formatter.distanceToStringWithUnits(
                                 run.run.getDistanceTravelled()) +
                             "\nThis action cannot be undone")
                     .setPositiveButton("Yes", (dialog, which) ->
@@ -107,8 +107,8 @@ public class RunModelAdapter extends RecyclerView.Adapter<RunModelViewHolder> {
                     if(context instanceof MainActivity) {
                         ((MainActivity) context).setRunTotals(
                                 Integer.toString(runsList.size()),
-                                formatter.doubleToDistanceStringWithUnits(totalDistance),
-                                formatter.intToHoursMinutesSeconds(totalTime)
+                                formatter.distanceToStringWithUnits(totalDistance),
+                                formatter.secondsToTimeString(totalTime)
                         );
                     }
 
@@ -133,8 +133,8 @@ public class RunModelAdapter extends RecyclerView.Adapter<RunModelViewHolder> {
                 if(context instanceof MainActivity) {
                     ((MainActivity) context).setRunTotals(
                             Integer.toString(0),
-                            formatter.doubleToDistanceStringWithUnits(0),
-                            formatter.intToHoursMinutesSeconds(0)
+                            formatter.distanceToStringWithUnits(0),
+                            formatter.secondsToTimeString(0)
                     );
                 }
 

@@ -31,7 +31,7 @@ public class StringFormatterImpl implements StringFormatter {
     }
 
     @Override
-    public int hoursMinutesSecondsToInt(String hoursMinutesSeconds) {
+    public int timeStringToSeconds(String hoursMinutesSeconds) {
         String[] split = hoursMinutesSeconds.split(":");
 
         if(split.length == 3) {
@@ -56,7 +56,7 @@ public class StringFormatterImpl implements StringFormatter {
     }
 
     @Override
-    public String averagePaceToMinutesSecondsString(double averagePace) {
+    public String averagePaceToTimeString(double averagePace) {
         // averagePace is always in min/km, * by the distanceUnits value to convert
         // to miles if needed
         int averagePaceAdjusted = (int) (averagePace * distanceUnits);
@@ -68,31 +68,31 @@ public class StringFormatterImpl implements StringFormatter {
     }
 
     @Override
-    public String doubleToAveragePaceAudioCueString(double averagePace) {
+    public String averagePaceToTimeStringAudioCue(double averagePace) {
         if(averagePace == 0) {
             return "Unavailable";
         } else {
-            return averagePaceToMinutesSecondsString(averagePace) + " / " + distanceUnitsString;
+            return averagePaceToTimeString(averagePace) + " / " + distanceUnitsString;
         }
     }
 
     @Override
-    public String doubleToAveragePaceString(double averagePace) {
-        return " Mins/" + distanceUnitsString + " " + averagePaceToMinutesSecondsString(averagePace);
+    public String averagePaceToTimeStringWithLabel(double averagePace) {
+        return " Mins/" + distanceUnitsString + " " + averagePaceToTimeString(averagePace);
     }
 
     @Override
-    public String doubleToDistanceString(double distanceDouble) {
+    public String distanceToString(double distanceDouble) {
         return dfDistance.format(distanceDouble / distanceUnits);
     }
 
     @Override
-    public String doubleToDistanceStringWithUnits(double distanceDouble) {
+    public String distanceToStringWithUnits(double distanceDouble) {
         return dfDistance.format(distanceDouble / distanceUnits) + " " + distanceUnitsString;
     }
 
     @Override
-    public String intToHoursMinutesSeconds(int timeInSeconds) {
+    public String secondsToTimeString(int timeInSeconds) {
         long seconds = timeInSeconds % 60;
         long minutes = (timeInSeconds / 60) % 60;
         long hours = (timeInSeconds / 60 / 60) % 60;
@@ -105,7 +105,7 @@ public class StringFormatterImpl implements StringFormatter {
     }
 
     @Override
-    public String intToMinutesSecondsAudioCueString(int timeInSeconds) {
+    public String secondsToTimeStringAudioCue(int timeInSeconds) {
         long seconds = timeInSeconds % 60;
         long minutes = timeInSeconds / 60;
 

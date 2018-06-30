@@ -3,23 +3,23 @@ package com.tjrushby.runlite.util;
 import java.util.Date;
 
 public interface StringFormatter {
-    int hoursMinutesSecondsToInt(String hoursMinutesSeconds);
+    int timeStringToSeconds(String hoursMinutesSeconds);
 
     String dateToString(Date date);
 
-    String averagePaceToMinutesSecondsString(double averagePace);
+    String averagePaceToTimeString(double averagePace);
 
-    String doubleToAveragePaceAudioCueString(double averagePace);
+    String averagePaceToTimeStringAudioCue(double averagePace);
 
-    String doubleToAveragePaceString(double averagePace);
+    String averagePaceToTimeStringWithLabel(double averagePace);
 
-    String doubleToDistanceString(double distanceDouble);
+    String distanceToString(double distanceDouble);
 
-    String doubleToDistanceStringWithUnits(double distanceDouble);
+    String distanceToStringWithUnits(double distanceDouble);
 
-    String intToHoursMinutesSeconds(int timeInSeconds);
+    String secondsToTimeString(int timeInSeconds);
 
-    String intToMinutesSecondsAudioCueString(int timeInSeconds);
+    String secondsToTimeStringAudioCue(int timeInSeconds);
 
     void getDistanceUnitsFromSharedPreferences();
 
