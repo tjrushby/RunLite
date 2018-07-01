@@ -256,11 +256,16 @@ public class DetailsPresenter implements DetailsContract.Presenter {
         Timber.d("isDataChanged()");
 
         long etTimeElapsed = formatter.timeStringToSeconds(view.getEditTextTimeElapsed());
-        double etDistanceTravelled = Double.parseDouble(view.getEditTextDistance());
-        double runDistanceTravelled = runWithLatLng.run.getDistanceTravelled() / distanceUnits;
+        double runDistanceTravelled = runWithLatLng.run.getDistanceTravelled();
+
+        // adjust the distance EditText to account for miles if needed and then round it up to two
+        // decimal places
+        double etDistanceAdjusted = Double.parseDouble(view.getEditTextDistance()) * distanceUnits;
+        BigDecimal etDistanceRounded = new BigDecimal(etDistanceAdjusted)
+                .setScale(2, BigDecimal.ROUND_HALF_UP);
 
         if(etTimeElapsed != runWithLatLng.run.getTimeElapsed()
-                || etDistanceTravelled != runDistanceTravelled) {
+                || etDistanceRounded.doubleValue() != runDistanceTravelled) {
             changed = true;
             view.hideButtonDone();
             view.showButtonUpdate();

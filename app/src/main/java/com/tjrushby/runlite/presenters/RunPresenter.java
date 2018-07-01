@@ -6,9 +6,12 @@ import com.tjrushby.runlite.models.Run;
 import com.tjrushby.runlite.models.RunLatLng;
 import com.tjrushby.runlite.util.StringFormatter;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import javax.inject.Inject;
+
+import timber.log.Timber;
 
 public class RunPresenter implements RunContract.Presenter {
     public int GPS_ACCURACY_BAD_THRESHOLD;
@@ -271,12 +274,19 @@ public class RunPresenter implements RunContract.Presenter {
         // announce the run ending
         view.speak("Run completed. ");
 
-        model.setTimeElapsed(timeElapsed);
-
         if(model.getDistanceTravelled() > 0.01) {
+            model.setTimeElapsed(timeElapsed);
+
+            // round distance travelled up to two decimal places
+            BigDecimal roundedDistance = new BigDecimal(model.getDistanceTravelled())
+                    .setScale(2, BigDecimal.ROUND_HALF_UP);
+
+            model.setDistanceTravelled(roundedDistance.doubleValue());
+
             // set averagePace in the model now as we're not going to be updating it every tick now.
             // storing averagePace in the database saves having to calculate it again when
             // retrieving the run (i.e., loading run list in MainActivity).
+
             // recalculate averagePace now to ensure it is accurate now that the run has stopped
             model.setAveragePace(timeElapsed / distanceTravelled);
 
