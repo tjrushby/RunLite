@@ -92,4 +92,9 @@ public class MainPresenter implements MainContract.Presenter {
         activity.displayRunDeletedToast();
         activity.refreshRecyclerView();
     }
+
+    @Override
+    public void onRunUpdated() {
+        activity.calculateRunTotals();
+    }
 }

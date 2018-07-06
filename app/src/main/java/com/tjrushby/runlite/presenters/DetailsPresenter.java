@@ -95,7 +95,7 @@ public class DetailsPresenter implements DetailsContract.Presenter {
     public void onButtonUpdateClicked() {
         updateRun();
         view.displayRunUpdatedToast();
-        view.endActivity();
+        view.endActivityWithIntent();
     }
 
     @Override

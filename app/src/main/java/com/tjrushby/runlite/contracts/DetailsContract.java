@@ -8,6 +8,8 @@ public interface DetailsContract {
     interface Activity {
         void endActivity();
 
+        void endActivityWithIntent();
+
         void getMapFragment();
 
         void addMapMarkers(List<RunLatLng> runCoordinates);

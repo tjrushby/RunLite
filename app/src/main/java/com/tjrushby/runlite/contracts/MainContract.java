@@ -28,6 +28,8 @@ public interface MainContract {
 
         void closeDrawerMenu();
 
+        void calculateRunTotals();
+
         Context getContext();
 
         boolean isAudioCueEnabled();
@@ -71,5 +73,7 @@ public interface MainContract {
         void onDataNotAvailable();
 
         void onRunDeleted();
+
+        void onRunUpdated();
     }
 }

@@ -1,5 +1,6 @@
 package com.tjrushby.runlite.views;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
@@ -55,6 +56,8 @@ public class DetailsActivity extends BaseActivity
     protected DetailsContract.Presenter presenter;
     @Inject
     protected IconGenerator iconGenerator;
+    @Inject
+    protected Intent intent;
     @Inject
     protected PolylineOptions polylineOptions;
     @Inject
@@ -159,6 +162,16 @@ public class DetailsActivity extends BaseActivity
 
     @Override
     public void endActivity() {
+        this.finish();
+    }
+
+    @Override
+    public void endActivityWithIntent() {
+        startActivity(intent
+                .setClass(this, MainActivity.class)
+                .putExtra("UPDATED", true)
+        );
+
         this.finish();
     }
 

@@ -117,6 +117,13 @@ public class MainActivity extends BaseActivity
     }
 
     @Override
+    protected void onNewIntent(Intent intent) {
+        if(intent.hasExtra("UPDATED")) {
+            presenter.onRunUpdated();
+        }
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
@@ -208,6 +215,11 @@ public class MainActivity extends BaseActivity
     @Override
     public void closeDrawerMenu() {
         drawerLayout.closeDrawer(GravityCompat.START);
+    }
+
+    @Override
+    public void calculateRunTotals() {
+        adapter.calculateRunTotals(this);
     }
 
     @Override
