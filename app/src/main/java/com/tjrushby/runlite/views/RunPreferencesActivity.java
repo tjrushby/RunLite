@@ -80,7 +80,11 @@ public class RunPreferencesActivity extends BaseActivity
 
     @Override
     public void endActivityWithIntent() {
-        startActivity(new Intent(this, MainActivity.class).putExtra("UNITS_CHANGED", true));
+        startActivity(intent
+                .setClass(this, MainActivity.class)
+                .putExtra("UNITS_CHANGED", true)
+        );
+        
         this.finish();
     }
 
