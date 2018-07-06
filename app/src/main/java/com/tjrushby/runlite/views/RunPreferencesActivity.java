@@ -60,10 +60,28 @@ public class RunPreferencesActivity extends BaseActivity
     }
 
     @Override
+    public void onBackPressed() {
+        presenter.onBackPressed();
+    }
+
+    @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
         if(key.equals(getString(R.string.pref_dark_mode_key))) {
             presenter.onThemeChanged();
+        } else if(key.equals(getString(R.string.pref_distance_units_key))) {
+            presenter.onDistanceUnitsChanged();
         }
+    }
+
+    @Override
+    public void endActivity() {
+        this.finish();
+    }
+
+    @Override
+    public void endActivityWithIntent() {
+        startActivity(new Intent(this, MainActivity.class).putExtra("UNITS_CHANGED", true));
+        this.finish();
     }
 
     @Override

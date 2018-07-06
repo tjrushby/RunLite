@@ -120,6 +120,8 @@ public class MainActivity extends BaseActivity
     protected void onNewIntent(Intent intent) {
         if(intent.hasExtra("UPDATED")) {
             presenter.onRunUpdated();
+        } else if(intent.hasExtra("UNITS_CHANGED")) {
+            presenter.onDistanceUnitsChanged();
         }
     }
 

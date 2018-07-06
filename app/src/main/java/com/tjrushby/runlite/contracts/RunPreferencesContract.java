@@ -5,6 +5,10 @@ public interface RunPreferencesContract {
     interface Activity {
         void restartActivity();
 
+        void endActivity();
+
+        void endActivityWithIntent();
+
         void registerSharedPreferencesListener();
 
         void unregisterSharedPreferencesListener();
@@ -14,6 +18,10 @@ public interface RunPreferencesContract {
         void onActivityResumed();
 
         void onActivityPaused();
+
+        void onBackPressed();
+
+        void onDistanceUnitsChanged();
 
         void onThemeChanged();
     }

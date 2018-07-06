@@ -72,6 +72,8 @@ public interface MainContract {
 
         void onDataNotAvailable();
 
+        void onDistanceUnitsChanged();
+
         void onRunDeleted();
 
         void onRunUpdated();

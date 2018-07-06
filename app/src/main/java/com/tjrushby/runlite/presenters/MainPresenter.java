@@ -88,6 +88,11 @@ public class MainPresenter implements MainContract.Presenter {
     }
 
     @Override
+    public void onDistanceUnitsChanged() {
+        activity.calculateRunTotals();
+    }
+
+    @Override
     public void onRunDeleted() {
         activity.displayRunDeletedToast();
         activity.refreshRecyclerView();
