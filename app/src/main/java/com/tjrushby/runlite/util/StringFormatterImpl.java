@@ -78,7 +78,7 @@ public class StringFormatterImpl implements StringFormatter {
 
     @Override
     public String averagePaceToTimeStringWithLabel(double averagePace) {
-        return " Mins/" + distanceUnitsString + " " + averagePaceToTimeString(averagePace);
+        return averagePaceToTimeString(averagePace) + " mins/" + distanceUnitsString;
     }
 
     @Override

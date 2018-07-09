@@ -3,6 +3,7 @@
     <dimen name="header_margin">8dp</dimen>
     <dimen name="seek_thumb_height">54dp</dimen>
     <dimen name="text_space">4dp</dimen>
+    <dimen name="text_size_card_header">16sp</dimen>
     <dimen name="text_size_details">28sp</dimen>
     <dimen name="text_size_header">56sp</dimen>
     <dimen name="text_size_timer">112sp</dimen>
