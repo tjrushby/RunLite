@@ -23,11 +23,13 @@
     <string name="error_edit_text_distance_zero">Distance must be greater than zero</string>
     <string name="label_average_pace">Average Pace</string>
     <string name="label_distance_travelled">Distance Travelled</string>
+    <string name="label_distance_run">Distance Ran</string>
     <string name="label_distance_unit_km">km</string>
     <string name="label_distance_unit_miles">mi</string>
     <string name="label_gps_status">GPS</string>
     <string name="label_runs">Runs</string>
     <string name="label_time_elapsed">Time Elapsed</string>
+    <string name="label_time_active">Time Active</string>
     <string name="nav_main_header_title">RunLite</string>
     <string name="notification_channel_id">run_notification</string>
     <string name="notification_default_content_title">Running</string>

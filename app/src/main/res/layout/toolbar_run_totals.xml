@@ -49,23 +49,16 @@
         android:orientation="vertical"
         app:layout_constraintGuide_percent="0.88" />
 
-    <android.support.v7.widget.AppCompatImageView
-        android:id="@+id/ivNumRuns"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:tint="@android:color/background_light"
-        app:layout_constraintEnd_toStartOf="@id/tvTotalRuns"
-        app:layout_constraintStart_toEndOf="@id/guidelineStart"
-        app:srcCompat="@drawable/ic_number_black_24dp" />
-
     <TextView
         android:id="@+id/tvTotalRuns"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/text_space"
         android:text="@string/tv_default_number_of_runs"
-        app:layout_constraintEnd_toStartOf="@id/tvLabelRuns"
-        app:layout_constraintStart_toEndOf="@id/ivNumRuns" />
+        android:textColor="#FFFFFF"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toStartOf="@id/guidelineTotalRuns"
+        app:layout_constraintStart_toEndOf="@id/guidelineStart" />
 
     <TextView
         android:id="@+id/tvLabelRuns"
@@ -74,33 +67,28 @@
         android:layout_marginStart="@dimen/text_space"
         android:text="@string/label_runs"
         app:layout_constraintEnd_toStartOf="@id/guidelineTotalRuns"
-        app:layout_constraintStart_toEndOf="@id/tvTotalRuns" />
-
-    <android.support.v7.widget.AppCompatImageView
-        android:id="@+id/ivRun"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:tint="@android:color/background_light"
-        app:layout_constraintEnd_toStartOf="@id/tvTotalDistance"
-        app:layout_constraintStart_toEndOf="@id/guidelineDistanceStart"
-        app:srcCompat="@drawable/ic_run_black_24dp" />
+        app:layout_constraintStart_toEndOf="@id/guidelineStart"
+        app:layout_constraintTop_toBottomOf="@id/tvTotalRuns" />
 
     <TextView
         android:id="@+id/tvTotalDistance"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/tv_default_distance_travelled"
+        android:textColor="#FFFFFF"
+        android:textStyle="bold"
         app:layout_constraintEnd_toStartOf="@id/guidelineDistanceEnd"
-        app:layout_constraintStart_toEndOf="@id/ivRun" />
+        app:layout_constraintStart_toEndOf="@id/guidelineDistanceStart" />
 
-    <android.support.v7.widget.AppCompatImageView
-        android:id="@+id/ivTimer"
+    <TextView
+        android:id="@+id/tvLabelDistance"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:tint="@android:color/background_light"
-        app:layout_constraintEnd_toStartOf="@id/tvTotalTime"
-        app:layout_constraintStart_toEndOf="@id/guidelineTotalTime"
-        app:srcCompat="@drawable/ic_timer_black_24dp" />
+        android:layout_marginStart="@dimen/text_space"
+        android:text="@string/label_distance_run"
+        app:layout_constraintEnd_toStartOf="@id/guidelineDistanceEnd"
+        app:layout_constraintStart_toEndOf="@id/guidelineDistanceStart"
+        app:layout_constraintTop_toBottomOf="@id/tvTotalDistance" />
 
     <TextView
         android:id="@+id/tvTotalTime"
@@ -108,7 +96,20 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/text_space"
         android:text="@string/tv_default_time_elapsed"
+        android:textColor="#FFFFFF"
+        android:textStyle="bold"
         app:layout_constraintEnd_toStartOf="@id/guidelineEnd"
-        app:layout_constraintStart_toEndOf="@id/ivTimer" />
+        app:layout_constraintStart_toEndOf="@id/guidelineTotalTime" />
+
+    <TextView
+        android:id="@+id/tvLabelTime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/text_space"
+        android:text="@string/label_time_active"
+        app:layout_constraintEnd_toStartOf="@id/guidelineEnd"
+        app:layout_constraintStart_toEndOf="@id/guidelineTotalTime"
+        app:layout_constraintTop_toBottomOf="@id/tvTotalTime" />
+
 
 </android.support.constraint.ConstraintLayout>
