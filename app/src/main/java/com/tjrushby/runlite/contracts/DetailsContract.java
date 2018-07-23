@@ -70,13 +70,9 @@ public interface DetailsContract {
 
         void setToolbarTitle(String title);
 
-        void hideButtonDone();
+        void hideActionSave();
 
-        void showButtonDone();
-
-        void hideButtonUpdate();
-
-        void showButtonUpdate();
+        void showActionSave();
     }
 
     interface Presenter {
@@ -84,11 +80,9 @@ public interface DetailsContract {
 
         void onBackPressed();
 
-        void onButtonDeleteClicked();
+        void onActionDeleteSelected();
 
-        void onButtonDoneClicked();
-
-        void onButtonUpdateClicked();
+        void onActionSaveSelected();
 
         void onDeleteRunAlertDialogYes();
 

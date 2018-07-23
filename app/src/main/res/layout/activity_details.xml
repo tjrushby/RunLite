@@ -191,41 +191,4 @@
         <include layout="@layout/details_avg_pace" />
     </LinearLayout>
 
-    <!-- Buttons -->
-
-    <Button
-        android:id="@+id/buttonDelete"
-        style="@style/Base.Widget.AppCompat.Button.Borderless"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:text="@string/button_delete"
-        app:layout_constraintEnd_toStartOf="@id/guidelineCenter"
-        app:layout_constraintStart_toEndOf="@id/guidelineLeft"
-        app:layout_constraintTop_toBottomOf="@id/guidelineButtons" />
-
-    <Button
-        android:id="@+id/buttonUpdate"
-        style="@style/Base.Widget.AppCompat.Button.Borderless"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:text="@string/button_update"
-        android:visibility="gone"
-        app:layout_constraintEnd_toStartOf="@id/guidelineRight"
-        app:layout_constraintStart_toEndOf="@id/guidelineCenter"
-        app:layout_constraintTop_toBottomOf="@id/guidelineButtons" />
-
-    <Button
-        android:id="@+id/buttonDone"
-        style="@style/Base.Widget.AppCompat.Button.Borderless"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:enabled="true"
-        android:text="@string/button_done"
-        app:layout_constraintEnd_toStartOf="@id/guidelineRight"
-        app:layout_constraintStart_toEndOf="@id/guidelineCenter"
-        app:layout_constraintTop_toBottomOf="@id/guidelineButtons" />
-
 </android.support.constraint.ConstraintLayout>

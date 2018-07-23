@@ -1,16 +1,16 @@
 <resources>
     <string name="app_name">RunLite</string>
+    <string name="action_delete">Delete</string>
+    <string name="action_done">Done</string>
+    <string name="action_save">Save</string>
     <string name="activity_run_preferences_label">Preferences</string>
     <string name="button_increase_countdown">+10 Seconds</string>
     <string name="button_cancel">Cancel</string>
-    <string name="button_delete">Delete</string>
-    <string name="button_done">Done</string>
     <string name="button_edit">Edit</string>
     <string name="button_pause">Pause</string>
     <string name="button_resume">Resume</string>
     <string name="button_start">Start</string>
     <string name="button_stop">Stop</string>
-    <string name="button_update">Update</string>
     <string name="channel_name">RunLite</string>
     <string name="channel_description">Run Info</string>
     <string name="dialog_number_picker_message">Minutes : Seconds</string>

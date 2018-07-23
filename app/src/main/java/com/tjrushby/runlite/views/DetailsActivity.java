@@ -9,6 +9,8 @@ import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.AppCompatImageView;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -72,11 +74,6 @@ public class DetailsActivity extends BaseActivity
     @BindView(R.id.ivMinimize)
     protected AppCompatImageView ivMinimize;
 
-    @BindView(R.id.buttonDone)
-    protected Button buttonDone;
-    @BindView(R.id.buttonUpdate)
-    protected Button buttonUpdate;
-
     @BindView(R.id.progressBar)
     protected ProgressBar progressBar;
 
@@ -101,6 +98,7 @@ public class DetailsActivity extends BaseActivity
 
     private double distanceUnits;
 
+    private Menu menu;
     private GoogleMap map;
 
     @Override
@@ -109,10 +107,12 @@ public class DetailsActivity extends BaseActivity
         setContentView(R.layout.activity_details);
         ButterKnife.bind(this);
 
-        // inject dependencies
-        App.getAppComponent().plus(new DetailsActivityModule(this, this)).inject(this);
+        setSupportActionBar(toolbar);
 
-        presenter.onViewCreated(getIntent().getStringExtra("runId"));
+        // inject dependencies
+        App.getAppComponent()
+                .plus(new DetailsActivityModule(this, this))
+                .inject(this);
     }
 
     @Override
@@ -121,23 +121,34 @@ public class DetailsActivity extends BaseActivity
     }
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        this.menu = menu;
+        getMenuInflater().inflate(R.menu.details_menu, menu);
+
+        presenter.onViewCreated(getIntent().getStringExtra("runId"));
+
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_delete:
+                presenter.onActionDeleteSelected();
+                return true;
+
+            case R.id.action_save:
+                presenter.onActionSaveSelected();
+                return true;
+
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    @Override
     public void onBackPressed() {
         presenter.onBackPressed();
-    }
-
-    @OnClick(R.id.buttonUpdate)
-    public void buttonUpdateClicked() {
-        presenter.onButtonUpdateClicked();
-    }
-
-    @OnClick(R.id.buttonDelete)
-    public void buttonDeleteClicked() {
-        presenter.onButtonDeleteClicked();
-    }
-
-    @OnClick(R.id.buttonDone)
-    public void buttonDoneClicked() {
-        presenter.onButtonDoneClicked();
     }
 
     @OnClick(R.id.etTimeElapsed)
@@ -398,25 +409,14 @@ public class DetailsActivity extends BaseActivity
     }
 
     @Override
-    public void hideButtonDone() {
-        buttonDone.setVisibility(View.GONE);
+    public void hideActionSave() {
+        menu.findItem(R.id.action_save).setVisible(false);
     }
 
     @Override
-    public void showButtonDone() {
-        buttonDone.setVisibility(View.VISIBLE);
+    public void showActionSave() {
+        menu.findItem(R.id.action_save).setVisible(true);
     }
-
-    @Override
-    public void hideButtonUpdate() {
-        buttonUpdate.setVisibility(View.GONE);
-    }
-
-    @Override
-    public void showButtonUpdate() {
-        buttonUpdate.setVisibility(View.VISIBLE);
-    }
-
 
     @Override
     public void onTimePickerDialogPositiveClick(int timeElapsed) {

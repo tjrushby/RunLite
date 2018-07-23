@@ -68,7 +68,7 @@ public class TimePickerDialog extends DialogFragment {
         builder.setMessage(R.string.dialog_number_picker_message);
 
         builder.setPositiveButton(
-                R.string.button_done,
+                R.string.action_done,
                 (dialogInterface, i) -> {
                     int seconds = numberPickerSeconds.getValue();
                     int minutes = numberPickerMinutes.getValue();

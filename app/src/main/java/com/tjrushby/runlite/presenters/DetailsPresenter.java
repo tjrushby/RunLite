@@ -81,18 +81,13 @@ public class DetailsPresenter implements DetailsContract.Presenter {
     }
 
     @Override
-    public void onButtonDeleteClicked() {
+    public void onActionDeleteSelected() {
         // display an AlertDialog to confirm user action
         view.displayDeleteRunAlertDialog();
     }
 
     @Override
-    public void onButtonDoneClicked() {
-        view.endActivity();
-    }
-
-    @Override
-    public void onButtonUpdateClicked() {
+    public void onActionSaveSelected() {
         updateRun();
         view.displayRunUpdatedToast();
         view.endActivityWithIntent();
@@ -122,24 +117,21 @@ public class DetailsPresenter implements DetailsContract.Presenter {
             view.displayEditTextDistanceEmptyError();
 
             if(changed) {
-                view.hideButtonUpdate();
-                view.showButtonDone();
+                view.hideActionSave();
             }
 
         } else if(distanceString.equals(".")) {
             view.displayEditTextDistanceNoNumbersError();
 
             if(changed) {
-                view.hideButtonUpdate();
-                view.showButtonDone();
+                view.hideActionSave();
             }
 
         } else if(Double.parseDouble(distanceString) == 0) {
             view.displayEditTextDistanceZeroError();
 
             if(changed) {
-                view.hideButtonUpdate();
-                view.showButtonDone();
+                view.hideActionSave();
             }
 
         } else {
@@ -267,12 +259,10 @@ public class DetailsPresenter implements DetailsContract.Presenter {
         if(etTimeElapsed != runWithLatLng.run.getTimeElapsed()
                 || etDistanceRounded.doubleValue() != runDistanceTravelled) {
             changed = true;
-            view.hideButtonDone();
-            view.showButtonUpdate();
+            view.showActionSave();
         } else {
             changed = false;
-            view.hideButtonUpdate();
-            view.showButtonDone();
+            view.hideActionSave();
         }
     }
 
