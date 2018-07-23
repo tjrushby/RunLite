@@ -108,6 +108,7 @@ public class DetailsActivity extends BaseActivity
         ButterKnife.bind(this);
 
         setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         // inject dependencies
         App.getAppComponent()
@@ -133,6 +134,10 @@ public class DetailsActivity extends BaseActivity
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
+            case android.R.id.home:
+                presenter.onBackPressed();
+                return true;
+
             case R.id.action_delete:
                 presenter.onActionDeleteSelected();
                 return true;

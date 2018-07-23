@@ -35,6 +35,7 @@
 
         <activity
             android:name=".views.DetailsActivity"
+            android:parentActivityName=".views.MainActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name=".views.MainActivity"
