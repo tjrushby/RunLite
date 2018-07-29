@@ -2,7 +2,6 @@ package com.tjrushby.runlite.injection.modules;
 
 import android.content.Context;
 import android.content.Intent;
-import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 
 import com.google.android.gms.maps.model.LatLngBounds;
@@ -10,8 +9,9 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.maps.android.ui.IconGenerator;
 import com.tjrushby.runlite.contracts.DetailsContract;
-import com.tjrushby.runlite.dialogs.TimePickerDialog;
+import com.tjrushby.runlite.contracts.EditActivityContract;
 import com.tjrushby.runlite.injection.scopes.DetailsActivityScope;
+import com.tjrushby.runlite.views.EditActivity;
 
 import javax.inject.Named;
 
@@ -37,11 +37,6 @@ public class DetailsActivityModule {
     @Provides
     AlertDialog.Builder providesAlertDialogBuilder(@Named("details_context") Context context) {
         return new AlertDialog.Builder(context);
-    }
-
-    @Provides
-    Bundle providesBundle() {
-        return new Bundle();
     }
 
     @Provides
@@ -73,10 +68,5 @@ public class DetailsActivityModule {
     @Provides
     MarkerOptions providesMarkerOptions() {
         return new MarkerOptions();
-    }
-
-    @Provides
-    TimePickerDialog providesTimePickerDialog() {
-        return new TimePickerDialog();
     }
 }

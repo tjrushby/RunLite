@@ -13,8 +13,7 @@ import java.util.List;
 import timber.log.Timber;
 
 public class DetailsPresenter implements DetailsContract.Presenter {
-    private boolean changed;
-    private boolean mapFullscreen;
+    private boolean mapFullscreen, updated;
     private double distanceUnits;
 
     private DetailsContract.Activity view;
@@ -41,7 +40,6 @@ public class DetailsPresenter implements DetailsContract.Presenter {
     public void onViewCreated(String runId) {
         view.displayProgressBar(true);
         view.setDistanceUnits(distanceUnits);
-        view.setTextViewsDistanceUnit(formatter.getDistanceUnitsString());
 
         mapFullscreen = false;
 
@@ -52,11 +50,11 @@ public class DetailsPresenter implements DetailsContract.Presenter {
 
                 view.setTextViews(
                         formatter.secondsToTimeString(run.run.getTimeElapsed()),
-                        formatter.distanceToString(run.run.getDistanceTravelled()),
-                        formatter.averagePaceToTimeString(run.run.getAveragePace())
+                        formatter.distanceToStringWithUnits(run.run.getDistanceTravelled()),
+                        formatter.averagePaceToTimeStringWithLabel(run.run.getAveragePace())
                 );
 
-                view.setToolbarTitle("Run on " + formatter.dateToString(run.run.getDateTime()));
+                view.setTextViewRunDateTime(formatter.dateToString(run.run.getDateTime()));
 
                 view.getMapFragment();
             }
@@ -73,10 +71,12 @@ public class DetailsPresenter implements DetailsContract.Presenter {
         if(mapFullscreen) {
             view.displaySmallMap();
             mapFullscreen = false;
-        } else if(changed) {
-            view.displayExitAlertDialog();
         } else {
-            view.endActivity();
+            if(!updated) {
+                view.endActivity();
+            } else {
+                view.endActivityWithIntent();
+            }
         }
     }
 
@@ -87,10 +87,10 @@ public class DetailsPresenter implements DetailsContract.Presenter {
     }
 
     @Override
-    public void onActionSaveSelected() {
-        updateRun();
-        view.displayRunUpdatedToast();
-        view.endActivityWithIntent();
+    public void onActionEditSelected() {
+        // display edit details fragment
+        view.startEditActivity(
+                formatter.distanceToString(runWithLatLng.run.getDistanceTravelled()));
     }
 
     @Override
@@ -98,93 +98,13 @@ public class DetailsPresenter implements DetailsContract.Presenter {
         // delete run from database
         runRepository.deleteRun(runWithLatLng.run, () -> {
             view.displayRunDeletedToast();
-            view.endActivity();
 
+            if(!updated) {
+                view.endActivity();
+            } else {
+                view.endActivityWithIntent();
+            }
         });
-    }
-
-    @Override
-    public void onExitAlertDialogYes() {
-        view.endActivity();
-    }
-
-    @Override
-    public void onEditTextDistanceChanged() {
-        String distanceString = view.getEditTextDistance();
-
-        // validate user input
-        if(distanceString.isEmpty()) {
-            view.displayEditTextDistanceEmptyError();
-
-            if(changed) {
-                view.hideActionSave();
-            }
-
-        } else if(distanceString.equals(".")) {
-            view.displayEditTextDistanceNoNumbersError();
-
-            if(changed) {
-                view.hideActionSave();
-            }
-
-        } else if(Double.parseDouble(distanceString) == 0) {
-            view.displayEditTextDistanceZeroError();
-
-            if(changed) {
-                view.hideActionSave();
-            }
-
-        } else {
-            // input is valid
-            double distanceDouble = Double.parseDouble(distanceString);
-
-            // round input to two decimal places
-            BigDecimal roundedDistance = new BigDecimal(distanceDouble)
-                    .setScale(2, BigDecimal.ROUND_HALF_UP);
-
-            // calculate new average pace value from the values in the TextViews, using rounded distance
-            double averagePace = calculateAveragePace(
-                    formatter.timeStringToSeconds(view.getEditTextTimeElapsed()),
-                    roundedDistance.doubleValue()
-            );
-
-            // if the user input isn't rounded to two decimal places then do so
-            if(distanceDouble != roundedDistance.doubleValue()) {
-                view.setEditTextDistance(roundedDistance.toString());
-            }
-
-            // update TextView for average pace, clear error messages (if any) and enable button for
-            // saving changes
-            view.setTextViewAveragePace(formatter.averagePaceToTimeString(averagePace));
-            view.clearEditTextDistanceError();
-
-            // check if the TextViews contain different values to the model before giving option to
-            // save to database
-            isDataChanged();
-        }
-    }
-
-    @Override
-    public void onEditTextTimeElapsedClicked() {
-        view.displayTimePickerDialog();
-    }
-
-    @Override
-    public void onEditTextTimeElapsedChanged(int timeElapsed) {
-        // calculate average pace using new timeElapsed value and the current value in the EditText
-        // for distance
-        double averagePace = calculateAveragePace(
-                timeElapsed,
-                Double.parseDouble(view.getEditTextDistance().toString())
-        );
-
-        // update the TextViews for time and average pace
-        view.setTextViewAveragePace(formatter.averagePaceToTimeString(averagePace));
-        view.setEditTextTimeElapsed(formatter.secondsToTimeString(timeElapsed));
-
-        // check if the TextViews contain different values to the model before giving option to
-        // save to database
-        isDataChanged();
     }
 
     @Override
@@ -239,36 +159,26 @@ public class DetailsPresenter implements DetailsContract.Presenter {
         }
     }
 
+    @Override
+    public void onRunDetailsChanged(String[] details) {
+        if(details != null && details.length == 3) {
+            // correct number of updated details supplied
+            view.setTextViews(details[0], details[1], details[2]);
+            updateRun();
+            view.displayRunUpdatedToast();
+        }
+    }
+
     private double calculateAveragePace(double timeElapsed, double distance) {
         // multiply distance by distanceUnits to ensure it is converted to miles if needed
         return (timeElapsed / (distance * distanceUnits));
     }
 
-    private void isDataChanged() {
-        Timber.d("isDataChanged()");
-
-        long etTimeElapsed = formatter.timeStringToSeconds(view.getEditTextTimeElapsed());
-        double runDistanceTravelled = runWithLatLng.run.getDistanceTravelled();
-
-        // adjust the distance EditText to account for miles if needed and then round it up to two
-        // decimal places
-        double etDistanceAdjusted = Double.parseDouble(view.getEditTextDistance()) * distanceUnits;
-        BigDecimal etDistanceRounded = new BigDecimal(etDistanceAdjusted)
-                .setScale(2, BigDecimal.ROUND_HALF_UP);
-
-        if(etTimeElapsed != runWithLatLng.run.getTimeElapsed()
-                || etDistanceRounded.doubleValue() != runDistanceTravelled) {
-            changed = true;
-            view.showActionSave();
-        } else {
-            changed = false;
-            view.hideActionSave();
-        }
-    }
-
     private void updateRun() {
-        int timeElapsed = formatter.timeStringToSeconds(view.getEditTextTimeElapsed());
-        double distanceTravelled = Double.parseDouble(view.getEditTextDistance());
+        int timeElapsed = formatter.timeStringToSeconds(view.getTextViewTimeElapsed());
+        String[] split = view.getTextViewDistance().split(" ");
+
+        double distanceTravelled = Double.parseDouble(split[0]);
         double averagePace = calculateAveragePace(timeElapsed, distanceTravelled);
 
         runWithLatLng.run.setAveragePace(averagePace);
@@ -280,5 +190,7 @@ public class DetailsPresenter implements DetailsContract.Presenter {
 
         // save run to database if it has been changed
         runRepository.updateRun(runWithLatLng);
+
+        updated = true;
     }
 }

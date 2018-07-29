@@ -4,8 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
-import android.support.design.widget.TextInputEditText;
-import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.AppCompatImageView;
 import android.support.v7.widget.Toolbar;
@@ -13,8 +11,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -32,8 +28,6 @@ import com.google.maps.android.ui.IconGenerator;
 import com.tjrushby.runlite.App;
 import com.tjrushby.runlite.R;
 import com.tjrushby.runlite.contracts.DetailsContract;
-import com.tjrushby.runlite.dialogs.TimePickerDialog;
-import com.tjrushby.runlite.dialogs.TimePickerDialogListener;
 import com.tjrushby.runlite.injection.modules.DetailsActivityModule;
 import com.tjrushby.runlite.models.RunLatLng;
 
@@ -45,15 +39,12 @@ import javax.inject.Inject;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import butterknife.OnTextChanged;
 
 public class DetailsActivity extends BaseActivity
-        implements DetailsContract.Activity, TimePickerDialogListener, OnMapReadyCallback {
+        implements DetailsContract.Activity, OnMapReadyCallback {
 
     @Inject
     protected AlertDialog.Builder builder;
-    @Inject
-    protected Bundle bundle;
     @Inject
     protected DetailsContract.Presenter presenter;
     @Inject
@@ -66,8 +57,6 @@ public class DetailsActivity extends BaseActivity
     protected LatLngBounds.Builder mapBounds;
     @Inject
     protected MarkerOptions markerOptions;
-    @Inject
-    protected TimePickerDialog timePickerDialog;
 
     @BindView(R.id.ivFullscreen)
     protected AppCompatImageView ivFullscreen;
@@ -77,29 +66,34 @@ public class DetailsActivity extends BaseActivity
     @BindView(R.id.progressBar)
     protected ProgressBar progressBar;
 
-    @BindView(R.id.etTimeElapsed)
-    protected EditText etTimeElapsed;
-    @BindView(R.id.etDistance)
-    protected TextInputEditText etDistance;
-    @BindView(R.id.tilDistance)
-    protected TextInputLayout tilDistance;
-    @BindView(R.id.tvAveragePace)
+    @BindView(R.id.rlMap)
+    protected RelativeLayout rlMap;
+
+    @BindView(R.id.tvTimeElapsed)
+    protected TextView tvTimeElapsed;
+    @BindView(R.id.tvDistance)
+    protected TextView tvDistance;
+    @BindView(R.id.tvAveragePaceString)
     protected TextView tvAveragePace;
-    @BindView(R.id.tvDistanceUnit)
-    protected TextView tvDistanceUnit;
-    @BindView(R.id.tvPaceUnit)
-    protected TextView tvPaceUnit;
+    @BindView(R.id.tvRunDateTime)
+    protected TextView tvRunDateTime;
 
     @BindView(R.id.toolbar)
     protected Toolbar toolbar;
 
-    @BindView(R.id.rlMap)
-    protected RelativeLayout rlMap;
-
     private double distanceUnits;
 
-    private Menu menu;
     private GoogleMap map;
+
+    @OnClick(R.id.ivFullscreen)
+    public void imageViewFullscreenClicked() {
+        presenter.onImageViewFullscreenClicked();
+    }
+
+    @OnClick(R.id.ivMinimize)
+    public void imageViewMinimizeClicked() {
+        presenter.onImageViewMinimizeClicked();
+    }
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -117,15 +111,20 @@ public class DetailsActivity extends BaseActivity
     }
 
     @Override
+    protected void onNewIntent(Intent intent) {
+        if(intent.hasExtra("UPDATED_DETAILS")) {
+            presenter.onRunDetailsChanged(intent.getStringArrayExtra("UPDATED_DETAILS"));
+        }
+    }
+
+    @Override
     protected void onStop() {
         super.onStop();
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        this.menu = menu;
         getMenuInflater().inflate(R.menu.details_menu, menu);
-
         presenter.onViewCreated(getIntent().getStringExtra("runId"));
 
         return true;
@@ -138,12 +137,12 @@ public class DetailsActivity extends BaseActivity
                 presenter.onBackPressed();
                 return true;
 
-            case R.id.action_delete:
-                presenter.onActionDeleteSelected();
+            case R.id.action_edit:
+                presenter.onActionEditSelected();
                 return true;
 
-            case R.id.action_save:
-                presenter.onActionSaveSelected();
+            case R.id.action_delete:
+                presenter.onActionDeleteSelected();
                 return true;
 
             default:
@@ -154,26 +153,6 @@ public class DetailsActivity extends BaseActivity
     @Override
     public void onBackPressed() {
         presenter.onBackPressed();
-    }
-
-    @OnClick(R.id.etTimeElapsed)
-    public void editTextTimeElapsedClicked() {
-        presenter.onEditTextTimeElapsedClicked();
-    }
-
-    @OnClick(R.id.ivFullscreen)
-    public void imageViewFullscreenClicked() {
-        presenter.onImageViewFullscreenClicked();
-    }
-
-    @OnClick(R.id.ivMinimize)
-    public void imageViewMinimizeClicked() {
-        presenter.onImageViewMinimizeClicked();
-    }
-
-    @OnTextChanged(R.id.etDistance)
-    public void editTextDistanceEdited() {
-        presenter.onEditTextDistanceChanged();
     }
 
     @Override
@@ -189,6 +168,18 @@ public class DetailsActivity extends BaseActivity
         );
 
         this.finish();
+    }
+
+    @Override
+    public void startEditActivity(String distanceTravelled) {
+        startActivity(intent
+                .setClass(this, EditActivity.class)
+                .putExtra("RUN_DETAILS", new String[] {
+                        tvTimeElapsed.getText().toString(),
+                        distanceTravelled,
+                        tvAveragePace.getText().toString()
+                })
+        );
     }
 
     @Override
@@ -246,24 +237,6 @@ public class DetailsActivity extends BaseActivity
     }
 
     @Override
-    public void displayExitAlertDialog() {
-        builder.setTitle("Go Back?")
-                .setMessage("Are you sure? Changes will be discarded.")
-                .setPositiveButton("Yes", (dialog, which) -> presenter.onExitAlertDialogYes())
-                .setNegativeButton("No", (dialog, which) -> dialog.dismiss())
-                .show();
-    }
-
-    @Override
-    public void displayTimePickerDialog() {
-        bundle.clear();
-        bundle.putString("timeElapsed", etTimeElapsed.getText().toString());
-
-        timePickerDialog.setArguments(bundle);
-        timePickerDialog.show(getFragmentManager(), null);
-    }
-
-    @Override
     public void displayNotFoundErrorToast() {
         Toast.makeText(this, R.string.toast_run_not_found, Toast.LENGTH_SHORT).show();
         endActivity();
@@ -277,27 +250,6 @@ public class DetailsActivity extends BaseActivity
     @Override
     public void displayRunUpdatedToast() {
         Toast.makeText(this, R.string.toast_run_updated, Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
-    public void displayEditTextDistanceEmptyError() {
-        tilDistance.setError(getString(R.string.error_edit_text_distance_empty));
-    }
-
-    @Override
-    public void displayEditTextDistanceNoNumbersError() {
-        tilDistance.setError(getString(R.string.error_edit_text_distance_no_numbers));
-    }
-
-    @Override
-    public void displayEditTextDistanceZeroError() {
-        tilDistance.setError(getString(R.string.error_edit_text_distance_zero));
-    }
-
-    @Override
-    public void clearEditTextDistanceError() {
-        tilDistance.setError(null);
-        tilDistance.setErrorEnabled(false);
     }
 
     @Override
@@ -328,7 +280,7 @@ public class DetailsActivity extends BaseActivity
         ConstraintLayout.LayoutParams lp = new ConstraintLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT, 0);
         lp.topToBottom = R.id.appBarLayout;
-        lp.bottomToTop = R.id.guidelineDetailsHeader;
+        lp.bottomToTop = R.id.guidelineCardViewHeader;
         lp.validate();
 
         rlMap.setLayoutParams(lp);
@@ -360,19 +312,13 @@ public class DetailsActivity extends BaseActivity
     }
 
     @Override
-    public String getEditTextDistance() {
-        return etDistance.getText().toString();
+    public String getTextViewTimeElapsed() {
+        return tvTimeElapsed.getText().toString();
     }
 
     @Override
-    public void setEditTextDistance(String distance) {
-        etDistance.setText(distance);
-        etDistance.clearFocus();
-    }
-
-    @Override
-    public String getEditTextTimeElapsed() {
-        return etTimeElapsed.getText().toString();
+    public String getTextViewDistance() {
+        return tvDistance.getText().toString();
     }
 
     @Override
@@ -381,50 +327,14 @@ public class DetailsActivity extends BaseActivity
     }
 
     @Override
-    public void setEditTextTimeElapsed(String timeElapsed) {
-        etTimeElapsed.setText(timeElapsed);
-    }
-
-    @Override
-    public String getTextViewAveragePace() {
-        return tvAveragePace.getText().toString();
-    }
-
-    @Override
-    public void setTextViewAveragePace(String averagePace) {
-        tvAveragePace.setText(averagePace);
+    public void setTextViewRunDateTime(String headerText) {
+        tvRunDateTime.setText(headerText);
     }
 
     @Override
     public void setTextViews(String time, String distance, String averagePace) {
-        etTimeElapsed.setText(time);
-        etDistance.setText(distance);
+        tvTimeElapsed.setText(time);
+        tvDistance.setText(distance);
         tvAveragePace.setText(averagePace);
-    }
-
-    @Override
-    public void setTextViewsDistanceUnit(String distanceUnitString) {
-        tvDistanceUnit.setText(distanceUnitString);
-        tvPaceUnit.setText("Mins/" + distanceUnitString);
-    }
-
-    @Override
-    public void setToolbarTitle(String title) {
-        toolbar.setTitle(title);
-    }
-
-    @Override
-    public void hideActionSave() {
-        menu.findItem(R.id.action_save).setVisible(false);
-    }
-
-    @Override
-    public void showActionSave() {
-        menu.findItem(R.id.action_save).setVisible(true);
-    }
-
-    @Override
-    public void onTimePickerDialogPositiveClick(int timeElapsed) {
-        presenter.onEditTextTimeElapsedChanged(timeElapsed);
     }
 }

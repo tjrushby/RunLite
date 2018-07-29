@@ -5,6 +5,7 @@ import com.tjrushby.runlite.App;
 import com.tjrushby.runlite.injection.modules.AppModule;
 import com.tjrushby.runlite.injection.modules.AudioCueServiceModule;
 import com.tjrushby.runlite.injection.modules.DetailsActivityModule;
+import com.tjrushby.runlite.injection.modules.EditActivityModule;
 import com.tjrushby.runlite.injection.modules.HandlerModule;
 import com.tjrushby.runlite.injection.modules.MainActivityModule;
 import com.tjrushby.runlite.injection.modules.RunActivityModule;
@@ -24,6 +25,7 @@ public interface AppComponent {
     void inject(App app);
     AudioCueServiceComponent plus(AudioCueServiceModule audioCueServiceModule);
     DetailsActivityComponent plus(DetailsActivityModule detailsActivityModule);
+    EditActivityComponent plus(EditActivityModule editActivityModule);
     MainActivityComponent plus(MainActivityModule mainActivityModule);
     RunActivityComponent plus(RunActivityModule activityModule, RunActivityContextModule contextModule);
     RunPreferencesActivityComponent plus(RunPreferencesActivityModule runPreferencesActivityModule);

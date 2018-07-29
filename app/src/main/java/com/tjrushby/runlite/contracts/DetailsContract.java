@@ -10,6 +10,8 @@ public interface DetailsContract {
 
         void endActivityWithIntent();
 
+        void startEditActivity(String distanceTravelled);
+
         void getMapFragment();
 
         void addMapMarkers(List<RunLatLng> runCoordinates);
@@ -24,23 +26,11 @@ public interface DetailsContract {
 
         void displayDeleteRunAlertDialog();
 
-        void displayExitAlertDialog();
-
-        void displayTimePickerDialog();
-
         void displayNotFoundErrorToast();
 
         void displayRunDeletedToast();
 
         void displayRunUpdatedToast();
-
-        void displayEditTextDistanceEmptyError();
-
-        void displayEditTextDistanceNoNumbersError();
-
-        void displayEditTextDistanceZeroError();
-
-        void clearEditTextDistanceError();
 
         void displayFullscreenIcon();
 
@@ -50,29 +40,15 @@ public interface DetailsContract {
 
         void displaySmallMap();
 
-        String getEditTextDistance();
+        String getTextViewTimeElapsed();
 
-        String getTextViewAveragePace();
-
-        String getEditTextTimeElapsed();
+        String getTextViewDistance();
 
         void setDistanceUnits(double distanceUnits);
 
-        void setEditTextDistance(String distance);
-
-        void setTextViewAveragePace(String averagePace);
-
-        void setEditTextTimeElapsed(String timeElapsed);
+        void setTextViewRunDateTime(String headerText);
 
         void setTextViews(String time, String distance, String averagePace);
-
-        void setTextViewsDistanceUnit(String distanceUnitString);
-
-        void setToolbarTitle(String title);
-
-        void hideActionSave();
-
-        void showActionSave();
     }
 
     interface Presenter {
@@ -82,17 +58,9 @@ public interface DetailsContract {
 
         void onActionDeleteSelected();
 
-        void onActionSaveSelected();
+        void onActionEditSelected();
 
         void onDeleteRunAlertDialogYes();
-
-        void onExitAlertDialogYes();
-
-        void onEditTextDistanceChanged();
-
-        void onEditTextTimeElapsedClicked();
-
-        void onEditTextTimeElapsedChanged(int timeElapsed);
 
         void onImageViewFullscreenClicked();
 
@@ -101,5 +69,7 @@ public interface DetailsContract {
         void onMapFragmentReady();
 
         void onMapLoaded();
+
+        void onRunDetailsChanged(String[] details);
     }
 }
