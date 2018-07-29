@@ -164,7 +164,7 @@ public class DetailsPresenter implements DetailsContract.Presenter {
         if(details != null && details.length == 3) {
             // correct number of updated details supplied
             view.setTextViews(details[0], details[1], details[2]);
-            updateRun();
+            updateRun(details[0], details[1]);
             view.displayRunUpdatedToast();
         }
     }
@@ -174,19 +174,19 @@ public class DetailsPresenter implements DetailsContract.Presenter {
         return (timeElapsed / (distance * distanceUnits));
     }
 
-    private void updateRun() {
-        int timeElapsed = formatter.timeStringToSeconds(view.getTextViewTimeElapsed());
-        String[] split = view.getTextViewDistance().split(" ");
+    private void updateRun(String timeString, String distanceString) {
+        int timeElapsed = formatter.timeStringToSeconds(timeString);
+        String[] split = distanceString.split(" ");
 
         double distanceTravelled = Double.parseDouble(split[0]);
         double averagePace = calculateAveragePace(timeElapsed, distanceTravelled);
 
-        runWithLatLng.run.setAveragePace(averagePace);
+        runWithLatLng.run.setTimeElapsed(timeElapsed);
 
         // * by distanceUnits to ensure that we're saving the distance in meters
         runWithLatLng.run.setDistanceTravelled(distanceTravelled * distanceUnits);
 
-        runWithLatLng.run.setTimeElapsed(timeElapsed);
+        runWithLatLng.run.setAveragePace(averagePace);
 
         // save run to database if it has been changed
         runRepository.updateRun(runWithLatLng);
