@@ -69,9 +69,7 @@ public class DetailsPresenter implements DetailsContract.Presenter {
     @Override
     public void onBackPressed() {
         if(mapFullscreen) {
-            view.displaySmallMap();
-            view.displayFullscreenIcon();
-            mapFullscreen = false;
+            onImageViewMinimizeClicked();
         } else {
             if(!updated) {
                 view.endActivity();
@@ -112,6 +110,10 @@ public class DetailsPresenter implements DetailsContract.Presenter {
     public void onImageViewFullscreenClicked() {
         view.displayFullscreenMap();
         view.displayMinimizeIcon();
+
+        // recenter map
+        view.moveMapCamera();
+
         mapFullscreen = true;
     }
 
@@ -119,6 +121,7 @@ public class DetailsPresenter implements DetailsContract.Presenter {
     public void onImageViewMinimizeClicked() {
         view.displaySmallMap();
         view.displayFullscreenIcon();
+
         mapFullscreen = false;
     }
 
@@ -128,20 +131,15 @@ public class DetailsPresenter implements DetailsContract.Presenter {
         if(!runWithLatLng.runLatLngs.isEmpty()) {
             view.calculateMapBounds(runWithLatLng.runLatLngs);
             view.calculateMapPolyline(runWithLatLng.runLatLngs);
-        }
-    }
 
-    @Override
-    public void onMapLoaded() {
-        // add start and end markers for the run, move the map to show what has been drawn
-        if(!runWithLatLng.runLatLngs.isEmpty()) {
+            // add interval markers for the run
             double prevMod = 0;
 
             for (RunLatLng runLatLng : runWithLatLng.runLatLngs) {
-                double currentMod = runLatLng.getDistanceInRun() % 0.5;
+                double currentMod = (runLatLng.getDistanceInRun() * distanceUnits) % 0.5;
 
                 // if the currentMod is less than the prevMod then it is approximately an interval
-                // of 0.5km so add it to the list
+                // of 0.5 so add it to the list
                 if(currentMod == 0 || currentMod < prevMod) {
                     mapMarkerCoordinates.add(runLatLng);
                 }
@@ -155,9 +153,13 @@ public class DetailsPresenter implements DetailsContract.Presenter {
             );
 
             view.addMapMarkers(mapMarkerCoordinates);
-            view.displayProgressBar(false);
             view.moveMapCamera();
         }
+    }
+
+    @Override
+    public void onMapLoaded() {
+        view.displayProgressBar(false);
     }
 
     @Override

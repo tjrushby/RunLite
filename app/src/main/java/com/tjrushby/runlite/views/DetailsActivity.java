@@ -22,6 +22,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
@@ -216,11 +217,7 @@ public class DetailsActivity extends BaseActivity
 
     @Override
     public void moveMapCamera() {
-        map.animateCamera(
-                CameraUpdateFactory.newLatLngBounds(mapBounds.build(), 100),
-                1000,
-                null
-        );
+        map.moveCamera(CameraUpdateFactory.newLatLngBounds(mapBounds.build(), 100));
     }
 
     @Override
