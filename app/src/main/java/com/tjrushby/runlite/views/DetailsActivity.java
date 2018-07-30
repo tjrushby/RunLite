@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.AppCompatImageView;
 import android.support.v7.widget.Toolbar;
@@ -40,6 +41,8 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
+import static android.view.View.GONE;
+
 public class DetailsActivity extends BaseActivity
         implements DetailsContract.Activity, OnMapReadyCallback {
 
@@ -66,6 +69,8 @@ public class DetailsActivity extends BaseActivity
     @BindView(R.id.progressBar)
     protected ProgressBar progressBar;
 
+    @BindView(R.id.clRunDateTime)
+    protected CoordinatorLayout clRunDateTime;
     @BindView(R.id.rlMap)
     protected RelativeLayout rlMap;
 
@@ -223,7 +228,7 @@ public class DetailsActivity extends BaseActivity
         if(display) {
             progressBar.setVisibility(View.VISIBLE);
         } else {
-            progressBar.setVisibility(View.GONE);
+            progressBar.setVisibility(GONE);
         }
     }
 
@@ -254,36 +259,63 @@ public class DetailsActivity extends BaseActivity
 
     @Override
     public void displayFullscreenIcon() {
-        ivMinimize.setVisibility(View.GONE);
+        ivMinimize.setVisibility(GONE);
         ivFullscreen.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void displayMinimizeIcon() {
-        ivFullscreen.setVisibility(View.GONE);
+        ivFullscreen.setVisibility(GONE);
         ivMinimize.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void displayFullscreenMap() {
-        rlMap.setLayoutParams(new ConstraintLayout.LayoutParams(
-                        ViewGroup.LayoutParams.MATCH_PARENT,
-                        ViewGroup.LayoutParams.MATCH_PARENT
-                )
+        // move clRunDateTime down to bottom of parent
+        ConstraintLayout.LayoutParams lpRunDateTime = new ConstraintLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT
         );
 
-        rlMap.bringToFront();
+        lpRunDateTime.bottomToBottom = ConstraintLayout.LayoutParams.PARENT_ID;
+        lpRunDateTime.validate();
+
+        clRunDateTime.setLayoutParams(lpRunDateTime);
+
+        // increase size of map down to the top of clRunDateTime
+        ConstraintLayout.LayoutParams lpMap = new ConstraintLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                getResources().getDisplayMetrics().heightPixels -
+                        getResources().getDimensionPixelSize(R.dimen.seek_thumb_height)
+        );
+
+        lpMap.bottomToTop = R.id.clRunDateTime;
+        lpMap.validate();
+
+        rlMap.setLayoutParams(lpMap);
     }
 
     @Override
     public void displaySmallMap() {
-        ConstraintLayout.LayoutParams lp = new ConstraintLayout.LayoutParams(
+        // decrease size of map back to default
+        ConstraintLayout.LayoutParams lpMap = new ConstraintLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT, 0);
-        lp.topToBottom = R.id.appBarLayout;
-        lp.bottomToTop = R.id.guidelineCardViewHeader;
-        lp.validate();
+        lpMap.topToBottom = R.id.appBarLayout;
+        lpMap.bottomToTop = R.id.guidelineRunDetails;
+        lpMap.validate();
 
-        rlMap.setLayoutParams(lp);
+        rlMap.setLayoutParams(lpMap);
+
+        // reposition clRunDateTime back to original location
+        ConstraintLayout.LayoutParams lpRunDateTime = new ConstraintLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT
+        );
+
+        lpRunDateTime.topToBottom = R.id.guidelineRunDetails;
+        lpRunDateTime.validate();
+
+        clRunDateTime.setLayoutParams(lpRunDateTime);
     }
 
     @Override

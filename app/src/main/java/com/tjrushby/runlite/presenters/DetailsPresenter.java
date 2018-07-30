@@ -70,6 +70,7 @@ public class DetailsPresenter implements DetailsContract.Presenter {
     public void onBackPressed() {
         if(mapFullscreen) {
             view.displaySmallMap();
+            view.displayFullscreenIcon();
             mapFullscreen = false;
         } else {
             if(!updated) {
