@@ -6,18 +6,6 @@
     android:fitsSystemWindows="true"
     android:focusableInTouchMode="true">
 
-    <android.support.design.widget.AppBarLayout
-        android:id="@+id/appBarLayout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:theme="@style/AppTheme.AppBarOverlay">
-
-        <include
-            android:id="@+id/toolbar"
-            layout="@layout/toolbar" />
-
-    </android.support.design.widget.AppBarLayout>
-
     <!-- Constraint Guidelines -->
 
     <android.support.constraint.Guideline
@@ -44,8 +32,9 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:animateLayoutChanges="true"
+        android:elevation="0dp"
         app:layout_constraintBottom_toTopOf="@id/guidelineRunDetails"
-        app:layout_constraintTop_toBottomOf="@id/appBarLayout">
+        app:layout_constraintTop_toTopOf="parent">
 
         <fragment
             android:id="@+id/mapFragment"
@@ -62,7 +51,7 @@
             android:layout_alignParentBottom="true"
             android:layout_alignParentEnd="true"
             android:layout_margin="@dimen/header_margin"
-            android:background="@drawable/ic_fullscreen_black_24dp" />
+            android:background="@drawable/ic_fullscreen" />
 
         <android.support.v7.widget.AppCompatImageView
             android:id="@+id/ivMinimize"
@@ -71,9 +60,24 @@
             android:layout_alignParentBottom="true"
             android:layout_alignParentEnd="true"
             android:layout_margin="@dimen/header_margin"
-            android:background="@drawable/ic_fullscreen_exit_black_24dp"
+            android:background="@drawable/ic_fullscreen_exit"
             android:visibility="gone" />
     </RelativeLayout>
+
+    <!-- AppBar -->
+
+    <android.support.design.widget.AppBarLayout
+        android:id="@+id/appBarLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:color/transparent"
+        app:elevation="0dp">
+
+        <include
+            android:id="@+id/toolbar"
+            layout="@layout/toolbar" />
+
+    </android.support.design.widget.AppBarLayout>
 
     <!-- Run Details -->
 

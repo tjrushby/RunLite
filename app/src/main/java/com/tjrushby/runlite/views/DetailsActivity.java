@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.CoordinatorLayout;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.AppCompatImageView;
 import android.support.v7.widget.Toolbar;
@@ -22,7 +23,6 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
-import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
@@ -107,8 +107,15 @@ public class DetailsActivity extends BaseActivity
         setContentView(R.layout.activity_details);
         ButterKnife.bind(this);
 
+        toolbar.setTitle("");
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        if(getDarkThemeEnabled()) {
+            // change toolbar and actionbar icons to be more visible in dark mode
+            toolbar.setOverflowIcon(ContextCompat.getDrawable(this, R.drawable.ic_more_vert));
+            getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_action_back_grey);
+        }
 
         // inject dependencies
         App.getAppComponent()
@@ -267,7 +274,7 @@ public class DetailsActivity extends BaseActivity
     }
 
     @Override
-    public void displayFullscreenMap() {
+    public void displayLargeMap() {
         // move clRunDateTime down to bottom of parent
         ConstraintLayout.LayoutParams lpRunDateTime = new ConstraintLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
@@ -290,6 +297,9 @@ public class DetailsActivity extends BaseActivity
         lpMap.validate();
 
         rlMap.setLayoutParams(lpMap);
+
+        // change homeAsUp indicator to a cross
+        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_action_close_grey);
     }
 
     @Override
@@ -297,7 +307,7 @@ public class DetailsActivity extends BaseActivity
         // decrease size of map back to default
         ConstraintLayout.LayoutParams lpMap = new ConstraintLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT, 0);
-        lpMap.topToBottom = R.id.appBarLayout;
+        lpMap.topToTop = ConstraintLayout.LayoutParams.PARENT_ID;
         lpMap.bottomToTop = R.id.guidelineRunDetails;
         lpMap.validate();
 
@@ -313,6 +323,9 @@ public class DetailsActivity extends BaseActivity
         lpRunDateTime.validate();
 
         clRunDateTime.setLayoutParams(lpRunDateTime);
+
+        // change homeAsUp indicator to back arrow
+        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_action_back_grey);
     }
 
     @Override
@@ -338,16 +351,6 @@ public class DetailsActivity extends BaseActivity
         }
 
         map.addPolyline(polylineOptions);
-    }
-
-    @Override
-    public String getTextViewTimeElapsed() {
-        return tvTimeElapsed.getText().toString();
-    }
-
-    @Override
-    public String getTextViewDistance() {
-        return tvDistance.getText().toString();
     }
 
     @Override

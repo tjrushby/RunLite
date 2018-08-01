@@ -7,10 +7,7 @@ import com.tjrushby.runlite.models.RunLatLng;
 import com.tjrushby.runlite.models.RunWithLatLng;
 import com.tjrushby.runlite.util.StringFormatter;
 
-import java.math.BigDecimal;
 import java.util.List;
-
-import timber.log.Timber;
 
 public class DetailsPresenter implements DetailsContract.Presenter {
     private boolean mapFullscreen, updated;
@@ -108,7 +105,7 @@ public class DetailsPresenter implements DetailsContract.Presenter {
 
     @Override
     public void onImageViewFullscreenClicked() {
-        view.displayFullscreenMap();
+        view.displayLargeMap();
         view.displayMinimizeIcon();
 
         // recenter map

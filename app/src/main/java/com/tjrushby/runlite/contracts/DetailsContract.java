@@ -36,13 +36,9 @@ public interface DetailsContract {
 
         void displayMinimizeIcon();
 
-        void displayFullscreenMap();
+        void displayLargeMap();
 
         void displaySmallMap();
-
-        String getTextViewTimeElapsed();
-
-        String getTextViewDistance();
 
         void setDistanceUnits(double distanceUnits);
 
