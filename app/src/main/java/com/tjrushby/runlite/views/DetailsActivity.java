@@ -12,6 +12,7 @@ import android.support.v7.widget.Toolbar;
 import android.transition.TransitionManager;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
@@ -47,7 +48,7 @@ import butterknife.OnClick;
 import static android.view.View.GONE;
 
 public class DetailsActivity extends BaseActivity
-        implements DetailsContract.Activity, OnMapReadyCallback {
+        implements DetailsContract.Activity, OnMapReadyCallback, View.OnTouchListener {
 
     @Inject
     protected AlertDialog.Builder builder;
@@ -111,6 +112,10 @@ public class DetailsActivity extends BaseActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_details);
         ButterKnife.bind(this);
+
+        // prevent being able to move the map with touch events on these views
+        clRunDateTime.setOnTouchListener(this);
+        clRunDetails.setOnTouchListener(this);
 
         toolbar.setTitle("");
         setSupportActionBar(toolbar);
@@ -421,5 +426,10 @@ public class DetailsActivity extends BaseActivity
         tvTimeElapsed.setText(time);
         tvDistance.setText(distance);
         tvAveragePace.setText(averagePace);
+    }
+
+    @Override
+    public boolean onTouch(View view, MotionEvent motionEvent) {
+        return true;
     }
 }
