@@ -27,7 +27,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.OnTextChanged;
 
-public class EditActivity extends AppCompatActivity
+public class EditActivity extends BaseActivity
         implements EditActivityContract.View, TimePickerDialogListener {
 
     @Inject
