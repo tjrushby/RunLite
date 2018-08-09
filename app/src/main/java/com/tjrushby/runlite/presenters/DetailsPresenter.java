@@ -107,9 +107,7 @@ public class DetailsPresenter implements DetailsContract.Presenter {
     public void onImageViewFullscreenClicked() {
         view.displayLargeMap();
         view.displayMinimizeIcon();
-
-        // recenter map
-        view.moveMapCamera();
+        view.animateMapCameraForLargeMap();
 
         mapFullscreen = true;
     }
@@ -118,6 +116,7 @@ public class DetailsPresenter implements DetailsContract.Presenter {
     public void onImageViewMinimizeClicked() {
         view.displaySmallMap();
         view.displayFullscreenIcon();
+        view.animateMapCameraForSmallMap();
 
         mapFullscreen = false;
     }
@@ -126,8 +125,8 @@ public class DetailsPresenter implements DetailsContract.Presenter {
     public void onMapFragmentReady() {
         // calculate the bounds for the map and plot a line representing the run route
         if(!runWithLatLng.runLatLngs.isEmpty()) {
-            view.calculateMapBounds(runWithLatLng.runLatLngs);
             view.calculateMapPolyline(runWithLatLng.runLatLngs);
+            view.calculateMapBounds(runWithLatLng.runLatLngs);
 
             // add interval markers for the run
             double prevMod = 0;
@@ -150,7 +149,7 @@ public class DetailsPresenter implements DetailsContract.Presenter {
             );
 
             view.addMapMarkers(mapMarkerCoordinates);
-            view.moveMapCamera();
+            view.moveMapCameraForSmallMap();
         }
     }
 

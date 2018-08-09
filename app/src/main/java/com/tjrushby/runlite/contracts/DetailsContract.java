@@ -16,7 +16,11 @@ public interface DetailsContract {
 
         void addMapMarkers(List<RunLatLng> runCoordinates);
 
-        void moveMapCamera();
+        void animateMapCameraForLargeMap();
+
+        void animateMapCameraForSmallMap();
+
+        void moveMapCameraForSmallMap();
 
         void calculateMapBounds(List<RunLatLng> runCoordinates);
 

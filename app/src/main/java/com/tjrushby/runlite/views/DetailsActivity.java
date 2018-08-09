@@ -9,6 +9,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.AppCompatImageView;
 import android.support.v7.widget.Toolbar;
+import android.transition.TransitionManager;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -23,6 +24,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
@@ -58,7 +60,7 @@ public class DetailsActivity extends BaseActivity
     @Inject
     protected PolylineOptions polylineOptions;
     @Inject
-    protected LatLngBounds.Builder mapBounds;
+    protected LatLngBounds.Builder mapBoundsBuilder;
     @Inject
     protected MarkerOptions markerOptions;
 
@@ -72,6 +74,8 @@ public class DetailsActivity extends BaseActivity
 
     @BindView(R.id.clRunDateTime)
     protected CoordinatorLayout clRunDateTime;
+    @BindView(R.id.clRunDetails)
+    protected CoordinatorLayout clRunDetails;
     @BindView(R.id.rlMap)
     protected RelativeLayout rlMap;
 
@@ -89,6 +93,7 @@ public class DetailsActivity extends BaseActivity
 
     private double distanceUnits;
 
+    private LatLngBounds mapBounds;
     private GoogleMap map;
 
     @OnClick(R.id.ivFullscreen)
@@ -223,8 +228,44 @@ public class DetailsActivity extends BaseActivity
     }
 
     @Override
-    public void moveMapCamera() {
-        map.moveCamera(CameraUpdateFactory.newLatLngBounds(mapBounds.build(), 100));
+    public void animateMapCameraForLargeMap() {
+        map.animateCamera(CameraUpdateFactory.newLatLngBounds(mapBounds, 100));
+    }
+
+    @Override
+    public void animateMapCameraForSmallMap() {
+        map.animateCamera(CameraUpdateFactory.newLatLngBounds(
+                mapBounds,
+                rlMap.getWidth(),
+                rlMap.getHeight() - (clRunDateTime.getHeight() + clRunDetails.getHeight()),
+                100
+        ), new GoogleMap.CancelableCallback() {
+            @Override
+            public void onFinish() {
+                map.animateCamera(CameraUpdateFactory.scrollBy(0,
+                        (clRunDateTime.getHeight() + clRunDetails.getHeight())/2)
+                );
+            }
+
+            @Override
+            public void onCancel() {
+                // do nothing
+            }
+        });
+    }
+
+    @Override
+    public void moveMapCameraForSmallMap() {
+        map.moveCamera(CameraUpdateFactory.newLatLngBounds(
+                mapBounds,
+                rlMap.getWidth(),
+                rlMap.getHeight() - (clRunDateTime.getHeight() + clRunDetails.getHeight()),
+                100
+        ));
+
+        map.moveCamera(CameraUpdateFactory.scrollBy(0,
+                (clRunDateTime.getHeight() + clRunDetails.getHeight())/2)
+        );
     }
 
     @Override
@@ -275,6 +316,10 @@ public class DetailsActivity extends BaseActivity
 
     @Override
     public void displayLargeMap() {
+        TransitionManager.beginDelayedTransition(findViewById(R.id.clMinMax));
+        TransitionManager.beginDelayedTransition(clRunDateTime);
+        TransitionManager.beginDelayedTransition(clRunDetails);
+
         // move clRunDateTime down to bottom of parent
         ConstraintLayout.LayoutParams lpRunDateTime = new ConstraintLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
@@ -286,17 +331,16 @@ public class DetailsActivity extends BaseActivity
 
         clRunDateTime.setLayoutParams(lpRunDateTime);
 
-        // increase size of map down to the top of clRunDateTime
-        ConstraintLayout.LayoutParams lpMap = new ConstraintLayout.LayoutParams(
+        // constrain clRunDetails to bottom of clRunDateTime so it slides down with it
+        ConstraintLayout.LayoutParams lpRunDetails = new ConstraintLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
-                getResources().getDisplayMetrics().heightPixels -
-                        getResources().getDimensionPixelSize(R.dimen.seek_thumb_height)
+                ViewGroup.LayoutParams.WRAP_CONTENT
         );
 
-        lpMap.bottomToTop = R.id.clRunDateTime;
-        lpMap.validate();
+        lpRunDetails.topToBottom = R.id.clRunDateTime;
+        lpRunDetails.validate();
 
-        rlMap.setLayoutParams(lpMap);
+        clRunDetails.setLayoutParams(lpRunDetails);
 
         // change homeAsUp indicator to a cross
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_action_close_grey);
@@ -304,14 +348,20 @@ public class DetailsActivity extends BaseActivity
 
     @Override
     public void displaySmallMap() {
-        // decrease size of map back to default
-        ConstraintLayout.LayoutParams lpMap = new ConstraintLayout.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT, 0);
-        lpMap.topToTop = ConstraintLayout.LayoutParams.PARENT_ID;
-        lpMap.bottomToTop = R.id.guidelineRunDetails;
-        lpMap.validate();
+        TransitionManager.beginDelayedTransition(findViewById(R.id.clMinMax));
+        TransitionManager.beginDelayedTransition(clRunDateTime);
+        TransitionManager.beginDelayedTransition(clRunDetails);
 
-        rlMap.setLayoutParams(lpMap);
+        // constrain clRunDetails to bottom of parent
+        ConstraintLayout.LayoutParams lpRunDetails = new ConstraintLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT
+        );
+
+        lpRunDetails.bottomToBottom = ConstraintLayout.LayoutParams.PARENT_ID;
+        lpRunDetails.validate();
+
+        clRunDetails.setLayoutParams(lpRunDetails);
 
         // reposition clRunDateTime back to original location
         ConstraintLayout.LayoutParams lpRunDateTime = new ConstraintLayout.LayoutParams(
@@ -319,7 +369,7 @@ public class DetailsActivity extends BaseActivity
                 ViewGroup.LayoutParams.WRAP_CONTENT
         );
 
-        lpRunDateTime.topToBottom = R.id.guidelineRunDetails;
+        lpRunDateTime.bottomToTop = R.id.clRunDetails;
         lpRunDateTime.validate();
 
         clRunDateTime.setLayoutParams(lpRunDateTime);
@@ -337,11 +387,14 @@ public class DetailsActivity extends BaseActivity
 
     @Override
     public void calculateMapBounds(List<RunLatLng> runCoordinates) {
-        for (RunLatLng coordinates : runCoordinates) {
-            mapBounds.include(coordinates.toLatLng());
+        for (LatLng coordinates : polylineOptions.getPoints()) {
+            mapBoundsBuilder.include(coordinates);
         }
 
-        map.setLatLngBoundsForCameraTarget(mapBounds.build());
+        mapBounds = mapBoundsBuilder.build();
+
+        // set map camera bounds
+        map.setLatLngBoundsForCameraTarget(mapBounds);
     }
 
     @Override
