@@ -5,7 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 
-import com.tjrushby.runlite.contracts.EditActivityContract;
+import com.tjrushby.runlite.contracts.EditContract;
 import com.tjrushby.runlite.dialogs.TimePickerDialog;
 import com.tjrushby.runlite.injection.scopes.EditActivityScope;
 import com.tjrushby.runlite.presenters.EditPresenter;
@@ -18,24 +18,24 @@ import dagger.Provides;
 
 @Module
 public class EditActivityModule {
-    private EditActivityContract.View view;
+    private EditContract.View view;
     private Context context;
 
-    public EditActivityModule(EditActivityContract.View view, Context context) {
+    public EditActivityModule(EditContract.View view, Context context) {
         this.view = view;
         this.context = context;
     }
 
     @Provides
     @EditActivityScope
-    EditActivityContract.View providesView() {
+    EditContract.View providesView() {
         return view;
     }
 
     @Provides
     @EditActivityScope
-    EditActivityContract.Presenter providesPresenter(EditActivityContract.View view,
-                                                     StringFormatter formatter) {
+    EditContract.Presenter providesPresenter(EditContract.View view,
+                                             StringFormatter formatter) {
         return new EditPresenter(view, formatter);
     }
 

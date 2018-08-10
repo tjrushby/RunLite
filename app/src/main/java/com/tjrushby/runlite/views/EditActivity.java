@@ -5,20 +5,20 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.EditText;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import com.tjrushby.runlite.App;
 import com.tjrushby.runlite.R;
-import com.tjrushby.runlite.contracts.EditActivityContract;
+import com.tjrushby.runlite.contracts.EditContract;
 import com.tjrushby.runlite.dialogs.TimePickerDialog;
 import com.tjrushby.runlite.dialogs.TimePickerDialogListener;
 import com.tjrushby.runlite.injection.modules.EditActivityModule;
+
+import java.math.BigDecimal;
 
 import javax.inject.Inject;
 
@@ -28,14 +28,14 @@ import butterknife.OnClick;
 import butterknife.OnTextChanged;
 
 public class EditActivity extends BaseActivity
-        implements EditActivityContract.View, TimePickerDialogListener {
+        implements EditContract.View, TimePickerDialogListener, View.OnLongClickListener {
 
     @Inject
     protected AlertDialog.Builder builder;
     @Inject
     protected Bundle bundle;
     @Inject
-    protected EditActivityContract.Presenter presenter;
+    protected EditContract.Presenter presenter;
     @Inject
     protected Intent intent;
     @Inject
@@ -79,6 +79,9 @@ public class EditActivity extends BaseActivity
         toolbar.setTitle(R.string.activity_edit_title);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        // remove ability to long click on etTimeElapsed to prevent breaking the field
+        etTimeElapsed.setOnLongClickListener(this);
 
         Bundle extras = getIntent().getExtras();
 
@@ -124,11 +127,15 @@ public class EditActivity extends BaseActivity
 
     @Override
     public void endActivityWithIntent() {
+        // round etDistance for entries without decimal places, e.g: 3 -> 3.00
+        BigDecimal roundedDistance = new BigDecimal(getEditTextDistance())
+                .setScale(2, BigDecimal.ROUND_HALF_UP);
+
         startActivity(intent
                 .setClass(this, DetailsActivity.class)
                 .putExtra("UPDATED_DETAILS", new String[] {
                         getEditTextTimeElapsed(),
-                        getEditTextDistance(),
+                        roundedDistance.toString(),
                         etPace.getText().toString()
                 })
         );
@@ -220,5 +227,10 @@ public class EditActivity extends BaseActivity
     @Override
     public void onTimePickerDialogPositiveClick(int timeElapsed) {
         presenter.onEditTextTimeElapsedChanged(timeElapsed);
+    }
+
+    @Override
+    public boolean onLongClick(View view) {
+        return true;
     }
 }

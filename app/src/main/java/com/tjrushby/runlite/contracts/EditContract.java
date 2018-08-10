@@ -1,6 +1,6 @@
 package com.tjrushby.runlite.contracts;
 
-public interface EditActivityContract {
+public interface EditContract {
     interface View {
         void endActivity();
 

@@ -1,21 +1,21 @@
 package com.tjrushby.runlite.presenters;
 
-import com.tjrushby.runlite.contracts.EditActivityContract;
+import com.tjrushby.runlite.contracts.EditContract;
 import com.tjrushby.runlite.util.StringFormatter;
 
 import java.math.BigDecimal;
 
-public class EditPresenter implements EditActivityContract.Presenter {
+public class EditPresenter implements EditContract.Presenter {
     private boolean changed;
     private double distanceUnits;
 
-    private EditActivityContract.View view;
+    private EditContract.View view;
     private StringFormatter formatter;
 
     private String runDistance;
     private String runTime;
 
-    public EditPresenter(EditActivityContract.View view, StringFormatter formatter) {
+    public EditPresenter(EditContract.View view, StringFormatter formatter) {
         this.view = view;
         this.formatter = formatter;
 
@@ -32,7 +32,6 @@ public class EditPresenter implements EditActivityContract.Presenter {
             view.setEditTextDistance(runDistance);
             view.setEditTextAveragePace(runDetails[2]);
         } else {
-            // todo display error bar
             view.endActivity();
         }
     }
@@ -48,8 +47,6 @@ public class EditPresenter implements EditActivityContract.Presenter {
 
     @Override
     public void onActionSaveSelected() {
-        /*updateRun();
-        view.displayRunUpdatedToast();*/
         view.endActivityWithIntent();
     }
 
@@ -75,8 +72,12 @@ public class EditPresenter implements EditActivityContract.Presenter {
             BigDecimal roundedDistance = new BigDecimal(distanceDouble)
                     .setScale(2, BigDecimal.ROUND_HALF_UP);
 
-            // if the user input isn't rounded to two decimal places then do so
-            if(distanceDouble != roundedDistance.doubleValue()) {
+            // if the user input isn't rounded to two decimal places then do so, using string split
+            // to check the number of decimal places allows us to remove any extra trailing zeroes
+            String[] split = distanceString.split("\\.");
+
+            if(split.length == 2 && split[1].length() > 2) {
+                roundedDistance.stripTrailingZeros();
                 view.setEditTextDistance(roundedDistance.toString());
             }
 
@@ -124,8 +125,8 @@ public class EditPresenter implements EditActivityContract.Presenter {
     }
 
     private void isDataChanged() {
-        if(!view.getEditTextTimeElapsed().equals(runTime)
-                || !view.getEditTextDistance().equals(runDistance)) {
+        if(!view.getEditTextTimeElapsed().equals(runTime) ||
+                Double.parseDouble(view.getEditTextDistance()) != Double.parseDouble(runDistance)) {
             changed = true;
             view.showActionSave();
         } else {

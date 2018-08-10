@@ -9,9 +9,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.maps.android.ui.IconGenerator;
 import com.tjrushby.runlite.contracts.DetailsContract;
-import com.tjrushby.runlite.contracts.EditActivityContract;
 import com.tjrushby.runlite.injection.scopes.DetailsActivityScope;
-import com.tjrushby.runlite.views.EditActivity;
 
 import javax.inject.Named;
 

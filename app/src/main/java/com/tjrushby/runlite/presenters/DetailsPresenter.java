@@ -162,7 +162,12 @@ public class DetailsPresenter implements DetailsContract.Presenter {
     public void onRunDetailsChanged(String[] details) {
         if(details != null && details.length == 3) {
             // correct number of updated details supplied
-            view.setTextViews(details[0], details[1], details[2]);
+            view.setTextViews(
+                    details[0],
+                    formatter.distanceToStringWithUnits(Double.parseDouble(details[1])),
+                    details[2]
+            );
+
             updateRun(details[0], details[1]);
             view.displayRunUpdatedToast();
         }
