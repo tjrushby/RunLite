@@ -1,5 +1,6 @@
 package com.tjrushby.runlite.views;
 
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -121,19 +122,19 @@ public class EditActivity extends BaseActivity
     }
 
     @Override
-    public void endActivity() {
+    public void endActivityResultCancelled() {
+        setResult(RESULT_CANCELED);
         this.finish();
     }
 
     @Override
-    public void endActivityWithIntent() {
+    public void endActivityResultOK() {
         // round etDistance for entries without decimal places, e.g: 3 -> 3.00
         BigDecimal roundedDistance = new BigDecimal(getEditTextDistance())
                 .setScale(2, BigDecimal.ROUND_HALF_UP);
 
-        startActivity(intent
-                .setClass(this, DetailsActivity.class)
-                .putExtra("UPDATED_DETAILS", new String[] {
+        setResult(RESULT_OK, intent
+                .putExtra("UPDATED_DETAILS", new String[]{
                         getEditTextTimeElapsed(),
                         roundedDistance.toString(),
                         etPace.getText().toString()

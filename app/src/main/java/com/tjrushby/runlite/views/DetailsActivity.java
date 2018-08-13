@@ -44,6 +44,7 @@ import javax.inject.Inject;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import timber.log.Timber;
 
 import static android.view.View.GONE;
 
@@ -92,6 +93,8 @@ public class DetailsActivity extends BaseActivity
     @BindView(R.id.toolbar)
     protected Toolbar toolbar;
 
+    private static final int EDIT_RUN_REQUEST = 1;
+
     private double distanceUnits;
 
     private LatLngBounds mapBounds;
@@ -134,9 +137,19 @@ public class DetailsActivity extends BaseActivity
     }
 
     @Override
-    protected void onNewIntent(Intent intent) {
-        if(intent.hasExtra("UPDATED_DETAILS")) {
-            presenter.onRunDetailsChanged(intent.getStringArrayExtra("UPDATED_DETAILS"));
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        Timber.d("onActivityResult");
+
+        if(requestCode == EDIT_RUN_REQUEST) {
+
+            Timber.d("EDIT_RUN_REQUEST");
+
+            if(resultCode == RESULT_OK) {
+                Timber.d("RESULT_OK");
+
+                // user edited the run
+                presenter.onRunDetailsChanged(data.getStringArrayExtra("UPDATED_DETAILS"));
+            }
         }
     }
 
@@ -195,14 +208,16 @@ public class DetailsActivity extends BaseActivity
 
     @Override
     public void startEditActivity(String distanceTravelled) {
-        startActivity(intent
-                .setClass(this, EditActivity.class)
-                .putExtra("RUN_DETAILS", new String[] {
-                        tvTimeElapsed.getText().toString(),
-                        distanceTravelled,
-                        tvAveragePace.getText().toString()
-                })
-        );
+        startActivityForResult(
+                intent.setClass(this, EditActivity.class)
+                        .putExtra("RUN_DETAILS",
+                                new String[]{
+                                        tvTimeElapsed.getText().toString(),
+                                        distanceTravelled,
+                                        tvAveragePace.getText().toString()
+                                }
+                        ),
+                EDIT_RUN_REQUEST);
     }
 
     @Override
@@ -248,7 +263,7 @@ public class DetailsActivity extends BaseActivity
             @Override
             public void onFinish() {
                 map.animateCamera(CameraUpdateFactory.scrollBy(0,
-                        (clRunDateTime.getHeight() + clRunDetails.getHeight())/2)
+                        (clRunDateTime.getHeight() + clRunDetails.getHeight()) / 2)
                 );
             }
 
@@ -269,7 +284,7 @@ public class DetailsActivity extends BaseActivity
         ));
 
         map.moveCamera(CameraUpdateFactory.scrollBy(0,
-                (clRunDateTime.getHeight() + clRunDetails.getHeight())/2)
+                (clRunDateTime.getHeight() + clRunDetails.getHeight()) / 2)
         );
     }
 

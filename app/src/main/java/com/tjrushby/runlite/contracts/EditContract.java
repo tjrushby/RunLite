@@ -2,9 +2,9 @@ package com.tjrushby.runlite.contracts;
 
 public interface EditContract {
     interface View {
-        void endActivity();
+        void endActivityResultCancelled();
 
-        void endActivityWithIntent();
+        void endActivityResultOK();
 
         void displayExitAlertDialog();
 

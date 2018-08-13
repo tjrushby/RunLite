@@ -32,7 +32,7 @@ public class EditPresenter implements EditContract.Presenter {
             view.setEditTextDistance(runDistance);
             view.setEditTextAveragePace(runDetails[2]);
         } else {
-            view.endActivity();
+            view.endActivityResultCancelled();
         }
     }
 
@@ -41,13 +41,13 @@ public class EditPresenter implements EditContract.Presenter {
         if(changed) {
             view.displayExitAlertDialog();
         } else {
-            view.endActivity();
+            view.endActivityResultCancelled();
         }
     }
 
     @Override
     public void onActionSaveSelected() {
-        view.endActivityWithIntent();
+        view.endActivityResultOK();
     }
 
     @Override
@@ -121,7 +121,7 @@ public class EditPresenter implements EditContract.Presenter {
 
     @Override
     public void onExitAlertDialogYes() {
-        view.endActivity();
+        view.endActivityResultCancelled();
     }
 
     private void isDataChanged() {
