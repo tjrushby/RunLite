@@ -49,7 +49,7 @@
 
         <activity
             android:name=".views.RunActivity"
-            android:launchMode="singleTask"
+            android:launchMode="singleInstance"
             android:screenOrientation="portrait" />
 
         <activity

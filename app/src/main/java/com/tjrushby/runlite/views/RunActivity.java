@@ -136,6 +136,8 @@ public class RunActivity extends BaseActivity
         setSupportActionBar(toolbar);
 
         // set intent properties
+        intentRunActivity.setClass(this, this.getClass());
+
         intentRunService.setClass(this, RunService.class);
         intentAudioCueService.setClass(this, AudioCueService.class);
 
@@ -165,7 +167,7 @@ public class RunActivity extends BaseActivity
                 PendingIntent.getActivity(
                         this,
                         R.string.notification_default_content_title,
-                        intentRunActivity.setClass(this, this.getClass()),
+                        intentRunActivity,
                         0)
         );
 
