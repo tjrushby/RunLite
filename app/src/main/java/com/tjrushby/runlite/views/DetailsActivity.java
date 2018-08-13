@@ -239,7 +239,12 @@ public class DetailsActivity extends BaseActivity
 
     @Override
     public void animateMapCameraForLargeMap() {
-        map.animateCamera(CameraUpdateFactory.newLatLngBounds(mapBounds, 100));
+        map.animateCamera(CameraUpdateFactory.newLatLngBounds(
+                mapBounds,
+                rlMap.getWidth(),
+                rlMap.getHeight() - clRunDateTime.getHeight(),
+                125)
+        );
     }
 
     @Override
@@ -248,7 +253,7 @@ public class DetailsActivity extends BaseActivity
                 mapBounds,
                 rlMap.getWidth(),
                 rlMap.getHeight() - (clRunDateTime.getHeight() + clRunDetails.getHeight()),
-                100
+                125
         ), new GoogleMap.CancelableCallback() {
             @Override
             public void onFinish() {
@@ -270,7 +275,7 @@ public class DetailsActivity extends BaseActivity
                 mapBounds,
                 rlMap.getWidth(),
                 rlMap.getHeight() - (clRunDateTime.getHeight() + clRunDetails.getHeight()),
-                100
+                125
         ));
 
         map.moveCamera(CameraUpdateFactory.scrollBy(0,
