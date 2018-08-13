@@ -69,9 +69,9 @@ public class DetailsPresenter implements DetailsContract.Presenter {
             onImageViewMinimizeClicked();
         } else {
             if(!updated) {
-                view.endActivity();
+                view.endActivityResultCancelled();
             } else {
-                view.endActivityWithIntent();
+                view.endActivityResultOK();
             }
         }
     }
@@ -96,9 +96,9 @@ public class DetailsPresenter implements DetailsContract.Presenter {
             view.displayRunDeletedToast();
 
             if(!updated) {
-                view.endActivity();
+                view.endActivityResultCancelled();
             } else {
-                view.endActivityWithIntent();
+                view.endActivityResultOK();
             }
         });
     }

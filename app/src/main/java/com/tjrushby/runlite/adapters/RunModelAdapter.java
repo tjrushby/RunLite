@@ -1,5 +1,6 @@
 package com.tjrushby.runlite.adapters;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v7.app.AlertDialog;
@@ -60,7 +61,7 @@ public class RunModelAdapter extends RecyclerView.Adapter<RunModelViewHolder> {
             Intent intent = new Intent();
             intent.setClass(view.getContext(), DetailsActivity.class);
             intent.putExtra("runId", Long.toString(run.run.getId()));
-            view.getContext().startActivity(intent);
+            ((Activity) view.getContext()).startActivityForResult(intent, 1);
         });
 
         holder.itemView.setLongClickable(true);

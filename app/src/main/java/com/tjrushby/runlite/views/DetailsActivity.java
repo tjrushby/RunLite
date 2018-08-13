@@ -138,15 +138,8 @@ public class DetailsActivity extends BaseActivity
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        Timber.d("onActivityResult");
-
         if(requestCode == EDIT_RUN_REQUEST) {
-
-            Timber.d("EDIT_RUN_REQUEST");
-
             if(resultCode == RESULT_OK) {
-                Timber.d("RESULT_OK");
-
                 // user edited the run
                 presenter.onRunDetailsChanged(data.getStringArrayExtra("UPDATED_DETAILS"));
             }
@@ -192,17 +185,14 @@ public class DetailsActivity extends BaseActivity
     }
 
     @Override
-    public void endActivity() {
+    public void endActivityResultCancelled() {
+        setResult(RESULT_CANCELED);
         this.finish();
     }
 
     @Override
-    public void endActivityWithIntent() {
-        startActivity(intent
-                .setClass(this, MainActivity.class)
-                .putExtra("UPDATED", true)
-        );
-
+    public void endActivityResultOK() {
+        setResult(RESULT_OK);
         this.finish();
     }
 
@@ -309,7 +299,7 @@ public class DetailsActivity extends BaseActivity
     @Override
     public void displayNotFoundErrorToast() {
         Toast.makeText(this, R.string.toast_run_not_found, Toast.LENGTH_SHORT).show();
-        endActivity();
+        endActivityResultCancelled();
     }
 
     @Override

@@ -63,6 +63,8 @@ public class MainActivity extends BaseActivity
     @BindView(R.id.toolbar)
     protected Toolbar toolbar;
 
+    private static final int UPDATE_RUNS_REQUEST = 1;
+
     private SwitchCompat switchAudioCue;
     private SwitchCompat switchDarkMode;
 
@@ -118,10 +120,18 @@ public class MainActivity extends BaseActivity
 
     @Override
     protected void onNewIntent(Intent intent) {
-        if(intent.hasExtra("UPDATED")) {
-            presenter.onRunUpdated();
-        } else if(intent.hasExtra("UNITS_CHANGED")) {
+        if(intent.hasExtra("UNITS_CHANGED")) {
             presenter.onDistanceUnitsChanged();
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch(requestCode) {
+            case UPDATE_RUNS_REQUEST:
+                if(resultCode == RESULT_OK) {
+                    presenter.onRunUpdated();
+                }
         }
     }
 

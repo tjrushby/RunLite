@@ -6,9 +6,9 @@ import java.util.List;
 
 public interface DetailsContract {
     interface Activity {
-        void endActivity();
+        void endActivityResultCancelled();
 
-        void endActivityWithIntent();
+        void endActivityResultOK();
 
         void startEditActivity(String distanceTravelled);
 
