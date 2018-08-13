@@ -35,9 +35,9 @@
 
         <activity
             android:name=".views.DetailsActivity"
-            android:launchMode="singleTask"
             android:parentActivityName=".views.MainActivity"
             android:screenOrientation="portrait" />
+
         <activity
             android:name=".views.EditActivity"
             android:parentActivityName=".views.DetailsActivity"
