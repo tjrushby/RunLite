@@ -42,14 +42,16 @@
             android:name=".views.EditActivity"
             android:parentActivityName=".views.DetailsActivity"
             android:screenOrientation="portrait" />
+
         <activity
             android:name=".views.MainActivity"
-            android:launchMode="singleTask"
             android:screenOrientation="portrait" />
+
         <activity
             android:name=".views.RunActivity"
             android:launchMode="singleTask"
             android:screenOrientation="portrait" />
+
         <activity
             android:name=".views.RunPreferencesActivity"
             android:label="@string/activity_run_preferences_label"
