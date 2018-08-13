@@ -5,9 +5,9 @@ public interface RunPreferencesContract {
     interface Activity {
         void restartActivity();
 
-        void endActivity();
+        void endActivityResultCancelled();
 
-        void endActivityWithIntent();
+        void endActivityResultOK();
 
         void registerSharedPreferencesListener();
 

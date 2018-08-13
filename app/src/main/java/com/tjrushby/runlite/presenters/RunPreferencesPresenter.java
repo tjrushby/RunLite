@@ -24,9 +24,9 @@ public class RunPreferencesPresenter implements RunPreferencesContract.Presenter
     @Override
     public void onBackPressed() {
         if(!changedUnits) {
-            activity.endActivity();
+            activity.endActivityResultCancelled();
         } else {
-            activity.endActivityWithIntent();
+            activity.endActivityResultOK();
         }
     }
 

@@ -74,17 +74,14 @@ public class RunPreferencesActivity extends BaseActivity
     }
 
     @Override
-    public void endActivity() {
+    public void endActivityResultCancelled() {
+        setResult(RESULT_CANCELED);
         this.finish();
     }
 
     @Override
-    public void endActivityWithIntent() {
-        startActivity(intent
-                .setClass(this, MainActivity.class)
-                .putExtra("UNITS_CHANGED", true)
-        );
-        
+    public void endActivityResultOK() {
+        setResult(RESULT_OK);
         this.finish();
     }
 

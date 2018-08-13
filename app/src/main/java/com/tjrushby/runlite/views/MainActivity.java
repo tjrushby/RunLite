@@ -64,6 +64,7 @@ public class MainActivity extends BaseActivity
     protected Toolbar toolbar;
 
     private static final int UPDATE_RUNS_REQUEST = 1;
+    private static final int RUN_PREFS_REQUEST = 2;
 
     private SwitchCompat switchAudioCue;
     private SwitchCompat switchDarkMode;
@@ -119,19 +120,21 @@ public class MainActivity extends BaseActivity
     }
 
     @Override
-    protected void onNewIntent(Intent intent) {
-        if(intent.hasExtra("UNITS_CHANGED")) {
-            presenter.onDistanceUnitsChanged();
-        }
-    }
-
-    @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch(requestCode) {
-            case UPDATE_RUNS_REQUEST:
+            case UPDATE_RUNS_REQUEST :
                 if(resultCode == RESULT_OK) {
                     presenter.onRunUpdated();
                 }
+
+                break;
+
+            case RUN_PREFS_REQUEST :
+                if(resultCode == RESULT_OK) {
+                    presenter.onDistanceUnitsChanged();
+                }
+
+                break;
         }
     }
 
@@ -176,7 +179,7 @@ public class MainActivity extends BaseActivity
     @Override
     public void startRunPreferencesActivity() {
         intent.setClass(this, RunPreferencesActivity.class);
-        startActivity(intent);
+        startActivityForResult(intent, RUN_PREFS_REQUEST);
     }
 
     @Override
