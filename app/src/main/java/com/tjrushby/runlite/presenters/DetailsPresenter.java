@@ -132,7 +132,7 @@ public class DetailsPresenter implements DetailsContract.Presenter {
             double prevMod = 0;
 
             for (RunLatLng runLatLng : runWithLatLng.runLatLngs) {
-                double currentMod = (runLatLng.getDistanceInRun() * distanceUnits) % 0.5;
+                double currentMod = (runLatLng.getDistanceInRun() / distanceUnits) % 0.5;
 
                 // if the currentMod is less than the prevMod then it is approximately an interval
                 // of 0.5 so add it to the list
