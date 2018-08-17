@@ -11,13 +11,11 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import timber.log.Timber;
-
 public class RunPresenter implements RunContract.Presenter {
     public int GPS_ACCURACY_BAD_THRESHOLD;
     public int GPS_ACCURACY_GOOD_THRESHOLD;
 
-    private boolean isAudioCueEnabled;
+    private boolean isAudioCueEnabled, isLocked;
     private double audioCueDistanceInterval;
     private int audioCueTimeInterval;
 
@@ -60,9 +58,6 @@ public class RunPresenter implements RunContract.Presenter {
 
     @Override
     public void onActivityCreated() {
-        view.disableSeekBar();
-        view.setTextViewsDistanceUnit(formatter.getDistanceUnitsString());
-
         // start the timer
         view.nextTick();
 
@@ -89,12 +84,16 @@ public class RunPresenter implements RunContract.Presenter {
 
     @Override
     public void onBackPressed() {
-        if(runService.isRunning() || timeElapsed > 0) {
-            view.displayDialogCancelRun();
-        } else {
-            runService.stopLocationUpdates();
-            view.removeNotification();
-            view.endActivity();
+        // only handle back presses if the view isn't locked
+        if(!isLocked) {
+            if(runService.isRunning() || timeElapsed > 0) {
+                // if the run is currently in progress then confirm the user wants to cancel it
+                view.displayDialogCancelRun();
+            } else {
+                runService.stopLocationUpdates();
+                view.removeNotification();
+                view.endActivity();
+            }
         }
     }
 
@@ -121,12 +120,12 @@ public class RunPresenter implements RunContract.Presenter {
                 view.setTextViewPaceDefaultText();
             } else {
                 view.setTextViewAveragePace(
-                        formatter.averagePaceToTimeString(averagePace)
+                        formatter.averagePaceToTimeStringWithLabel(averagePace)
                 );
             }
 
             view.setTextViewTime(formatter.secondsToTimeString(timeElapsed));
-            view.setTextViewDistance(formatter.distanceToString(distanceTravelled));
+            view.setTextViewDistance(formatter.distanceToStringWithUnits(distanceTravelled));
 
             // update notification
             view.setNotificationContent(
@@ -167,10 +166,76 @@ public class RunPresenter implements RunContract.Presenter {
         view.nextTick();
     }
 
+    @Override
+    public void onButtonLockPressed() {
+        isLocked = true;
+
+        // hide buttons associated with controlling the run
+        view.hideButtonLock();
+        view.hideButtonPause();
+        view.hideButtonStop();
+
+        view.hideButtonAudioDisable();
+        view.hideButtonAudioEnable();
+
+        // display unlock button
+        view.showButtonUnlock();
+
+        // keep screen on
+        view.setScreenTimeoutNone();
+    }
+
+    @Override
+    public void onButtonUnlockActionDown() {
+        // show the unlock circle around buttonUnlock, then up-scale buttonUnlock until receiving
+        // an up action
+        view.showIVUnlockCircle();
+        view.animateButtonUnlockScaleUp();
+    }
+
+    @Override
+    public void onButtonUnlockActionUp() {
+        // hide the unlock circle around buttonUnlock, then down-scale buttonUnlock
+        view.hideIVUnlockCircle();
+        view.animateButtonUnlockScaleDown();
+    }
+
+    // tell model to displayDialogEndRun requesting location updates and the view to not post another Runnable
+    @Override
+    public void onButtonPausePressed() {
+        if(isLocked) {
+            // unlock the view if the pause has been called from the notification action
+            onViewUnlocked();
+        }
+
+        // let the runService know the run is paused
+        runService.setRunning(false);
+
+        // announce the run pausing
+        view.speak("Run paused");
+
+        // update the notification action to reflect the current run state
+        view.setNotificationActionResume();
+
+        // hide the pause and lock buttons, display the start button
+        view.hideButtonLock();
+        view.hideButtonPause();
+        view.showButtonStart();
+
+        // set notification text to reflect the current state
+        view.setNotificationContentTitle("Paused");
+    }
+
     // tell model to start requesting location updates and the view to start a Runnable
     @Override
     public void onButtonStartPressed() {
+        // give the option to lock the view now they're running
+        view.showButtonLock();
+
         if(timeElapsed == 0) {
+            // give the option to stop the run now it is started
+            view.showButtonStop();
+
             // announce the run starting
             view.speak("Run started");
 
@@ -189,46 +254,12 @@ public class RunPresenter implements RunContract.Presenter {
             view.setNotificationContentTitle("Running");
         }
 
-        // tint the unlock icon
-        view.tintIconUnlock();
-
-        // enable the SeekBar
-        view.enableSeekBar();
-
-        // enabled the stop button
-        view.enableButtonsStartPauseStop();
-
         // let the runService know the user is currently running
         runService.setRunning(true);
 
         // hide the start button and display the pause button, disable the stop button
         view.hideButtonStart();
         view.showButtonPause();
-    }
-
-    // tell model to displayDialogEndRun requesting location updates and the view to not post another Runnable
-    @Override
-    public void onButtonPausePressed() {
-        // let the runService know the run is paused
-        runService.setRunning(false);
-
-        // announce the run pausing
-        view.speak("Run paused");
-
-        view.setNotificationActionResume();
-
-        // disable the SeekBar and fade associated ImageView objects
-        view.disableSeekBar();
-        view.fadeIconLock();
-        view.fadeIconUnlock();
-
-        // hide the pause button and display the start button, setting the start button text to resume
-        view.hideButtonPause();
-        view.showButtonStart();
-        view.setButtonStartText();
-
-        // set notification text to reflect the current state
-        view.setNotificationContentTitle("Paused");
     }
 
     // end the view Activity
@@ -240,17 +271,13 @@ public class RunPresenter implements RunContract.Presenter {
         // announce the run stopping
         view.speak("Stopping run. ");
 
+        // update the notification action to reflect the run state
         view.setNotificationActionResume();
 
-        // disable the SeekBar and fade associated ImageView objects
-        view.disableSeekBar();
-        view.fadeIconLock();
-        view.fadeIconUnlock();
-
-        // hide the pause button and display the start button, setting the start button text to resume
+        // hide the pause and lock buttons, display the start button
+        view.hideButtonLock();
         view.hideButtonPause();
         view.showButtonStart();
-        view.setButtonStartText();
 
         // set notification text to reflect the current state
         view.setNotificationContentTitle("Paused");
@@ -318,30 +345,26 @@ public class RunPresenter implements RunContract.Presenter {
     }
 
     @Override
-    public void onSeekBarChanged() {
-        if(view.getSeekBarProgress() > 65) {
-            // set the progress to 100
-            view.setSeekBarProgress(100);
+    public void onViewUnlocked() {
+        isLocked = false;
 
-            // update icons to reflect SeekBar state
-            view.tintIconLock();
-            view.fadeIconUnlock();
+        // hide views used in unlocking
+        view.hideButtonUnlock();
+        view.hideIVUnlockCircle();
 
-            // lock the controls, keep screen turned on
-            view.disableButtonsStartPauseStop();
-            view.setScreenTimeoutNone();
-        } else {
-            // set the progress to 0
-            view.setSeekBarProgress(0);
+        // show buttons for controlling an active run
+        view.showButtonPause();
+        view.showButtonStop();
+        view.showButtonLock();
 
-            // update icons to reflect SeekBar state
-            view.fadeIconLock();
-            view.tintIconUnlock();
+        view.showButtonAudioDisable();
+        view.showButtonAudioEnable();
 
-            // unlock the controls, reset screen timeout to default
-            view.enableButtonsStartPauseStop();
-            view.setScreenTimeoutDefault();
-        }
+        // set the scale on buttonUnlock back to default
+        view.setButtonUnlockDefaultScale();
+
+        // set the default screen timeout
+        view.setScreenTimeoutDefault();
     }
 
     // determines what color to tint the GPS icon based on the value of currentAccuracy

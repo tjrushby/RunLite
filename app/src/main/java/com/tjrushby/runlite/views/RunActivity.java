@@ -1,6 +1,8 @@
 package com.tjrushby.runlite.views;
 
 import android.Manifest;
+import android.animation.Animator;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -24,10 +26,10 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.AppCompatImageView;
 import android.support.v7.widget.Toolbar;
 import android.util.TypedValue;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
-import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -38,8 +40,6 @@ import com.tjrushby.runlite.injection.modules.RunActivityContextModule;
 import com.tjrushby.runlite.injection.modules.RunActivityModule;
 import com.tjrushby.runlite.services.AudioCueService;
 import com.tjrushby.runlite.services.RunService;
-import com.tjrushby.runlite.util.SeekBarAnimation;
-import com.tjrushby.runlite.util.ThumbOnlySeekBar;
 
 import javax.inject.Inject;
 
@@ -50,22 +50,9 @@ import butterknife.OnClick;
 import static android.support.v4.app.NotificationCompat.VISIBILITY_PUBLIC;
 
 public class RunActivity extends BaseActivity
-        implements RunContract.Activity, ThumbOnlySeekBar.OnSeekBarChangeListener {
+        implements RunContract.Activity, Animator.AnimatorListener, View.OnTouchListener {
+
     public static final int REQUEST_HIGH_ACCURACY_GPS = 254;
-
-    private static final int REQUEST_PERMISSIONS = 255;
-
-    private static final int NOTIFICATION_ID = 666;
-
-    private static final String CHANNEL_ID = "1";
-
-    private final String[] permissions = {
-            Manifest.permission.ACCESS_FINE_LOCATION,
-            Manifest.permission.ACCESS_NETWORK_STATE,
-            Manifest.permission.INTERNET
-    };
-
-    private BroadcastReceiver receiver;
 
     @Inject
     protected Handler handler;
@@ -90,24 +77,25 @@ public class RunActivity extends BaseActivity
     @Inject
     protected TypedValue typedValue;
 
-    private Runnable tick;
+    @BindView(R.id.ivLocationAccuracy)
+    protected AppCompatImageView ivLocationAccuracy;
+    @BindView(R.id.ivUnlockCircle)
+    protected AppCompatImageView ivUnlockCircle;
 
-    @BindView(R.id.ivAccuracy)
-    protected AppCompatImageView ivAccuracy;
-    @BindView(R.id.ivLock)
-    protected AppCompatImageView ivLock;
-    @BindView(R.id.ivUnlock)
-    protected AppCompatImageView ivUnlock;
-
-    @BindView(R.id.sbLock)
-    protected ThumbOnlySeekBar sbLock;
-
+    @BindView(R.id.buttonAudioDisable)
+    protected Button buttonAudioDisable;
+    @BindView(R.id.buttonAudioEnable)
+    protected Button buttonAudioEnable;
+    @BindView(R.id.buttonLock)
+    protected Button buttonLock;
     @BindView(R.id.buttonPause)
     protected Button buttonPause;
     @BindView(R.id.buttonStart)
     protected Button buttonStart;
     @BindView(R.id.buttonStop)
     protected Button buttonStop;
+    @BindView(R.id.buttonUnlock)
+    protected Button buttonUnlock;
 
     @BindView(R.id.tvDistance)
     protected TextView tvDistance;
@@ -115,18 +103,33 @@ public class RunActivity extends BaseActivity
     protected TextView tvAveragePace;
     @BindView(R.id.tvTime)
     protected TextView tvTime;
-    @BindView(R.id.tvDistanceUnit)
-    protected TextView tvDistanceUnit;
-    @BindView(R.id.tvPaceUnit)
-    protected TextView tvPaceUnit;
 
     @BindView(R.id.toolbar)
     protected Toolbar toolbar;
 
+    private static final int REQUEST_PERMISSIONS = 255;
+
+    private static final int NOTIFICATION_ID = 666;
+
+    private static final String CHANNEL_ID = "1";
+
+    private final String[] permissions = {
+            Manifest.permission.ACCESS_FINE_LOCATION,
+            Manifest.permission.ACCESS_NETWORK_STATE,
+            Manifest.permission.INTERNET
+    };
+
+    private float buttonUnlockDefaultScaleX;
+    private float buttonUnlockDefaultScaleY;
+
+    private BroadcastReceiver receiver;
+    private Runnable tick;
+
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_running);
+        setContentView(R.layout.activity_run);
         ButterKnife.bind(this);
 
         App.getAppComponent()
@@ -192,6 +195,7 @@ public class RunActivity extends BaseActivity
                         PendingIntent.FLAG_UPDATE_CURRENT)
         );
 
+        // add the actions to the notification
         notifBuilder.addAction(actionPause);
         notifBuilder.addAction(actionStop);
 
@@ -215,7 +219,10 @@ public class RunActivity extends BaseActivity
         registerReceiver(receiver, new IntentFilter(getString(R.string.notification_action_pause)));
         registerReceiver(receiver, new IntentFilter(getString(R.string.notification_action_resume)));
 
-        sbLock.setOnSeekBarChangeListener(this);
+        // get buttonUnlock default scales for resizing later on, set listener
+        buttonUnlockDefaultScaleY = buttonUnlock.getScaleY();
+        buttonUnlockDefaultScaleX = buttonUnlock.getScaleX();
+        buttonUnlock.setOnTouchListener(this);
 
         // define runnable for timer
         tick = () -> presenter.onTick();
@@ -276,14 +283,19 @@ public class RunActivity extends BaseActivity
         presenter.onBackPressed();
     }
 
-    @OnClick(R.id.buttonStart)
-    public void buttonStartClicked() {
-        presenter.onButtonStartPressed();
+    @OnClick(R.id.buttonLock)
+    public void buttonLockClicked() {
+        presenter.onButtonLockPressed();
     }
 
     @OnClick(R.id.buttonPause)
     public void buttonPauseClicked() {
         presenter.onButtonPausePressed();
+    }
+
+    @OnClick(R.id.buttonStart)
+    public void buttonStartClicked() {
+        presenter.onButtonStartPressed();
     }
 
     @OnClick(R.id.buttonStop)
@@ -298,7 +310,8 @@ public class RunActivity extends BaseActivity
 
     @Override
     public void startDetailsActivity(String runId) {
-        startActivity(new Intent(this, DetailsActivity.class).putExtra("runId", runId));
+        startActivity(new Intent(this, DetailsActivity.class)
+                .putExtra("runId", runId));
         this.finish();
     }
 
@@ -431,27 +444,55 @@ public class RunActivity extends BaseActivity
     }
 
     @Override
-    public void disableSeekBar() {
-        sbLock.setEnabled(false);
+    public void animateButtonUnlockScaleUp() {
+        // set a listener for this animation so that if it completes we can tell the presenter
+        buttonUnlock.animate().setListener(this);
+
+        // animate the up-scaling
+        buttonUnlock.animate().scaleXBy(1f).setDuration(750).start();
+        buttonUnlock.animate().scaleYBy(1f).setDuration(750).start();
     }
 
     @Override
-    public void enableSeekBar() {
-        sbLock.setEnabled(true);
+    public void animateButtonUnlockScaleDown() {
+        // remove the listener for this animation as cancelling still calls onAnimationEnd
+        buttonUnlock.animate().setListener(null);
+
+        // animate the down-scaling
+        buttonUnlock.animate().scaleX(buttonUnlockDefaultScaleX)
+                .setDuration(75).start();
+        buttonUnlock.animate().scaleY(buttonUnlockDefaultScaleY)
+                .setDuration(75).start();
     }
 
     @Override
-    public void disableButtonsStartPauseStop() {
-        buttonStart.setEnabled(false);
-        buttonPause.setEnabled(false);
-        buttonStop.setEnabled(false);
+    public void hideButtonAudioDisable() {
+        buttonAudioDisable.setVisibility(View.GONE);
     }
 
     @Override
-    public void enableButtonsStartPauseStop() {
-        buttonStart.setEnabled(true);
-        buttonPause.setEnabled(true);
-        buttonStop.setEnabled(true);
+    public void showButtonAudioDisable() {
+        buttonAudioDisable.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void hideButtonAudioEnable() {
+        buttonAudioEnable.setVisibility(View.INVISIBLE);
+    }
+
+    @Override
+    public void showButtonAudioEnable() {
+        buttonAudioEnable.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void hideButtonLock() {
+        buttonLock.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void showButtonLock() {
+        buttonLock.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -475,54 +516,54 @@ public class RunActivity extends BaseActivity
     }
 
     @Override
+    public void hideButtonStop() {
+        buttonStop.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void showButtonStop() {
+        buttonStop.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void hideButtonUnlock() {
+        buttonUnlock.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void showButtonUnlock() {
+        buttonUnlock.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void hideIVUnlockCircle() {
+        ivUnlockCircle.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void showIVUnlockCircle() {
+        ivUnlockCircle.setVisibility(View.VISIBLE);
+    }
+
+    @Override
     public void tintIconGPSAverage() {
-        ImageViewCompat.setImageTintList(ivAccuracy,
+        ImageViewCompat.setImageTintList(ivLocationAccuracy,
                 ColorStateList.valueOf(ContextCompat.getColor(this, R.color.colorGPSAverage)
                 ));
     }
 
     @Override
     public void tintIconGPSBad() {
-        ImageViewCompat.setImageTintList(ivAccuracy,
+        ImageViewCompat.setImageTintList(ivLocationAccuracy,
                 ColorStateList.valueOf(ContextCompat.getColor(this, R.color.colorGPSBad)
                 ));
     }
 
     @Override
     public void tintIconGPSGood() {
-        ImageViewCompat.setImageTintList(ivAccuracy,
+        ImageViewCompat.setImageTintList(ivLocationAccuracy,
                 ColorStateList.valueOf(ContextCompat.getColor(this, R.color.colorGPSGood)
                 ));
-    }
-
-    @Override
-    public void fadeIconLock() {
-        ImageViewCompat.setImageTintList(ivLock,
-                ColorStateList.valueOf(ContextCompat.getColor(
-                        this,
-                        R.color.common_google_signin_btn_text_light_disabled)
-                )
-        );
-    }
-
-    @Override
-    public void tintIconLock() {
-        ImageViewCompat.setImageTintList(ivLock, ColorStateList.valueOf(typedValue.data));
-    }
-
-    @Override
-    public void fadeIconUnlock() {
-        ImageViewCompat.setImageTintList(ivUnlock,
-                ColorStateList.valueOf(ContextCompat.getColor(
-                        this,
-                        R.color.common_google_signin_btn_text_light_disabled)
-                )
-        );
-    }
-
-    @Override
-    public void tintIconUnlock() {
-        ImageViewCompat.setImageTintList(ivUnlock, ColorStateList.valueOf(typedValue.data));
     }
 
     @Override
@@ -548,8 +589,9 @@ public class RunActivity extends BaseActivity
     }
 
     @Override
-    public void setButtonStartText() {
-        buttonStart.setText(R.string.button_resume);
+    public void setButtonUnlockDefaultScale() {
+        buttonUnlock.setScaleX(buttonUnlockDefaultScaleX);
+        buttonUnlock.setScaleY(buttonUnlockDefaultScaleY);
     }
 
     @Override
@@ -565,24 +607,6 @@ public class RunActivity extends BaseActivity
     @Override
     public int getGPSAccuracyGoodThreshold() {
         return App.GPS_ACCURACY_GOOD_THRESHOLD;
-    }
-
-    @Override
-    public int getSeekBarProgress() {
-        return sbLock.getProgress();
-    }
-
-    @Override
-    public void setSeekBarProgress(int newProgress) {
-        SeekBarAnimation animation = new SeekBarAnimation(sbLock, sbLock.getProgress(), newProgress);
-        animation.setDuration(75);
-        sbLock.startAnimation(animation);
-    }
-
-    @Override
-    public void setTextViewsDistanceUnit(String distanceUnitsString) {
-        tvDistanceUnit.setText(distanceUnitsString);
-        tvPaceUnit.setText("Mins/" + distanceUnitsString);
     }
 
     @Override
@@ -606,14 +630,43 @@ public class RunActivity extends BaseActivity
     }
 
     @Override
-    public void onProgressChanged(SeekBar seekBar, int i, boolean b) {}
+    public void onAnimationStart(Animator animator) {
+
+    }
 
     @Override
-    public void onStartTrackingTouch(SeekBar seekBar) {}
+    public void onAnimationEnd(Animator animator) {
+        // remove the listener for when the button is resized after the animation is complete
+        if(!animator.getListeners().isEmpty()) {
+            animator.removeListener(this);
+        }
+
+        presenter.onViewUnlocked();
+    }
 
     @Override
-    public void onStopTrackingTouch(SeekBar seekBar) {
-        presenter.onSeekBarChanged();
+    public void onAnimationCancel(Animator animator) {
+
+    }
+
+    @Override
+    public void onAnimationRepeat(Animator animator) {
+
+    }
+
+    @Override
+    public boolean onTouch(View view, MotionEvent motionEvent) {
+        switch (motionEvent.getAction()) {
+            case MotionEvent.ACTION_DOWN:
+                presenter.onButtonUnlockActionDown();
+                break;
+
+            case MotionEvent.ACTION_UP:
+                presenter.onButtonUnlockActionUp();
+                break;
+        }
+
+        return false;
     }
 
     private void createNotificationChannel() {

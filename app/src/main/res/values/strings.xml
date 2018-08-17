@@ -45,12 +45,12 @@
     <string name="toast_no_save_distance_low">Distance travelled too low. Run not saved</string>
     <string name="toast_run_saved">Run saved</string>
     <string name="toast_run_deleted">Run deleted</string>
-    <string name="toast_run_not_found">Error. Could not find find run</string>
+    <string name="toast_run_not_found">Error. Could not find run</string>
     <string name="toast_run_updated">Changes saved</string>
     <string name="tv_default_date_time">01/01/2017, 12:00</string>
     <string name="tv_default_distance_travelled">0.00 km</string>
     <string name="tv_default_number_of_runs">0</string>
-    <string name="tv_default_pace">--:--</string>
+    <string name="tv_default_pace">-- : --</string>
     <string name="tv_default_time_elapsed">00:00</string>
     <string name="tv_bullet">\u2022</string>
     <string name="tv_no_runs">

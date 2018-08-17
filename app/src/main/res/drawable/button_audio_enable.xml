@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item>
+        <shape
+            android:shape="oval"
+            android:thickness="4dp"
+            android:useLevel="false">
+            <solid android:color="@color/primaryColor" />
+            <size
+                android:width="@dimen/seek_thumb_height"
+                android:height="@dimen/seek_thumb_height" />
+        </shape>
+    </item>
+    <item
+        android:drawable="@drawable/ic_volume_up_light"
+        android:bottom="15dp"
+        android:left="15dp"
+        android:right="15dp"
+        android:top="15dp" />
+</layer-list>

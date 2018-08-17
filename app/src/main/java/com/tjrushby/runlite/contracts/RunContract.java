@@ -40,13 +40,21 @@ public interface RunContract {
 
         void setScreenTimeoutNone();
 
-        void disableSeekBar();
+        void animateButtonUnlockScaleUp();
 
-        void enableSeekBar();
+        void animateButtonUnlockScaleDown();
 
-        void disableButtonsStartPauseStop();
+        void hideButtonAudioDisable();
 
-        void enableButtonsStartPauseStop();
+        void showButtonAudioDisable();
+
+        void hideButtonAudioEnable();
+
+        void showButtonAudioEnable();
+
+        void hideButtonLock();
+
+        void showButtonLock();
 
         void hideButtonPause();
 
@@ -56,19 +64,23 @@ public interface RunContract {
 
         void showButtonStart();
 
+        void hideButtonStop();
+
+        void showButtonStop();
+
+        void hideButtonUnlock();
+
+        void showButtonUnlock();
+
+        void hideIVUnlockCircle();
+
+        void showIVUnlockCircle();
+
         void tintIconGPSAverage();
 
         void tintIconGPSBad();
 
         void tintIconGPSGood();
-
-        void fadeIconLock();
-
-        void tintIconLock();
-
-        void fadeIconUnlock();
-
-        void tintIconUnlock();
 
         boolean isAudioCueEnabled();
 
@@ -78,19 +90,13 @@ public interface RunContract {
 
         int getAudioCueTimeInterval();
 
-        void setButtonStartText();
+        void setButtonUnlockDefaultScale();
 
         void setColorAccentTypedValue();
 
         int getGPSAccuracyBadThreshold();
 
         int getGPSAccuracyGoodThreshold();
-
-        int getSeekBarProgress();
-
-        void setSeekBarProgress(int progress);
-
-        void setTextViewsDistanceUnit(String distanceUnitsString);
 
         void setTextViewDistance(String distanceTravelled);
 
@@ -112,6 +118,12 @@ public interface RunContract {
 
         void onTick();
 
+        void onButtonLockPressed();
+
+        void onButtonUnlockActionDown();
+
+        void onButtonUnlockActionUp();
+
         void onButtonStartPressed();
 
         void onButtonPausePressed();
@@ -126,7 +138,7 @@ public interface RunContract {
 
         void onDialogCancelRunYes();
 
-        void onSeekBarChanged();
+        void onViewUnlocked();
     }
 
     interface RunService {

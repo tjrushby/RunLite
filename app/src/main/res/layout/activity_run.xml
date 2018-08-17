@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:clipChildren="false"
+    android:fitsSystemWindows="true"
+    tools:context=".views.RunActivity">
+
+    <android.support.design.widget.AppBarLayout
+        android:id="@+id/appBarLayout"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:theme="@style/AppTheme.AppBarOverlay"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <include
+            android:id="@+id/toolbar"
+            layout="@layout/toolbar" />
+
+    </android.support.design.widget.AppBarLayout>
+
+    <android.support.constraint.Guideline
+        android:id="@+id/guidelineDetails"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.53" />
+
+    <!-- timer -->
+
+    <TextView
+        android:id="@+id/tvTime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/tv_default_time_elapsed"
+        android:textAlignment="center"
+        android:textSize="@dimen/text_size_timer"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/ivLocationAccuracy" />
+
+    <!-- location accuracy -->
+
+    <android.support.v7.widget.AppCompatImageView
+        android:id="@+id/ivLocationAccuracy"
+        android:layout_width="36dp"
+        android:layout_height="36dp"
+        android:layout_margin="@dimen/fab_margin"
+        android:scaleType="fitCenter"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/appBarLayout"
+        app:srcCompat="@drawable/ic_gps_fixed_24dp" />
+
+    <android.support.v7.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="310dp"
+        app:cardBackgroundColor="@color/primaryDarkColor"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/guidelineDetails">
+
+        <android.support.constraint.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <!-- run details -->
+
+            <TextView
+                android:id="@+id/tvDistance"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:drawableTop="@drawable/ic_location_light"
+                android:padding="@dimen/fab_margin"
+                android:text="@string/tv_default_distance_travelled"
+                android:textAlignment="center"
+                android:textColor="@android:color/white"
+                android:textSize="@dimen/text_size_sub_details"
+                app:layout_constraintBottom_toTopOf="@id/buttonAudioEnable"
+                app:layout_constraintEnd_toStartOf="@id/tvAveragePace"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/tvAveragePace"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:drawableTop="@drawable/ic_av_timer_light"
+                android:padding="@dimen/fab_margin"
+                android:text="@string/tv_default_pace"
+                android:textAlignment="center"
+                android:textColor="@android:color/white"
+                android:textSize="@dimen/text_size_sub_details"
+                app:layout_constraintBottom_toTopOf="@id/buttonAudioEnable"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/tvDistance"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <!-- run controls -->
+
+            <Button
+                android:id="@+id/buttonAudioEnable"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_marginBottom="@dimen/fab_margin"
+                android:background="@drawable/button_audio_enable"
+                app:layout_constraintBottom_toTopOf="@id/buttonStart"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
+
+            <Button
+                android:id="@+id/buttonAudioDisable"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_marginBottom="@dimen/fab_margin"
+                android:background="@drawable/button_audio_disable"
+                app:layout_constraintBottom_toTopOf="@id/buttonStart"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
+
+            <Button
+                android:id="@+id/buttonStart"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_marginBottom="@dimen/fab_margin"
+                android:background="@drawable/button_start"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
+
+            <Button
+                android:id="@+id/buttonPause"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_marginBottom="@dimen/fab_margin"
+                android:background="@drawable/button_pause"
+                android:visibility="invisible"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
+
+            <Button
+                android:id="@+id/buttonUnlock"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_marginBottom="@dimen/fab_margin"
+                android:background="@drawable/button_unlock"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
+
+            <android.support.v7.widget.AppCompatImageView
+                android:id="@+id/ivUnlockCircle"
+                android:layout_width="200dp"
+                android:layout_height="200dp"
+                android:background="@drawable/unlock_circle"
+                android:visibility="gone"
+                app:layout_constraintTop_toTopOf="@id/buttonUnlock"
+                app:layout_constraintBottom_toBottomOf="@id/buttonUnlock"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
+
+            <Button
+                android:id="@+id/buttonStop"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_marginStart="@dimen/fab_margin"
+                android:background="@drawable/button_stop"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="@id/buttonStart"
+                app:layout_constraintStart_toEndOf="@id/buttonStart"
+                app:layout_constraintTop_toTopOf="@id/buttonStart" />
+
+            <Button
+                android:id="@+id/buttonLock"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_marginEnd="@dimen/fab_margin"
+                android:background="@drawable/button_lock"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="@id/buttonStart"
+                app:layout_constraintEnd_toStartOf="@id/buttonStart"
+                app:layout_constraintTop_toTopOf="@id/buttonStart" />
+
+        </android.support.constraint.ConstraintLayout>
+
+    </android.support.v7.widget.CardView>
+
+</android.support.constraint.ConstraintLayout>
