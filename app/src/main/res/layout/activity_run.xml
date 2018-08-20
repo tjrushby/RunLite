@@ -128,7 +128,8 @@
                 android:layout_width="50dp"
                 android:layout_height="50dp"
                 android:layout_marginBottom="@dimen/fab_margin"
-                android:background="@drawable/button_audio_enable"
+                android:background="@drawable/button_audio_disable"
+                android:visibility="invisible"
                 app:layout_constraintBottom_toTopOf="@id/buttonStart"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent" />
@@ -138,7 +139,7 @@
                 android:layout_width="50dp"
                 android:layout_height="50dp"
                 android:layout_marginBottom="@dimen/fab_margin"
-                android:background="@drawable/button_audio_disable"
+                android:background="@drawable/button_audio_enable"
                 app:layout_constraintBottom_toTopOf="@id/buttonStart"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent" />

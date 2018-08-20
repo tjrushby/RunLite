@@ -287,6 +287,16 @@ public class RunActivity extends BaseActivity
         presenter.onBackPressed();
     }
 
+    @OnClick(R.id.buttonAudioDisable)
+    public void buttonAudioDisableClicked() {
+        presenter.onButtonAudioDisablePressed();
+    }
+
+    @OnClick(R.id.buttonAudioEnable)
+    public void buttonAudioEnableClicked() {
+        presenter.onButtonAudioEnablePressed();
+    }
+
     @OnClick(R.id.buttonLock)
     public void buttonLockClicked() {
         presenter.onButtonLockPressed();
@@ -338,6 +348,15 @@ public class RunActivity extends BaseActivity
     @Override
     public void pauseTick() {
         handler.removeCallbacks(tick);
+    }
+
+    @Override
+    public void saveAudioCueSharedPrefs(boolean isEnabled) {
+        super.sharedPrefs.edit()
+                .putBoolean(
+                        getString(R.string.pref_audio_cue_enabled_key),
+                        isEnabled)
+                .apply();
     }
 
     @Override
@@ -471,7 +490,7 @@ public class RunActivity extends BaseActivity
 
     @Override
     public void hideButtonAudioDisable() {
-        buttonAudioDisable.setVisibility(View.GONE);
+        buttonAudioDisable.setVisibility(View.INVISIBLE);
     }
 
     @Override

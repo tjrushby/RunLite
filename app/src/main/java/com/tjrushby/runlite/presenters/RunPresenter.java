@@ -11,6 +11,8 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import timber.log.Timber;
+
 public class RunPresenter implements RunContract.Presenter {
     public int GPS_ACCURACY_BAD_THRESHOLD;
     public int GPS_ACCURACY_GOOD_THRESHOLD;
@@ -63,11 +65,16 @@ public class RunPresenter implements RunContract.Presenter {
 
         // get audio cue information
         isAudioCueEnabled = view.isAudioCueEnabled();
+        audioCueType = view.getAudioCueType();
+        audioCueDistanceInterval = view.getAudioCueDistanceInterval();
+        audioCueTimeInterval = view.getAudioCueTimeInterval();
 
         if(isAudioCueEnabled) {
-            audioCueType = view.getAudioCueType();
-            audioCueDistanceInterval = view.getAudioCueDistanceInterval();
-            audioCueTimeInterval = view.getAudioCueTimeInterval();
+            view.hideButtonAudioEnable();
+            view.showButtonAudioDisable();
+        } else {
+            view.hideButtonAudioDisable();
+            view.showButtonAudioEnable();
         }
     }
 
@@ -90,9 +97,7 @@ public class RunPresenter implements RunContract.Presenter {
                 // if the run is currently in progress then confirm the user wants to cancel it
                 view.displayDialogCancelRun();
             } else {
-                runService.stopLocationUpdates();
-                view.removeNotification();
-                view.endActivity();
+                onDialogCancelRunYes();
             }
         }
     }
@@ -167,6 +172,26 @@ public class RunPresenter implements RunContract.Presenter {
     }
 
     @Override
+    public void onButtonAudioDisablePressed() {
+        // disable audio cues
+        isAudioCueEnabled = false;
+
+        // hide disable button, show enable button
+        view.hideButtonAudioDisable();
+        view.showButtonAudioEnable();
+    }
+
+    @Override
+    public void onButtonAudioEnablePressed() {
+        // enable audio cues
+        isAudioCueEnabled = true;
+
+        // hide enable button, show disable button
+        view.hideButtonAudioEnable();
+        view.showButtonAudioDisable();
+    }
+
+    @Override
     public void onButtonLockPressed() {
         isLocked = true;
 
@@ -211,8 +236,10 @@ public class RunPresenter implements RunContract.Presenter {
         // let the runService know the run is paused
         runService.setRunning(false);
 
-        // announce the run pausing
-        view.speak("Run paused");
+        if(isAudioCueEnabled) {
+            // announce the run pausing
+            view.speak("Run paused");
+        }
 
         // update the notification action to reflect the current run state
         view.setNotificationActionResume();
@@ -236,16 +263,20 @@ public class RunPresenter implements RunContract.Presenter {
             // give the option to stop the run now it is started
             view.showButtonStop();
 
-            // announce the run starting
-            view.speak("Run started");
+            if(isAudioCueEnabled) {
+                // announce the run starting
+                view.speak("Run started");
+            }
 
             // display a notification
             view.displayNotification();
         } else {
             // if timeElapsed > 0 then the run has been paused and is now being resumed
 
-            // announce the run resuming
-            view.speak("Run resumed");
+            if(isAudioCueEnabled) {
+                // announce the run resuming
+                view.speak("Run resumed");
+            }
 
             // update the notification action so the user can now pause the run from it
             view.setNotificationActionPause();
@@ -268,8 +299,10 @@ public class RunPresenter implements RunContract.Presenter {
         // let the runService know the run is paused
         runService.setRunning(false);
 
-        // announce the run stopping
-        view.speak("Stopping run. ");
+        if(isAudioCueEnabled) {
+            // announce the run stopping
+            view.speak("Stopping run. ");
+        }
 
         // update the notification action to reflect the run state
         view.setNotificationActionResume();
@@ -298,8 +331,17 @@ public class RunPresenter implements RunContract.Presenter {
 
     @Override
     public void onDialogEndRunYes() {
-        // announce the run ending
-        view.speak("Run completed. ");
+        runService.stopLocationUpdates();
+        view.pauseTick();
+        view.removeNotification();
+
+        if(isAudioCueEnabled) {
+            // announce the run ending
+            view.speak("Run completed. ");
+        }
+
+        // save isAudioCueEnabled value to shared preferences
+        view.saveAudioCueSharedPrefs(isAudioCueEnabled);
 
         if(model.getDistanceTravelled() > 0.01) {
             model.setTimeElapsed(timeElapsed);
@@ -319,29 +361,30 @@ public class RunPresenter implements RunContract.Presenter {
 
             runRepository.saveRun(
                     (Run) model, runLatLngList,
-                    runId -> view.startDetailsActivity(Long.toString(runId))
+                    runId -> {
+                        view.startDetailsActivity(Long.toString(runId));
+                        view.displayToastRunSaved();
+                    }
             );
-
-            view.displayToastRunSaved();
         } else {
             view.displayToastRunNotSaved();
-            view.pauseTick();
             view.endActivity();
         }
-
-        view.removeNotification();
-        runService.stopLocationUpdates();
     }
 
     @Override
     public void onDialogCancelRunYes() {
-        // announce the run being cancelled
-        view.speak("Run cancelled. ");
+        if(isAudioCueEnabled) {
+            // announce the run being cancelled
+            view.speak("Run cancelled. ");
+        }
+
+        runService.stopLocationUpdates();
 
         view.pauseTick();
-        view.endActivity();
+        view.saveAudioCueSharedPrefs(isAudioCueEnabled);
         view.removeNotification();
-        runService.stopLocationUpdates();
+        view.endActivity();
     }
 
     @Override

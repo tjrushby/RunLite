@@ -14,6 +14,8 @@ public interface RunContract {
 
         void pauseTick();
 
+        void saveAudioCueSharedPrefs(boolean isEnabled);
+
         void displayNotification();
 
         void removeNotification();
@@ -123,6 +125,10 @@ public interface RunContract {
         void onBackPressed();
 
         void onTick();
+
+        void onButtonAudioDisablePressed();
+
+        void onButtonAudioEnablePressed();
 
         void onButtonLockPressed();
 
