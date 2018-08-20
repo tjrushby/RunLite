@@ -72,15 +72,21 @@ public interface RunContract {
 
         void showButtonUnlock();
 
+        void hideIVLocationAverage();
+
+        void showIVLocationAverage();
+
+        void hideIVLocationBad();
+
+        void showIVLocationBad();
+
+        void hideIVLocationGood();
+
+        void showIVLocationGood();
+
         void hideIVUnlockCircle();
 
         void showIVUnlockCircle();
-
-        void tintIconGPSAverage();
-
-        void tintIconGPSBad();
-
-        void tintIconGPSGood();
 
         boolean isAudioCueEnabled();
 

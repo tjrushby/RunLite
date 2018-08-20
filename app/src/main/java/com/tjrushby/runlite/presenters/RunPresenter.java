@@ -371,14 +371,14 @@ public class RunPresenter implements RunContract.Presenter {
     private void determineGPSIconTint(double currentAccuracy) {
         if(currentAccuracy > GPS_ACCURACY_BAD_THRESHOLD) {
             // bad GPS accuracy
-            view.tintIconGPSBad();
+            view.showIVLocationBad();
         } else if(currentAccuracy > GPS_ACCURACY_GOOD_THRESHOLD &&
                 currentAccuracy <= GPS_ACCURACY_BAD_THRESHOLD) {
             // average GPS accuracy
-            view.tintIconGPSAverage();
+            view.showIVLocationAverage();
         } else if(currentAccuracy <= GPS_ACCURACY_GOOD_THRESHOLD) {
             // good GPS accuracy
-            view.tintIconGPSGood();
+            view.showIVLocationGood();
         }
     }
 

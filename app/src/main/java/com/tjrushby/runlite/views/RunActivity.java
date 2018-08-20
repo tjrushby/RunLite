@@ -77,8 +77,12 @@ public class RunActivity extends BaseActivity
     @Inject
     protected TypedValue typedValue;
 
-    @BindView(R.id.ivLocationAccuracy)
-    protected AppCompatImageView ivLocationAccuracy;
+    @BindView(R.id.ivLocationAverage)
+    protected AppCompatImageView ivLocationAverage;
+    @BindView(R.id.ivLocationBad)
+    protected AppCompatImageView ivLocationBad;
+    @BindView(R.id.ivLocationGood)
+    protected AppCompatImageView ivLocationGood;
     @BindView(R.id.ivUnlockCircle)
     protected AppCompatImageView ivUnlockCircle;
 
@@ -536,6 +540,45 @@ public class RunActivity extends BaseActivity
     }
 
     @Override
+    public void hideIVLocationAverage() {
+        ivLocationAverage.setVisibility(View.INVISIBLE);
+    }
+
+    @Override
+    public void showIVLocationAverage() {
+        hideIVLocationBad();
+        hideIVLocationGood();
+
+        ivLocationAverage.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void hideIVLocationBad() {
+        ivLocationBad.setVisibility(View.INVISIBLE);
+    }
+
+    @Override
+    public void showIVLocationBad() {
+        hideIVLocationAverage();
+        hideIVLocationGood();
+
+        ivLocationBad.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void hideIVLocationGood() {
+        ivLocationGood.setVisibility(View.INVISIBLE);
+    }
+
+    @Override
+    public void showIVLocationGood() {
+        hideIVLocationAverage();
+        hideIVLocationBad();
+
+        ivLocationGood.setVisibility(View.VISIBLE);
+    }
+
+    @Override
     public void hideIVUnlockCircle() {
         ivUnlockCircle.setVisibility(View.GONE);
     }
@@ -543,27 +586,6 @@ public class RunActivity extends BaseActivity
     @Override
     public void showIVUnlockCircle() {
         ivUnlockCircle.setVisibility(View.VISIBLE);
-    }
-
-    @Override
-    public void tintIconGPSAverage() {
-        ImageViewCompat.setImageTintList(ivLocationAccuracy,
-                ColorStateList.valueOf(ContextCompat.getColor(this, R.color.colorGPSAverage)
-                ));
-    }
-
-    @Override
-    public void tintIconGPSBad() {
-        ImageViewCompat.setImageTintList(ivLocationAccuracy,
-                ColorStateList.valueOf(ContextCompat.getColor(this, R.color.colorGPSBad)
-                ));
-    }
-
-    @Override
-    public void tintIconGPSGood() {
-        ImageViewCompat.setImageTintList(ivLocationAccuracy,
-                ColorStateList.valueOf(ContextCompat.getColor(this, R.color.colorGPSGood)
-                ));
     }
 
     @Override

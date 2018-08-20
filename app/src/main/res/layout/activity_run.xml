@@ -41,19 +41,42 @@
         android:textSize="@dimen/text_size_timer"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/ivLocationAccuracy" />
+        app:layout_constraintTop_toBottomOf="@id/ivLocationAverage" />
 
     <!-- location accuracy -->
 
     <android.support.v7.widget.AppCompatImageView
-        android:id="@+id/ivLocationAccuracy"
+        android:id="@+id/ivLocationAverage"
         android:layout_width="36dp"
         android:layout_height="36dp"
         android:layout_margin="@dimen/fab_margin"
         android:scaleType="fitCenter"
+        android:visibility="invisible"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/appBarLayout"
-        app:srcCompat="@drawable/ic_gps_fixed_24dp" />
+        app:srcCompat="@drawable/ic_gps_not_fixed" />
+
+    <android.support.v7.widget.AppCompatImageView
+        android:id="@+id/ivLocationBad"
+        android:layout_width="36dp"
+        android:layout_height="36dp"
+        android:layout_margin="@dimen/fab_margin"
+        android:scaleType="fitCenter"
+        android:visibility="invisible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/appBarLayout"
+        app:srcCompat="@drawable/ic_gps_off" />
+
+    <android.support.v7.widget.AppCompatImageView
+        android:id="@+id/ivLocationGood"
+        android:layout_width="36dp"
+        android:layout_height="36dp"
+        android:layout_margin="@dimen/fab_margin"
+        android:scaleType="fitCenter"
+        android:visibility="invisible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/appBarLayout"
+        app:srcCompat="@drawable/ic_gps_fixed" />
 
     <android.support.v7.widget.CardView
         android:layout_width="match_parent"
@@ -158,10 +181,10 @@
                 android:layout_height="200dp"
                 android:background="@drawable/unlock_circle"
                 android:visibility="gone"
-                app:layout_constraintTop_toTopOf="@id/buttonUnlock"
                 app:layout_constraintBottom_toBottomOf="@id/buttonUnlock"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent" />
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@id/buttonUnlock" />
 
             <Button
                 android:id="@+id/buttonStop"
