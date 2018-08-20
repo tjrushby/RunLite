@@ -22,7 +22,7 @@ public class AudioCueFocusRequestBuilder implements FocusRequestBuilder {
     @Override
     @TargetApi(26)
     public AudioFocusRequest buildAudioCueFocusRequest() {
-        return new android.media.AudioFocusRequest.Builder(AudioManager.AUDIOFOCUS_GAIN)
+        return new android.media.AudioFocusRequest.Builder(AudioManager.AUDIOFOCUS_GAIN_TRANSIENT_MAY_DUCK)
                 .setAudioAttributes(audioAttributes)
                 .setAcceptsDelayedFocusGain(false)
                 .setOnAudioFocusChangeListener(audioCueService)
