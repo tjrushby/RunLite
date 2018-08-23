@@ -1,22 +1,48 @@
-<resources xmlns:tools="http://schemas.android.com/tools">
+<resources xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <!-- Base application theme -->
     <style name="AppThemeLight" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="colorPrimary">@color/primaryColor</item>
         <item name="colorPrimaryDark">@color/primaryDarkColor</item>
         <item name="colorAccent">@color/secondaryColor</item>
+        <item name="card_background_color">@color/cardview_light_background</item>
         <item name="android:navigationBarColor" tools:targetApi="21">
             @android:color/transparent
         </item>
         <item name="android:windowTranslucentNavigation" tools:targetApi="19">true</item>
+        <item name="button_audio_disable">@drawable/button_audio_disable</item>
+        <item name="button_audio_enable">@drawable/button_audio_enable</item>
+        <item name="button_lock">@drawable/button_lock</item>
+        <item name="button_unlock">@drawable/button_unlock</item>
+        <item name="ic_av_timer">@drawable/ic_av_timer</item>
+        <item name="ic_location_on">@drawable/ic_location_on</item>
+        <item name="ic_run">@drawable/ic_run</item>
+        <item name="ic_timer">@drawable/ic_timer</item>
+        <item name="unlock_circle">@drawable/unlock_circle</item>
     </style>
 
     <!-- Dark application theme -->
     <style name="AppThemeDark" parent="Theme.AppCompat.NoActionBar">
+        <item name="colorPrimary">@color/darkPrimaryColor</item>
+        <item name="colorPrimaryDark">@color/darkPrimaryDarkColor</item>
+        <item name="colorAccent">@color/darkSecondaryColor</item>
+        <item name="android:colorBackground">@color/darkColorBackground</item>
+        <item name="colorBackgroundFloating">@color/darkColorBackground</item>
+        <item name="card_background_color">@color/darkCardBackgroundColor</item>
         <item name="android:navigationBarColor" tools:targetApi="21">
             @android:color/transparent
         </item>
         <item name="android:windowTranslucentNavigation" tools:targetApi="19">true</item>
+        <item name="button_audio_disable">@drawable/button_audio_disable_dark</item>
+        <item name="button_audio_enable">@drawable/button_audio_enable_dark</item>
+        <item name="button_lock">@drawable/button_lock_dark</item>
+        <item name="button_unlock">@drawable/button_unlock_dark</item>
+        <item name="ic_av_timer">@drawable/ic_av_timer_light</item>
+        <item name="ic_location_on">@drawable/ic_location_on_light</item>
+        <item name="ic_run">@drawable/ic_run_light</item>
+        <item name="ic_timer">@drawable/ic_timer_light</item>
+        <item name="unlock_circle">@drawable/unlock_circle_dark</item>
     </style>
 
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />

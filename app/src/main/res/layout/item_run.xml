@@ -4,7 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="3dp"
-    app:cardCornerRadius="1dp">
+    app:cardCornerRadius="1dp"
+    app:cardBackgroundColor="?card_background_color">
 
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
@@ -19,7 +20,7 @@
             android:layout_height="wrap_content"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/ic_run_black_24dp" />
+            app:srcCompat="?ic_run" />
 
         <TextView
             android:id="@+id/tvDateTime"

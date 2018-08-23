@@ -11,4 +11,10 @@
     <color name="colorGPSAverage">#FBC02D</color>
     <color name="colorGPSBad">#D32F2F</color>
     <color name="colorGPSGood">#388E3C</color>
+    <color name="darkPrimaryColor">#263238</color>
+    <color name="darkPrimaryLightColor">#4f5b62</color>
+    <color name="darkPrimaryDarkColor">#000a12</color>
+    <color name="darkSecondaryColor">#BF4E30</color>
+    <color name="darkCardBackgroundColor">#19212F</color>
+    <color name="darkColorBackground">#212D40</color>
 </resources>

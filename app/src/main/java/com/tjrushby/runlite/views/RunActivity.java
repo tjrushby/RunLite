@@ -12,7 +12,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
-import android.content.res.ColorStateList;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -20,8 +19,6 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
-import android.support.v4.content.ContextCompat;
-import android.support.v4.widget.ImageViewCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.AppCompatImageView;
 import android.support.v7.widget.Toolbar;
@@ -362,7 +359,7 @@ public class RunActivity extends BaseActivity
     @Override
     public void displayNotification() {
         notifBuilder
-                .setSmallIcon(R.drawable.ic_run_black_24dp)
+                .setSmallIcon(R.drawable.ic_run)
                 .setContentTitle(getString(R.string.notification_default_content_title))
                 .setContentText(getString(R.string.tv_default_time_elapsed))
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT)

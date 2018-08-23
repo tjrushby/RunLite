@@ -48,7 +48,7 @@
             android:layout_margin="@dimen/fab_margin"
             android:tint="@android:color/background_light"
             app:layout_anchorGravity="bottom|right"
-            app:srcCompat="@drawable/ic_run_black_24dp" />
+            app:srcCompat="@drawable/ic_run" />
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/recyclerView"
