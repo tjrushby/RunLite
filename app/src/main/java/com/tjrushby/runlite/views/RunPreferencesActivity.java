@@ -42,7 +42,7 @@ public class RunPreferencesActivity extends BaseActivity
         setSupportActionBar(toolbar);
         toolbar.setTitle(this.getTitle());
 
-        getFragmentManager().beginTransaction()
+        getSupportFragmentManager().beginTransaction()
                 .replace(R.id.frameLayout, new RunPreferencesFragment())
                 .commit();
     }

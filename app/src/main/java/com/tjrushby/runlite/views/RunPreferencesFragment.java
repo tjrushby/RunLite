@@ -3,9 +3,7 @@ package com.tjrushby.runlite.views;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.ListPreference;
-import android.preference.PreferenceFragment;
-import android.support.annotation.Nullable;
+import android.support.v7.preference.PreferenceFragmentCompat;
 
 import com.tjrushby.runlite.App;
 import com.tjrushby.runlite.R;
@@ -15,7 +13,7 @@ import com.tjrushby.runlite.util.StringFormatter;
 
 import javax.inject.Inject;
 
-public class RunPreferencesFragment extends PreferenceFragment
+public class RunPreferencesFragment extends PreferenceFragmentCompat
         implements RunPreferencesFragmentContract.Fragment,
         SharedPreferences.OnSharedPreferenceChangeListener {
     @Inject
@@ -26,12 +24,9 @@ public class RunPreferencesFragment extends PreferenceFragment
     private SharedPreferences sharedPrefs;
 
     @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
         addPreferencesFromResource(R.xml.fragment_run_preferences);
-
         sharedPrefs = getPreferenceManager().getSharedPreferences();
-
         presenter.onFragmentCreated();
     }
 
@@ -102,15 +97,24 @@ public class RunPreferencesFragment extends PreferenceFragment
 
     @Override
     public void setPrefAudioCueFrequencyDistanceUnits() {
+        // get the distance intervals
         CharSequence[] entries =
                 getResources().getStringArray(R.array.audio_cue_interval_distance_options);
 
+        // add the distance units as a suffix
         for (int i = 0; i < entries.length; i++) {
             entries[i] = entries[i] + " " + formatter.getDistanceUnitsString();
         }
 
-        ((ListPreference) findPreference(getString(R.string.pref_audio_cue_interval_distance_key)))
-                .setEntries(entries);
+        // set the entry options
+        android.support.v7.preference.ListPreference lp =
+                ((android.support.v7.preference.ListPreference)
+                        findPreference(getString(R.string.pref_audio_cue_interval_distance_key)));
+
+        lp.setEntries(entries);
+
+        // set the summary to reflect the change
+        lp.setSummary(lp.getValue() + " " + formatter.getDistanceUnitsString());
     }
 
     @Override

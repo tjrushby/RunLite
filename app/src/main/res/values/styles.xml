@@ -10,6 +10,7 @@
         <item name="android:navigationBarColor" tools:targetApi="21">
             @android:color/transparent
         </item>
+        <item name="preferenceTheme">@style/PreferenceThemeOverlay.v14.Material</item>
         <item name="android:windowTranslucentNavigation" tools:targetApi="19">true</item>
         <item name="button_audio_disable">@drawable/button_audio_disable</item>
         <item name="button_audio_enable">@drawable/button_audio_enable</item>
@@ -33,6 +34,7 @@
         <item name="android:navigationBarColor" tools:targetApi="21">
             @android:color/transparent
         </item>
+        <item name="preferenceTheme">@style/PreferenceThemeOverlay.v14.Material</item>
         <item name="android:windowTranslucentNavigation" tools:targetApi="19">true</item>
         <item name="button_audio_disable">@drawable/button_audio_disable_dark</item>
         <item name="button_audio_enable">@drawable/button_audio_enable_dark</item>
