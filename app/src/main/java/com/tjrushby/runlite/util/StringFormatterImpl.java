@@ -2,6 +2,7 @@ package com.tjrushby.runlite.util;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.preference.PreferenceManager;
 
 import com.tjrushby.runlite.R;
@@ -24,7 +25,16 @@ public class StringFormatterImpl implements StringFormatter {
     public StringFormatterImpl(Context context) {
         this.context = context;
         dfDistance = new DecimalFormat("#0.00");
-        dateFormat = new SimpleDateFormat("dd/MM/yy, kk:mm");
+
+        if(Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
+            // set locale for api level < 24
+            dateFormat = new SimpleDateFormat("dd/MM/yy, kk:mm",
+                    context.getResources().getConfiguration().locale);
+        } else {
+            // set locale for api level 24 or higher
+            dateFormat = new SimpleDateFormat("dd/MM/yy, kk:mm",
+                    context.getResources().getConfiguration().getLocales().get(0));
+        }
 
         sharedPrefs = PreferenceManager.getDefaultSharedPreferences(context);
         getDistanceUnitsFromSharedPreferences();
