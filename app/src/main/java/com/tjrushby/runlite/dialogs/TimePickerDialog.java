@@ -2,9 +2,9 @@ package com.tjrushby.runlite.dialogs;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.app.DialogFragment;
 import android.content.Context;
 import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.NumberPicker;
@@ -23,13 +23,12 @@ public class TimePickerDialog extends DialogFragment {
     @BindView(R.id.numberPickerSeconds)
     protected NumberPicker numberPickerSeconds;
 
-    // todo need to inject this somehow, probably via bundle?
     private AlertDialog.Builder builder;
     private TimePickerDialogListener listener;
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder = new AlertDialog.Builder(getActivity());
         LayoutInflater inflater = getActivity().getLayoutInflater();
 
         View view = inflater.inflate(R.layout.dialog_number_picker, null);
@@ -93,7 +92,7 @@ public class TimePickerDialog extends DialogFragment {
         } catch (ClassCastException e) {
             throw new ClassCastException(
                     getActivity().toString() +
-                    " must implement TimePickerDialogListener"
+                            " must implement TimePickerDialogListener"
             );
         }
     }

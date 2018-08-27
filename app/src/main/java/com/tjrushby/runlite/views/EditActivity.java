@@ -159,7 +159,7 @@ public class EditActivity extends BaseActivity
         bundle.putString("timeElapsed", etTimeElapsed.getText().toString());
 
         timePickerDialog.setArguments(bundle);
-        timePickerDialog.show(getFragmentManager(), null);
+        timePickerDialog.show(getSupportFragmentManager(), null);
     }
 
     @Override
