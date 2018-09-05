@@ -2,8 +2,11 @@ package com.tjrushby.runlite.injection.modules;
 
 
 import android.content.Intent;
+import android.graphics.drawable.ColorDrawable;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 
+import com.tjrushby.runlite.R;
 import com.tjrushby.runlite.adapters.RunModelAdapter;
 import com.tjrushby.runlite.adapters.viewholders.RunModelViewHolderFactory;
 import com.tjrushby.runlite.contracts.MainContract;
@@ -31,6 +34,17 @@ public class MainActivityModule {
     @MainActivityScope
     MainContract.Activity providesMainActivity() {
         return activity;
+    }
+
+    @Provides
+    ColorDrawable providesColorDrawable() {
+        if(activity.getDarkThemeEnabled()) {
+            return new ColorDrawable(
+                    ContextCompat.getColor(activity.getContext(), R.color.deleteItemBackground));
+        } else {
+            return new ColorDrawable(
+                    ContextCompat.getColor(activity.getContext(), R.color.colorGPSBad));
+        }
     }
 
     @Provides

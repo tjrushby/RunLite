@@ -1,6 +1,7 @@
 package com.tjrushby.runlite.presenters;
 
 import com.tjrushby.runlite.contracts.MainContract;
+import com.tjrushby.runlite.models.RunWithLatLng;
 
 public class MainPresenter implements MainContract.Presenter {
     private MainContract.Activity activity;
@@ -94,12 +95,26 @@ public class MainPresenter implements MainContract.Presenter {
 
     @Override
     public void onRunDeleted() {
-        activity.displayRunDeletedToast();
-        activity.refreshRecyclerView();
+    }
+
+    @Override
+    public void onRunSwiped(int position, RunWithLatLng run) {
+        activity.removeRunFromList(position);
+        activity.displaySnackBarRunDeleted(position, run);
     }
 
     @Override
     public void onRunUpdated() {
         activity.calculateRunTotals();
+    }
+
+    @Override
+    public void onUndoAction(int position, RunWithLatLng run) {
+        activity.restoreRunToList(position, run);
+    }
+
+    @Override
+    public void onUndoDismissed(RunWithLatLng run) {
+        activity.removeRunFromDatabase(run);
     }
 }

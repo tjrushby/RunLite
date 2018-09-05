@@ -20,7 +20,7 @@ public interface RunDAO {
     RunWithLatLng findById(String id);
 
     @Transaction
-    @Query("SELECT * FROM runs")
+    @Query("SELECT * FROM runs ORDER BY dateTime DESC")
     List<RunWithLatLng> loadRunWithLatLng();
 
     @Insert

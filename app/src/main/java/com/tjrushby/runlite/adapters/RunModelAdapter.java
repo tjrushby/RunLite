@@ -3,7 +3,6 @@ package com.tjrushby.runlite.adapters;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,6 +18,8 @@ import com.tjrushby.runlite.views.DetailsActivity;
 import com.tjrushby.runlite.views.MainActivity;
 
 import java.util.List;
+
+import timber.log.Timber;
 
 public class RunModelAdapter extends RecyclerView.Adapter<RunModelViewHolder> {
     private List<RunWithLatLng> runsList;
@@ -63,31 +64,33 @@ public class RunModelAdapter extends RecyclerView.Adapter<RunModelViewHolder> {
             intent.putExtra("runId", Long.toString(run.run.getId()));
             ((Activity) view.getContext()).startActivityForResult(intent, 1);
         });
-
-        holder.itemView.setLongClickable(true);
-
-        holder.itemView.setOnLongClickListener(view -> {
-            new AlertDialog.Builder(view.getContext())
-                    .setTitle("Delete Run?")
-                    .setMessage(
-                            formatter.dateToString(run.run.getDateTime()) +
-                            " - " + formatter.distanceToStringWithUnits(
-                                run.run.getDistanceTravelled()) +
-                            "\nThis action cannot be undone")
-                    .setPositiveButton("Yes", (dialog, which) ->
-                            runRepository.deleteRun(run.run, () -> {
-                                presenter.onRunDeleted();
-                            }))
-                    .setNegativeButton("No", (dialog, which) -> dialog.dismiss())
-                    .show();
-
-            return true;
-        });
     }
 
     @Override
     public int getItemCount() {
         return runsList.size();
+    }
+
+    public RunWithLatLng getItem(int position) {
+        return runsList.get(position);
+    }
+
+    public void removeItem(int position) {
+        runsList.remove(position);
+        notifyItemRemoved(position);
+
+        if(runsList.size() == 0) {
+            presenter.onDataNotAvailable();
+        }
+    }
+
+    public void restoreItem(int position, RunWithLatLng run) {
+        if(runsList.size() == 0) {
+            presenter.onDataAvailable(false);
+        }
+
+        runsList.add(position, run);
+        notifyItemInserted(position);
     }
 
     public void loadRuns(Context context) {
@@ -127,6 +130,12 @@ public class RunModelAdapter extends RecyclerView.Adapter<RunModelViewHolder> {
                 presenter.onDataNotAvailable();
                 notifyDataSetChanged();
             }
+        });
+    }
+
+    public void deleteRun(RunWithLatLng run) {
+        runRepository.deleteRun(run.run, () -> {
+            presenter.onRunDeleted();
         });
     }
 

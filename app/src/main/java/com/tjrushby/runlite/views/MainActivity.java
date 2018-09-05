@@ -2,48 +2,58 @@ package com.tjrushby.runlite.views;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Canvas;
+import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.NavigationView;
+import android.support.design.widget.Snackbar;
+import android.support.v4.content.res.ResourcesCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SwitchCompat;
 import android.support.v7.widget.Toolbar;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.tjrushby.runlite.App;
 import com.tjrushby.runlite.R;
 import com.tjrushby.runlite.adapters.RunModelAdapter;
 import com.tjrushby.runlite.contracts.MainContract;
 import com.tjrushby.runlite.injection.modules.MainActivityModule;
+import com.tjrushby.runlite.models.RunWithLatLng;
 
 import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import timber.log.Timber;
 
 public class MainActivity extends BaseActivity
         implements MainContract.Activity, CompoundButton.OnCheckedChangeListener {
     @Inject
-    public Intent intent;
+    protected ColorDrawable background;
     @Inject
-    public LinearLayoutManager layoutManager;
+    protected Intent intent;
     @Inject
-    public MainContract.Presenter presenter;
+    protected LinearLayoutManager layoutManager;
     @Inject
-    public RunModelAdapter adapter;
+    protected MainContract.Presenter presenter;
+    @Inject
+    protected RunModelAdapter adapter;
 
     @BindView(R.id.appBarLayout)
     protected AppBarLayout appBarLayout;
+    @BindView(R.id.clContent)
+    protected CoordinatorLayout clContent;
     @BindView(R.id.drawerLayout)
     protected DrawerLayout drawerLayout;
     @BindView(R.id.navView)
@@ -66,6 +76,8 @@ public class MainActivity extends BaseActivity
     private static final int UPDATE_RUNS_REQUEST = 1;
     private static final int RUN_PREFS_REQUEST = 2;
 
+    private Drawable icDelete;
+
     private SwitchCompat switchAudioCue;
     private SwitchCompat switchDarkMode;
 
@@ -87,9 +99,72 @@ public class MainActivity extends BaseActivity
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_menu_24dp);
 
         recyclerView.setHasFixedSize(true);
-        layoutManager.setReverseLayout(true);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(adapter);
+
+        icDelete = ResourcesCompat.getDrawable(getResources(), R.drawable.ic_delete, null);
+
+        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(
+                new ItemTouchHelper.SimpleCallback(ItemTouchHelper.RIGHT, ItemTouchHelper.LEFT) {
+                    @Override
+                    public boolean onMove(RecyclerView recyclerView,
+                                          RecyclerView.ViewHolder viewHolder,
+                                          RecyclerView.ViewHolder target) {
+                        return false;
+                    }
+
+                    @Override
+                    public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
+                        // todo check for existing SnackBar and call dismiss() if it does
+
+                        int position = viewHolder.getAdapterPosition();
+                        presenter.onRunSwiped(position, adapter.getItem(position));
+                    }
+
+                    @Override
+                    public void onChildDraw(Canvas c, RecyclerView recyclerView,
+                                            RecyclerView.ViewHolder viewHolder,
+                                            float dX, float dY, int actionState,
+                                            boolean isCurrentlyActive) {
+
+                        // calculate bounds and draw background
+                        background.setBounds(
+                                viewHolder.itemView.getRight() + (int) dX,
+                                viewHolder.itemView.getTop(), viewHolder.itemView.getRight(),
+                                viewHolder.itemView.getBottom()
+                        );
+
+                        background.draw(c);
+
+                        float itemHeight =
+                                viewHolder.itemView.getBottom() - viewHolder.itemView.getTop();
+
+                        // calculate position of icDelete
+                        float icDeleteMargin = (itemHeight - icDelete.getIntrinsicHeight()) / 2;
+                        float icDeleteTop = viewHolder.itemView.getTop()
+                                + (itemHeight - icDelete.getIntrinsicHeight()) / 2;
+
+                        float icDeleteLeft = viewHolder.itemView.getRight()
+                                - icDeleteMargin - icDelete.getIntrinsicWidth();
+
+                        float icDeleteRight = viewHolder.itemView.getRight() - icDeleteMargin;
+                        float icDeleteBottom = icDeleteTop + icDelete.getIntrinsicHeight();
+
+                        // draw icDelete
+                        icDelete.setBounds(
+                                (int) icDeleteLeft, (int) icDeleteTop,
+                                (int) icDeleteRight, (int) icDeleteBottom
+                        );
+
+                        icDelete.draw(c);
+
+                        super.onChildDraw(
+                                c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
+                    }
+                }
+        );
+
+        itemTouchHelper.attachToRecyclerView(recyclerView);
 
         navView.setNavigationItemSelectedListener((item) -> {
             switch (item.getItemId()) {
@@ -121,15 +196,15 @@ public class MainActivity extends BaseActivity
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        switch(requestCode) {
-            case UPDATE_RUNS_REQUEST :
+        switch (requestCode) {
+            case UPDATE_RUNS_REQUEST:
                 if(resultCode == RESULT_OK) {
                     presenter.onRunUpdated();
                 }
 
                 break;
 
-            case RUN_PREFS_REQUEST :
+            case RUN_PREFS_REQUEST:
                 if(resultCode == RESULT_OK) {
                     presenter.onDistanceUnitsChanged();
                 }
@@ -204,8 +279,7 @@ public class MainActivity extends BaseActivity
 
     @Override
     public void scrollToTop() {
-        // scroll to itemCount - 1 as recyclerView.layoutManager uses reverse layout
-        recyclerView.scrollToPosition(recyclerView.getAdapter().getItemCount() - 1);
+        recyclerView.scrollToPosition(0);
     }
 
     @Override
@@ -218,8 +292,18 @@ public class MainActivity extends BaseActivity
     }
 
     @Override
-    public void displayRunDeletedToast() {
-        Toast.makeText(this, R.string.toast_run_deleted, Toast.LENGTH_SHORT).show();
+    public void displaySnackBarRunDeleted(int position, RunWithLatLng swipedRun) {
+        Snackbar.make(clContent, getString(R.string.toast_run_deleted), Snackbar.LENGTH_LONG)
+                .setAction(getString(R.string.action_undo), (view) -> presenter.onUndoAction(position, swipedRun))
+                .addCallback(new Snackbar.Callback() {
+                    @Override
+                    public void onDismissed(Snackbar transientBottomBar, int event) {
+                        if(event == Snackbar.Callback.DISMISS_EVENT_TIMEOUT ||
+                                event == Snackbar.Callback.DISMISS_EVENT_CONSECUTIVE) {
+                            presenter.onUndoDismissed(swipedRun);
+                        }
+                    }
+                }).show();
     }
 
     @Override
@@ -235,6 +319,21 @@ public class MainActivity extends BaseActivity
     @Override
     public void calculateRunTotals() {
         adapter.calculateRunTotals(this);
+    }
+
+    @Override
+    public void removeRunFromDatabase(RunWithLatLng run) {
+        adapter.deleteRun(run);
+    }
+
+    @Override
+    public void removeRunFromList(int position) {
+        adapter.removeItem(position);
+    }
+
+    @Override
+    public void restoreRunToList(int position, RunWithLatLng run) {
+        adapter.restoreItem(position, run);
     }
 
     @Override

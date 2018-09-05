@@ -2,6 +2,8 @@ package com.tjrushby.runlite.contracts;
 
 import android.content.Context;
 
+import com.tjrushby.runlite.models.RunWithLatLng;
+
 public interface MainContract {
     interface Activity {
         void endActivity();
@@ -22,13 +24,19 @@ public interface MainContract {
 
         void displayNoRuns(boolean display);
 
-        void displayRunDeletedToast();
+        void displaySnackBarRunDeleted(int position, RunWithLatLng swipedRun);
 
         void openDrawerMenu();
 
         void closeDrawerMenu();
 
         void calculateRunTotals();
+
+        void removeRunFromDatabase(RunWithLatLng run);
+
+        void removeRunFromList(int position);
+
+        void restoreRunToList(int position, RunWithLatLng run);
 
         Context getContext();
 
@@ -76,6 +84,12 @@ public interface MainContract {
 
         void onRunDeleted();
 
+        void onRunSwiped(int position, RunWithLatLng run);
+
         void onRunUpdated();
+
+        void onUndoAction(int position, RunWithLatLng run);
+
+        void onUndoDismissed(RunWithLatLng run);
     }
 }

@@ -5,6 +5,7 @@
     <string name="action_done">Done</string>
     <string name="action_edit">Edit</string>
     <string name="action_save">Save</string>
+    <string name="action_undo">UNDO</string>
     <string name="activity_run_preferences_label">Preferences</string>
     <string name="button_increase_countdown">+10 Seconds</string>
     <string name="button_cancel">Cancel</string>

@@ -17,4 +17,5 @@
     <color name="darkSecondaryColor">#BF4E30</color>
     <color name="darkCardBackgroundColor">#19212F</color>
     <color name="darkColorBackground">#212D40</color>
+    <color name="deleteItemBackground">#8B0000</color>
 </resources>
