@@ -12,7 +12,7 @@ public class RunPreferencesFragmentPresenter implements RunPreferencesFragmentCo
     @Override
     public void onFragmentCreated() {
         setCorrectAudioCueFrequencyPrefEnabled();
-        fragment.setPrefAudioCueFrequencyDistanceUnits();
+        fragment.setDistanceIntervalUnits();
     }
 
     @Override
@@ -26,9 +26,14 @@ public class RunPreferencesFragmentPresenter implements RunPreferencesFragmentCo
     }
 
     @Override
+    public void onDistanceIntervalChanged() {
+        fragment.setDistanceIntervalSummary();
+    }
+
+    @Override
     public void onDistanceUnitsChanged() {
         fragment.updateStringFormatterDistanceUnits();
-        fragment.setPrefAudioCueFrequencyDistanceUnits();
+        fragment.setDistanceIntervalUnits();
     }
 
     @Override

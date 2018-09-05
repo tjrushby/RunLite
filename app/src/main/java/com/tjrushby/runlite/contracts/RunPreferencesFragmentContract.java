@@ -16,7 +16,9 @@ public interface RunPreferencesFragmentContract {
 
         String getAudioCueType();
 
-        void setPrefAudioCueFrequencyDistanceUnits();
+        void setDistanceIntervalSummary();
+
+        void setDistanceIntervalUnits();
 
         void updateStringFormatterDistanceUnits();
     }
@@ -29,6 +31,8 @@ public interface RunPreferencesFragmentContract {
         void onFragmentPaused();
 
         void onAudioCueTypeChanged();
+
+        void onDistanceIntervalChanged();
 
         void onDistanceUnitsChanged();
     }

@@ -21,11 +21,16 @@ public class RunPreferencesFragment extends PreferenceFragmentCompat
     @Inject
     protected StringFormatter formatter;
 
+    private android.support.v7.preference.ListPreference distanceInterval;
     private SharedPreferences sharedPrefs;
 
     @Override
     public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
         addPreferencesFromResource(R.xml.fragment_run_preferences);
+
+        distanceInterval = ((android.support.v7.preference.ListPreference)
+                findPreference(getString(R.string.pref_audio_cue_interval_distance_key)));
+
         sharedPrefs = getPreferenceManager().getSharedPreferences();
         presenter.onFragmentCreated();
     }
@@ -57,6 +62,8 @@ public class RunPreferencesFragment extends PreferenceFragmentCompat
             presenter.onDistanceUnitsChanged();
         } else if(key.equals(getString(R.string.pref_audio_cue_type_key))) {
             presenter.onAudioCueTypeChanged();
+        } else if(key.equals(getString(R.string.pref_audio_cue_interval_distance_key))) {
+            presenter.onDistanceIntervalChanged();
         }
     }
 
@@ -96,7 +103,14 @@ public class RunPreferencesFragment extends PreferenceFragmentCompat
     }
 
     @Override
-    public void setPrefAudioCueFrequencyDistanceUnits() {
+    public void setDistanceIntervalSummary() {
+        // set the summary to reflect the change
+        distanceInterval.setSummary(
+                distanceInterval.getValue() + " " + formatter.getDistanceUnitsString());
+    }
+
+    @Override
+    public void setDistanceIntervalUnits() {
         // get the distance intervals
         CharSequence[] entries =
                 getResources().getStringArray(R.array.audio_cue_interval_distance_options);
@@ -107,14 +121,10 @@ public class RunPreferencesFragment extends PreferenceFragmentCompat
         }
 
         // set the entry options
-        android.support.v7.preference.ListPreference lp =
-                ((android.support.v7.preference.ListPreference)
-                        findPreference(getString(R.string.pref_audio_cue_interval_distance_key)));
-
-        lp.setEntries(entries);
+        distanceInterval.setEntries(entries);
 
         // set the summary to reflect the change
-        lp.setSummary(lp.getValue() + " " + formatter.getDistanceUnitsString());
+        setDistanceIntervalSummary();
     }
 
     @Override
