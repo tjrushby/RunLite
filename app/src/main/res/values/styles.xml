@@ -1,5 +1,4 @@
-<resources xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
+<resources xmlns:tools="http://schemas.android.com/tools">
 
     <!-- Base application theme -->
     <style name="AppThemeLight" parent="Theme.AppCompat.Light.NoActionBar">
@@ -21,6 +20,10 @@
         <item name="ic_run">@drawable/ic_run</item>
         <item name="ic_timer">@drawable/ic_timer</item>
         <item name="unlock_circle">@drawable/unlock_circle</item>
+    </style>
+
+    <style name="SplashTheme" parent="AppThemeLight">
+        <item name="android:windowBackground">@drawable/background_splash</item>
     </style>
 
     <!-- Dark application theme -->
@@ -50,10 +53,6 @@
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
-
-    <style name="SplashTheme" parent="AppThemeLight">
-        <item name="android:windowBackground">@drawable/background_splash</item>
-    </style>
 
     <style name="Theme.AppThemeLight.NoActionBar" parent="Theme.AppCompat.NoActionBar" />
 

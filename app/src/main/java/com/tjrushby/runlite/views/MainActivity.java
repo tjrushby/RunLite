@@ -115,8 +115,6 @@ public class MainActivity extends BaseActivity
 
                     @Override
                     public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
-                        // todo check for existing SnackBar and call dismiss() if it does
-
                         int position = viewHolder.getAdapterPosition();
                         presenter.onRunSwiped(position, adapter.getItem(position));
                     }
