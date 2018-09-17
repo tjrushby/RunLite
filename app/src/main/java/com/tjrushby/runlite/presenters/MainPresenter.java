@@ -12,7 +12,7 @@ public class MainPresenter implements MainContract.Presenter {
 
     @Override
     public void onActivityCreated() {
-        activity.displayProgressBar(true);
+        activity.showLoadingOverlay();
 
         if(activity.getThemeChanged()) {
             activity.setSwitchDarkModeChecked(activity.getDarkThemeEnabled());
@@ -21,6 +21,8 @@ public class MainPresenter implements MainContract.Presenter {
 
     @Override
     public void onActivityResumed() {
+        activity.hideLoadingOverlay();
+
         if(activity.getDrawerVisible()) {
             activity.closeDrawerMenu();
         }
@@ -74,7 +76,7 @@ public class MainPresenter implements MainContract.Presenter {
     @Override
     public void onDataAvailable(boolean newData) {
         activity.displayNoRuns(false);
-        activity.displayProgressBar(false);
+        activity.hideLoadingOverlay();
 
         if(newData) {
             activity.scrollToTop();
@@ -85,7 +87,7 @@ public class MainPresenter implements MainContract.Presenter {
     @Override
     public void onDataNotAvailable() {
         activity.displayNoRuns(true);
-        activity.displayProgressBar(false);
+        activity.hideLoadingOverlay();
     }
 
     @Override

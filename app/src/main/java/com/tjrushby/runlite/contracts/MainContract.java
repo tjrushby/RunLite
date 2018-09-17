@@ -14,8 +14,6 @@ public interface MainContract {
 
         void startRunPreferencesActivity();
 
-        void displayProgressBar(boolean display);
-
         void expandToolbar();
 
         void refreshRecyclerView();
@@ -29,6 +27,10 @@ public interface MainContract {
         void openDrawerMenu();
 
         void closeDrawerMenu();
+
+        void showLoadingOverlay();
+
+        void hideLoadingOverlay();
 
         void calculateRunTotals();
 

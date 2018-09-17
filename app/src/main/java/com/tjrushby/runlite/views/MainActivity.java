@@ -54,6 +54,8 @@ public class MainActivity extends BaseActivity
     protected AppBarLayout appBarLayout;
     @BindView(R.id.clContent)
     protected CoordinatorLayout clContent;
+    @BindView(R.id.clLoading)
+    protected CoordinatorLayout clLoading;
     @BindView(R.id.drawerLayout)
     protected DrawerLayout drawerLayout;
     @BindView(R.id.navView)
@@ -101,6 +103,10 @@ public class MainActivity extends BaseActivity
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(adapter);
+
+        clLoading.setOnTouchListener((view, event) -> {
+            return true;
+        });
 
         icDelete = ResourcesCompat.getDrawable(getResources(), R.drawable.ic_delete, null);
 
@@ -256,16 +262,6 @@ public class MainActivity extends BaseActivity
     }
 
     @Override
-    public void displayProgressBar(boolean display) {
-        if(display) {
-            progressBar.setVisibility(View.VISIBLE);
-            progressBar.bringToFront();
-        } else {
-            progressBar.setVisibility(View.GONE);
-        }
-    }
-
-    @Override
     public void expandToolbar() {
         appBarLayout.setExpanded(true);
     }
@@ -312,6 +308,16 @@ public class MainActivity extends BaseActivity
     @Override
     public void closeDrawerMenu() {
         drawerLayout.closeDrawer(GravityCompat.START);
+    }
+
+    @Override
+    public void showLoadingOverlay() {
+        clLoading.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void hideLoadingOverlay() {
+        clLoading.setVisibility(View.INVISIBLE);
     }
 
     @Override

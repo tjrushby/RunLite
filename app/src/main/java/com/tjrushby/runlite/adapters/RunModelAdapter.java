@@ -56,7 +56,7 @@ public class RunModelAdapter extends RecyclerView.Adapter<RunModelViewHolder> {
 
         holder.itemView.setOnClickListener((View view) -> {
             if(view.getContext() instanceof MainActivity) {
-                ((MainActivity) view.getContext()).displayProgressBar(true);
+                ((MainActivity) view.getContext()).showLoadingOverlay();
             }
 
             Intent intent = new Intent();

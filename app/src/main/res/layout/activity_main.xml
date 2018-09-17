@@ -8,6 +8,25 @@
     android:fitsSystemWindows="true">
 
     <android.support.design.widget.CoordinatorLayout
+        android:id="@+id/clLoading"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:animateLayoutChanges="true"
+        android:background="#D0000000"
+        android:elevation="1dp"
+        android:focusableInTouchMode="true"
+        android:visibility="invisible">
+
+        <ProgressBar
+            android:id="@+id/progressBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:elevation="1dp" />
+
+    </android.support.design.widget.CoordinatorLayout>
+
+    <android.support.design.widget.CoordinatorLayout
         android:id="@+id/clContent"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -66,13 +85,6 @@
             android:gravity="center"
             android:text="@string/tv_no_runs"
             android:textSize="@dimen/text_size_details"
-            android:visibility="gone" />
-
-        <ProgressBar
-            android:id="@+id/progressBar"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
             android:visibility="gone" />
 
     </android.support.design.widget.CoordinatorLayout>
