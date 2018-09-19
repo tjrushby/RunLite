@@ -1,9 +1,10 @@
 package com.tjrushby.runlite.services.listeners;
 
-import android.os.Build;
 import android.speech.tts.UtteranceProgressListener;
 
 import com.tjrushby.runlite.services.AudioCueService;
+
+import timber.log.Timber;
 
 public class AudioCueProgressListener extends UtteranceProgressListener {
     private AudioCueService audioCueService;
@@ -13,21 +14,16 @@ public class AudioCueProgressListener extends UtteranceProgressListener {
     }
 
     @Override
-    public void onStart(String s) {}
+    public void onStart(String s) {
+    }
 
     @Override
     public void onDone(String s) {
         // tts is done speaking, abandon audio focus
-        if(Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
-            // abandon audio focus for sdk level < 26
-            audioCueService.getAudioManager().abandonAudioFocus(audioCueService);
-        } else {
-            // abandon audio focus for sdk level >= 26
-            audioCueService.getAudioManager()
-                    .abandonAudioFocusRequest(audioCueService.getFocusRequest());
-        }
+        audioCueService.abandonFocus();
     }
 
     @Override
-    public void onError(String s) {}
+    public void onError(String s) {
+    }
 }

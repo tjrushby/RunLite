@@ -193,6 +193,10 @@ public class AudioCueService extends Service
                         );
 
                 if(result == AudioManager.AUDIOFOCUS_REQUEST_GRANTED) {
+                    // save userStreamVolume (it may have been changed since onCreate) so that it can
+                    // be restored upon completion
+                    userStreamVolume = audioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
+
                     // gained audio focus, speak
                     if(Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
                         // speak api level < 21
@@ -224,11 +228,28 @@ public class AudioCueService extends Service
         }
     }
 
-    public AudioManager getAudioManager() {
-        return audioManager;
+    // abandons audio focus
+    public void abandonFocus() {
+        // tts is done speaking, abandon audio focus
+        if(Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
+            // abandon audio focus for sdk level < 26 and restore audio volume if ducked
+            getAudioManager().abandonAudioFocus(this);
+            restoreVolume();
+        } else {
+            // abandon audio focus for sdk level >= 26
+            getAudioManager()
+                    .abandonAudioFocusRequest(focusRequest);
+        }
     }
 
-    public AudioFocusRequest getFocusRequest() {
-        return focusRequest;
+    // restores volume to user defined volume after ducking on api < 26
+    public void restoreVolume() {
+        if(audioManager.getStreamVolume(AudioManager.STREAM_MUSIC) != userStreamVolume) {
+            audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, userStreamVolume, 0);
+        }
+    }
+
+    public AudioManager getAudioManager() {
+        return audioManager;
     }
 }
